@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import '~rsuite/dist/rsuite.min.css';
+
+// @enable-high-contrast: true;
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0;
+  text-align: left;
+  color: #000000;
+  background-color: #f8f9fe;
+}
+
+.App {
+  max-width: 100%;
+}
+// .Layout{
+
+//   .Layout-inner,.footerItem{
+
+//     height: 100vh,
+
+//   }
+// }
+
+// @media (prefers-reduced-motion: no-preference) {
+//   .App-logo {
+//     animation: App-logo-spin infinite 20s linear;
+//   }
+// }
+
+// .App-header {
+//   background-color: #282c34;
+//   min-height: 100vh;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: center;
+//   font-size: calc(10px + 2vmin);
+//   color: white;
+// }
+
+// .App-link {
+//   color: #61dafb;
+// }
+
+// @keyframes App-logo-spin {
+//   from {
+//     transform: rotate(0deg);
+//   }
+//   to {
+//     transform: rotate(360deg);
+//   }
+// }
+
+@import url('./StyleScss/Header.scss');
+@import url('./StyleScss/AuctionsTransports.scss');
+@import url('./StyleScss/Reset.scss');
+@import url('./StyleScss/Button.scss');
+@import url('./StyleScss/Authorization.scss');
+@import url('./StyleScss/Master.scss');
+@import url('./StyleScss/Table.scss');
+@import url('./StyleScss/Footer.scss');
+@import url('./StyleScss/Loader.scss');
+@import url('./StyleScss/Modal.scss');
+@import url('./StyleScss/Prebit.scss');
+// @import url('./StyleScss/Calculator.scss');
+@import url('./StyleScss/ModalCustom.scss');
+@import url('./StyleScss/Media.scss');

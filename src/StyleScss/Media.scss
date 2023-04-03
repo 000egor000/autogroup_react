@@ -1,0 +1,45 @@
+@media (max-width: 500px) {
+	.dropBlock--inner {
+		flex-wrap: wrap;
+		.dropBlockContent {
+			text-align: center;
+			width: 100% !important;
+			min-width: inherit !important;
+			max-width: inherit !important;
+			.blockItem{flex-wrap: wrap;}
+		}
+	}
+}
+@media (max-width: 767px) {
+	.itemContainer .itemContainer-inner .bottom-itemFooter .Table .rs-table,
+	.itemContainer .itemContainer-inner .bottom-itemFooter table td {
+		font-size: 10px !important;
+	}
+	.svgItem {
+		width: 15px !important;
+	}
+}
+
+@media (max-width: 992px) {
+	.itemContainer .itemContainer-inner .bottom-itemFooter .Table .rs-table,
+	.itemContainer .itemContainer-inner .bottom-itemFooter table td {
+		font-size: 12px !important;
+	}
+	.svgItem {
+		width: 20px !important;
+	}
+
+
+}
+@media (max-width: 1200px) {
+	.itemContainer .itemContainer-inner .bottom-itemFooter .Table .rs-table,
+	.itemContainer .itemContainer-inner .bottom-itemFooter table td {
+		font-size: 14px !important;
+	}
+	.dropBlock--inner {
+		flex-wrap: wrap;
+		.dropBlockContent {
+			width: 100% !important;
+		}
+	}
+}

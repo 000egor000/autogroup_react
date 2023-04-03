@@ -1,0 +1,363 @@
+.groupInfoParse {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.btnTransport {
+  input {
+    background-color: red;
+    box-shadow: 0px 4px 4px rgb(50 50 71 / 8%), 0px 4px 8px rgb(50 50 71 / 6%);
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 19px;
+    color: #ffff;
+    width: fit-content;
+    padding: 5px 10px;
+    cursor: pointer;
+    outline: none;
+    margin-right: 15px;
+    font-weight: 700;
+  }
+  .positiveSum {
+    background-color: green;
+  }
+}
+.positonTd {
+  width: 250px;
+}
+.indicatorView {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+.positonTr {
+  text-align: center;
+}
+// .controlClick {
+// 	cursor: pointer !important;
+// }
+
+///
+
+.formCus {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  select,
+  input,
+  .rs-picker select {
+    margin: 0 10px 10px 0;
+    width: 200px;
+    max-width: 100%;
+    border-radius: 0.375rem;
+    padding: 0.3rem 0.5rem;
+    font-size: 14px;
+    height: calc(2rem + 2px);
+    color: #37393c;
+    // min-width: 105px;
+    outline: none;
+  }
+}
+///
+
+.itemContainer {
+  color: #fff;
+  background: #f7fafc;
+
+  .itemContainer-inner {
+    margin: 0 auto;
+
+    .row-table {
+      margin-top: 15px;
+    }
+    .btn-success-preBid {
+      background-color: green;
+      border-radius: 10px;
+      color: #fff;
+      cursor: pointer;
+      padding: 2px 15px;
+    }
+
+    .top-item {
+      // padding: 15px 0px;
+      // background-color: #272727;
+
+      .btnTransport {
+        // display: flex;
+        // align-items: center;
+        // justify-content: space-between;
+        .btnTransportLeft {
+          display: flex;
+          align-items: center;
+        }
+        .titleInfo {
+          padding-bottom: 10px;
+        }
+        // .btnInfo {
+        //   background-color: red;
+        //   border-radius: 10px;
+        //   color: #fff;
+        //   cursor: pointer;
+        //   padding: 2px 15px;
+        // }
+        img {
+          margin-right: 25px;
+          width: 20px;
+          height: 20px;
+          cursor: pointer;
+        }
+        a {
+          color: #fff;
+          text-decoration: none;
+          font-weight: 600;
+        }
+      }
+    }
+
+    .bottom-itemFooter {
+      padding: 25px;
+    }
+  }
+  .btn-fail-preBid {
+    background-color: red;
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+    padding: 2px 15px;
+  }
+}
+
+.groupInput {
+  margin-bottom: 20px;
+  label {
+    display: flex;
+    align-items: center;
+    // flex-direction: column;
+  }
+  display: flex;
+  flex-direction: column;
+  .selectCustom {
+    .rs-picker {
+      span {
+        color: black;
+      }
+    }
+  }
+
+  .switcher-btn {
+    border: 2px solid #666666;
+    box-sizing: border-box;
+    border-radius: 6px;
+    width: fit-content;
+    padding: 5px;
+    align-self: self-start;
+
+    button,
+    a {
+      text-decoration: none;
+      background: none;
+      padding: 2px 15px;
+      font-style: normal;
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 19px;
+      color: #ffffff;
+
+      box-shadow: 0px 4px 4px rgb(50 50 71 / 8%), 0px 4px 8px rgb(50 50 71 / 6%);
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .active {
+      background: #ff0021;
+    }
+  }
+}
+
+.searchGroup {
+  display: flex;
+  align-items: center label {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin: 5px;
+  }
+  label span {
+    color: #fff;
+    margin: 5px 0;
+  }
+  label input,
+  label select,
+  .rs-picker-toggle {
+    font-size: 14px;
+    height: calc(2rem + 2px);
+    border: 1px solid #dfdfe3;
+    box-sizing: border-box;
+    border-radius: 0.375rem;
+    padding: 5px 10px;
+    color: #37393c;
+    width: 200px;
+    max-width: 100%;
+  }
+  .btnGroup {
+    display: flex;
+    align-self: end;
+    input {
+      margin: 0 5px;
+    }
+    &--custom {
+      background-color: red;
+      .rs-picker {
+        .rs-picker-toggle-value {
+          .rs-picker-value-list {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+
+  input,
+  select {
+    font-size: 14px;
+    height: calc(2rem + 2px);
+    border: 1px solid #dfdfe3;
+    box-sizing: border-box;
+    border-radius: 0.375rem;
+    padding: 5px 10px;
+    color: #37393c;
+    width: 100%;
+  }
+}
+
+.btnGroup {
+  &--custom {
+    .rs-picker {
+      .rs-picker-toggle-value {
+        .rs-picker-value-list {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+// .bottom-itemFooter {
+//   table {
+//     color: #272727;
+//     width: 100%;
+//     margin-bottom: 20px;
+//     border: 1px solid #dddddd;
+//     border-collapse: collapse;
+
+//     .tdBefore {
+//       display: none;
+//     }
+//   }
+//   table th {
+//     &:hover {
+//       background-color: #dfdfe3;
+//     }
+//     font-weight: bold;
+//     padding: 5px;
+//     background: #efefef;
+//     border: 1px solid #dddddd;
+//     // cursor: pointer;
+//   }
+//   table td {
+//     // &:hover{
+//     //   background-color: red;
+//     // }
+//     border: 1px solid #dddddd;
+//     padding: 5px;
+//     cursor: pointer;
+//   }
+//   .dropD {
+//     table td {
+//       width: auto;
+//       height: auto;
+//       cursor: default;
+//     }
+//     table th {
+//       width: auto;
+//       height: auto;
+//       cursor: default;
+//     }
+//   }
+// }
+
+paper-toast {
+  z-index: 1;
+}
+
+.helpParse {
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0px 4px 4px rgb(50 50 71 / 8%);
+  padding: 5px;
+  border-radius: 10px;
+  margin-left: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &:hover {
+    box-shadow: 0px 16px 16px rgba(214, 39, 112, 0.08);
+    color: red;
+  }
+}
+
+.overFlowBlock {
+  position: relative;
+  top: -50px;
+  border-radius: 8px;
+  font-size: 10px;
+  overflow-x: scroll;
+  table th,
+  td {
+    min-width: 45px !important;
+  }
+
+  &::-webkit-scrollbar {
+    height: 5px;
+    background-color: #f7fafc;
+  }
+  &::-webkit-scrollbar-thumb {
+    height: 5px;
+    background-color: red;
+    cursor: pointer;
+  }
+  &--cred {
+    position: static;
+    &::-webkit-scrollbar {
+      height: 5px;
+      background-color: #ffff;
+    }
+  }
+  .flashItem {
+    position: relative;
+    &::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: red;
+      border-radius: 50px;
+      position: absolute;
+      top: 0;
+      right: 5px;
+      animation-duration: 1.5s;
+      animation-iteration-count: infinite;
+      animation-name: circle;
+    }
+    @keyframes circle {
+      from {
+        transform: scale(1);
+      }
+
+      to {
+        transform: scale(1.1);
+      }
+    }
+  }
+}

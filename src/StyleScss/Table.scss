@@ -1,0 +1,50 @@
+.Table {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  a,
+  span {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .paginationBlock {
+    display: flex;
+    justify-content: right;
+    margin-top: 10px;
+    .rs-pagination-btn {
+      cursor: pointer;
+      &-active {
+        transform: scale(1.2);
+      }
+    }
+  }
+}
+
+.TableCustom {
+  .rs-table {
+    span {
+      cursor: pointer;
+    }
+  }
+}
+
+.Dropdown {
+  .DropdownShow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    button,
+    svg {
+      border: 0;
+      background-color: transparent;
+      margin: 0 3px;
+      cursor: pointer;
+      &:hover {
+        transform: scale(1.5);
+      }
+    }
+  }
+}

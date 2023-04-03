@@ -1,0 +1,18 @@
+.footerItem {
+	.footer-inner {
+		display: flex;
+		align-items: center;
+		flex-direction: row;
+		cursor: pointer;
+		color: black;
+		padding: 25px;
+
+		a {
+			color: #8898aa;
+			font-style: normal;
+			font-weight: 600;
+			text-decoration: none;
+			font-size: 17px;
+		}
+	}
+}
