@@ -5,7 +5,6 @@ import { Toggle } from 'rsuite'
 
 import { Check, Close, Send, PagePrevious } from '@rsuite/icons'
 
-import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 import { postRequest, getRequest } from '../../base/api-request'
@@ -59,7 +58,7 @@ const MasterCreate = () => {
         dispatch(showLoder({ rights: 0 }))
       })
       .catch((err) => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ rights: 0 }))
       })
   }, [])
@@ -81,7 +80,7 @@ const MasterCreate = () => {
         dispatch(showLoder({ role: 0 }))
       })
       .catch((err) => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ role: 0 }))
       })
   }, [])
@@ -147,7 +146,10 @@ const MasterCreate = () => {
         dispatch(showLoder({ verificationEmail: 0 }))
       })
       .catch((err) => {
-        toast.error('Пользователь с таким email уже создан!')
+        state.createNotification(
+          'Пользователь с таким email уже создан!',
+          'error'
+        )
         refFocus.current.style.outline = 'none'
         refFocus.current.style.border = 'solid'
         refFocus.current.style.borderWidth = '1px'
@@ -192,12 +194,12 @@ const MasterCreate = () => {
 
     postRequest('/api/v1/masters', params)
       .then((res) => {
-        toast.success('Пользователь создан!')
+        state.createNotification('Пользователь создан!', 'success')
         history(-1)
         dispatch(showLoder({ masterCreateForm: 0 }))
       })
       .catch((err) => {
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
         dispatch(showLoder({ masterCreateForm: 0 }))
       })
   }
@@ -266,7 +268,6 @@ const MasterCreate = () => {
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
       <div className="itemContainer-inner">
         <div className="top-item " style={{ paddingLeft: state.width }}>
           <div className="btnTransport" style={{ justifyContent: 'left' }}>

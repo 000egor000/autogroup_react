@@ -1,10 +1,17 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, memo } from 'react'
 import { postRequest, putRequest } from '../base/api-request'
 
 import nextId, { setPrefix } from 'react-id-generator'
 // import { More } from '@rsuite/icons'
 
-import { Modal, Animation, Dropdown } from 'rsuite'
+import {
+  Modal,
+  // Animation,
+  Dropdown,
+  // SelectPicker,
+  Whisper,
+  Tooltip,
+} from 'rsuite'
 
 import PropTypes from 'prop-types'
 
@@ -12,12 +19,15 @@ import ContextApp from '../context/contextApp.js'
 
 import { showLoder } from '../reducers/actions'
 
-import { addSelectArray, btnShow, arrayPort, dataAdd } from '../const.js'
-import { controlNumber } from '../helper.js'
+import {
+  addSelectArray,
+  //  btnShow,
+  arrayPort,
+  dataAdd,
+} from '../const.js'
+import { controlNumber, controlTitle } from '../helper.js'
 
 const AuctionTransportFinance = ({
-  getToastSucces,
-  getToastError,
   flagSendReq,
   dataPriseObject,
   getStartInfo,
@@ -32,6 +42,11 @@ const AuctionTransportFinance = ({
   shortInfoArray,
   carrierArray,
   pay_info,
+  controlDataSelect,
+  dataCarters,
+  dataPorts,
+  autoInfo,
+  controlArray,
 }) => {
   const [statusFinance, setStatusFinance] = useState(false)
 
@@ -40,7 +55,7 @@ const AuctionTransportFinance = ({
   const [addSelectMailing, setAddSelectMailing] = useState(addSelectArray[0].id)
   const [accessRights, setAccessRights] = useState([])
   const [dateValueGeneration, setDateValueGeneration] = useState([])
-  const [dateValueGenerationTop, setDateValueGenerationTop] = useState([])
+  // const [dateValueGenerationTop, setDateValueGenerationTop] = useState([])
 
   const [docFeeCarrier, setDocFeeCarrier] = useState('')
   const [agFeeCarrier, setAgFeeCarrier] = useState('')
@@ -65,8 +80,8 @@ const AuctionTransportFinance = ({
   const [evFee, setEvFee] = useState('')
   const [currentRes, setCurrentRes] = useState('')
   const [agFee, setAgFee] = useState(0)
-  const [showDrop, setShowDrop] = useState(false)
-  const [placement, setPlacement] = useState('right')
+  // const [showDrop, setShowDrop] = useState(false)
+  // const [placement, setPlacement] = useState('right')
   // const [getCurrentAuc, setGetCurrentAuc] = useState('')
   const [isModalClose, setIsModalClose] = useState(false)
   const [isModalFillContainer, setIsModalFillContainer] = useState(false)
@@ -74,7 +89,7 @@ const AuctionTransportFinance = ({
   // const [dataPriseObject, setDataPriseObject] = useState('')
 
   // const statusRole = viewBlock(49) && !viewBlock(50)
-  const { dispatch } = useContext(ContextApp)
+  const { state, dispatch } = useContext(ContextApp)
   const role = ['office', 'dealer', 'logist']
   const roleParams = JSON.parse(window.sessionStorage.getItem('role')).code
 
@@ -494,32 +509,32 @@ const AuctionTransportFinance = ({
     setDateValueGeneration(changeObject)
   }
 
-  const handleAccessRights = (id) => {
-    let filtered = accessRights.filter((e) => id === e)
+  // const handleAccessRights = (id) => {
+  //   let filtered = accessRights.filter((e) => id === e)
 
-    if (filtered.length > 0) {
-      let removeAccessRights = accessRights.filter((e) => e !== id)
-      setAccessRights(removeAccessRights)
-    } else {
-      setAccessRights([...accessRights, id])
-    }
+  //   if (filtered.length > 0) {
+  //     let removeAccessRights = accessRights.filter((e) => e !== id)
+  //     setAccessRights(removeAccessRights)
+  //   } else {
+  //     setAccessRights([...accessRights, id])
+  //   }
 
-    dateValueGeneration.map((elem) =>
-      elem.title || elem.value ? null : setDateValueGeneration([])
-    )
-    dateValueGenerationTop.map((elem) =>
-      elem.title || elem.value ? null : setDateValueGenerationTop([])
-    )
-  }
+  //   dateValueGeneration.map((elem) =>
+  //     elem.title || elem.value ? null : setDateValueGeneration([])
+  //   )
+  //   dateValueGenerationTop.map((elem) =>
+  //     elem.title || elem.value ? null : setDateValueGenerationTop([])
+  //   )
+  // }
 
-  const isChecked = (id) => {
-    if (accessRights.length > 0) {
-      let filtered = accessRights.filter((e) => e === id)
+  // const isChecked = (id) => {
+  //   if (accessRights.length > 0) {
+  //     let filtered = accessRights.filter((e) => e === id)
 
-      let bool = filtered.length > 0 ? true : false
-      return bool
-    }
-  }
+  //     let bool = filtered.length > 0 ? true : false
+  //     return bool
+  //   }
+  // }
 
   // const viewComponents = (idBlock) => {
   //   switch (idBlock) {
@@ -1129,10 +1144,9 @@ const AuctionTransportFinance = ({
       .then((res) => {
         getFinanceArray()
         dispatch(showLoder({ updateAuctionAuto: 0 }))
-        // toast.success('Успешно выполнено!')
       })
       .catch((e) => {
-        getToastError('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ updateAuctionAuto: 0 }))
       })
   }
@@ -1147,13 +1161,13 @@ const AuctionTransportFinance = ({
       .then((res) => {
         getFinanceArray()
         setIsModalClose(false)
-        // toast.success('Успешно выполнено!')
+
         dispatch(showLoder({ createAuctionAuto: 0 }))
       })
       .catch((e) => {
         dispatch(showLoder({ createAuctionAuto: 0 }))
 
-        getToastError('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
       })
   }
 
@@ -1286,7 +1300,7 @@ const AuctionTransportFinance = ({
                       statusView: false,
                     })
 
-                    getToastSucces('Информация сохранена')
+                    state.createNotification('Успешно выполнено!', 'success')
                   }}
                   type="button"
                   className="btn btn--closeInvoice"
@@ -1336,7 +1350,7 @@ const AuctionTransportFinance = ({
                       statusView: false,
                     })
 
-                    getToastSucces('Информация сохранена')
+                    state.createNotification('Успешно выполнено!', 'success')
                   }}
                   type="button"
                   className="btn btn--closeInvoice"
@@ -1458,7 +1472,6 @@ const AuctionTransportFinance = ({
       }
     }
   }
-  console.log(carrierArray)
 
   return (
     <React.Fragment>
@@ -1550,14 +1563,14 @@ const AuctionTransportFinance = ({
             />
 
             <select
-              value={byLandCarrier}
+              value={bySeaCarrier}
               onChange={(event) => {
-                setByLandCarrier(event.target.value)
+                setBySeaCarrier(event.target.value)
               }}
-              disabled={consrolDisabled()}
               style={{
                 visibility: titleBlock !== 'AG Logist' ? 'visable' : 'hidden',
               }}
+              disabled={consrolDisabled()}
             >
               {carrierArray.map((elem, i) => {
                 return (
@@ -1694,12 +1707,9 @@ const AuctionTransportFinance = ({
           <div className="generationBlock">
             {dateValueGeneration.length > 0 &&
               dateValueGeneration.map((elem, i) => (
-                <div className="blockPay">
-                  <label key={elem.id}>
+                <div className="blockPay" key={elem.id}>
+                  <label>
                     <span>
-                      {/* {elem.title === 'KLP-MSQ' ? (
-              'KLP-MSQ'
-            ) : ( */}
                       <input
                         type="text"
                         value={elem.title}
@@ -1713,7 +1723,66 @@ const AuctionTransportFinance = ({
                         }
                         disabled={consrolDisabled()}
                       />
-                      {/* )} */}
+
+                      {/* <select
+                        value={elem.title}
+                        onChange={(e) =>
+                          generationInput(elem, { title: e.target.value })
+                        }
+                        style={{
+                          visibility:
+                            titleBlock !== 'AG Logist' ? 'visable' : 'hidden',
+                        }}
+                        disabled={consrolDisabled()}
+                      >
+                        {controlDataSelect(elem.dataArrayInitial).map(
+                          (item, i) => {
+                            return (
+                              <option key={item.title} value={item.title}>
+                                {item.title}
+                              </option>
+                            )
+                          }
+                        )}
+                      </select> */}
+                      {/* <div className="selectCustom selectCustom--space">
+                        <SelectPicker
+                          data={controlDataSelect(elem.dataArrayInitial)}
+                          valueKey="title"
+                          labelKey="title"
+                          onChange={(e) => generationInput(elem, { title: e })}
+                          placeholder={false}
+                          searchable={false}
+                        />
+                      </div> */}
+                      {!consrolDisabled() &&
+                        titleBlock !== 'AG Logist' &&
+                        controlDataSelect(elem.dataArrayInitial).length > 0 && (
+                          <Whisper
+                            followCursor
+                            placement="right"
+                            speaker={
+                              <Tooltip>Выбрать из существующих затрат</Tooltip>
+                            }
+                          >
+                            <Dropdown>
+                              {controlDataSelect(elem.dataArrayInitial).map(
+                                (item) => (
+                                  <Dropdown.Item
+                                    key={elem.id}
+                                    onClick={() =>
+                                      generationInput(elem, {
+                                        title: item.title,
+                                      })
+                                    }
+                                  >
+                                    {item.title}
+                                  </Dropdown.Item>
+                                )
+                              )}
+                            </Dropdown>
+                          </Whisper>
+                        )}
                     </span>
                     <input
                       type="text"
@@ -1730,16 +1799,6 @@ const AuctionTransportFinance = ({
                       }
                       disabled={consrolDisabled()}
                     />
-                    {/* {!addDesabled() && (
-            <button
-              style={{ display: !statusFinance ? 'block' : 'none' }}
-              type="button"
-              className="addNewInput addNewInput--block"
-              onClick={() => handleToggle('right')}
-            >
-              <More style={{ width: '10px', height: '10px' }} />
-            </button>
-          )} */}
 
                     <select
                       value={elem.carrier}
@@ -1752,10 +1811,7 @@ const AuctionTransportFinance = ({
                       }}
                       disabled={consrolDisabled()}
                     >
-                      {(elem.dataArrayInitial == 1
-                        ? carrierArray
-                        : arrayPort
-                      ).map((item, i) => {
+                      {controlArray(elem.dataArrayInitial).map((item, i) => {
                         return (
                           <option
                             key={item.id}
@@ -1764,9 +1820,7 @@ const AuctionTransportFinance = ({
                             //   elem.id === 0 || (elem.id === 3 && statusMoney)
                             // }
                           >
-                            {elem.dataArrayInitial == 1
-                              ? item.title
-                              : item.label}
+                            {controlTitle(elem.dataArrayInitial, item)}
                           </option>
                         )
                       })}
@@ -1829,4 +1883,4 @@ AuctionTransportFinance.propTypes = {
   shortInfoArray: PropTypes.object,
 }
 
-export default AuctionTransportFinance
+export default memo(AuctionTransportFinance)

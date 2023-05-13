@@ -11,7 +11,7 @@ const RatesControl = ({ nameRates, currentRates, dataArray }) => {
   const pathUrl = document.location.pathname.split('/')
   const [viewControler, setViewControler] = useState([])
   const { nameRatesLink } = useParams()
-  console.log(nameRatesLink)
+
   useEffect(
     () =>
       window.sessionStorage.getItem('access_rights') !== 'null' &&

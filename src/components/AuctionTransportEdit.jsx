@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect } from 'react'
-import { ToastContainer, toast } from 'react-toastify'
+import React, { useState, useContext, useEffect, memo } from 'react'
+
 import 'react-toastify/dist/ReactToastify.css'
 
 import { useParams } from 'react-router-dom'
@@ -111,7 +111,7 @@ const AuctionTransportEdit = ({
         dispatch(showLoder({ sealines: 0 }))
       })
       .catch((err) => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ sealines: 0 }))
       })
   }, [])
@@ -302,11 +302,12 @@ const AuctionTransportEdit = ({
       .then((res) => {
         getDataInfo()
         getShortInfo()
-        toast.success('Информация обновлена!')
+
+        state.createNotification('Информация обновлена!', 'success')
         dispatch(showLoder({ editAuctionAuto: 0 }))
       })
       .catch((err) => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ editAuctionAuto: 0 }))
       })
   }
@@ -356,7 +357,6 @@ const AuctionTransportEdit = ({
   return (
     <div className="itemShipping">
       <form onSubmit={editAuctionAuto}>
-        <ToastContainer />
         <h2>Транспорт</h2>
         <label>
           <span>Статус перевозки</span>
@@ -615,4 +615,4 @@ AuctionTransportEdit.propTypes = {
   getShortInfo: PropTypes.func,
 }
 
-export default AuctionTransportEdit
+export default memo(AuctionTransportEdit)

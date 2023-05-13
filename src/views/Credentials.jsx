@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react'
 import { Table, Column, HeaderCell, Cell } from 'rsuite-table'
 
 import { Edit, Trash, Check, Close, Unvisible } from '@rsuite/icons'
-import { ToastContainer, toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
 import nextId from 'react-id-generator'
 import { Pagination, Modal, Checkbox } from 'rsuite'
@@ -93,7 +93,7 @@ const Credentials = (props) => {
     if (btnShow.length > 0) {
       const result = btnShow.find((elem) => elem.status)
 
-      result && setCurrentValue(result.name)
+      result && setCurrentValue(result.code)
     }
   }, [btnShow])
 
@@ -107,7 +107,7 @@ const Credentials = (props) => {
         dispatch(showLoder({ offices: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ offices: 0 }))
       })
   }, [])
@@ -159,7 +159,7 @@ const Credentials = (props) => {
         dispatch(showLoder({ auctions: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ auctions: 0 }))
       })
   }, [])
@@ -167,7 +167,7 @@ const Credentials = (props) => {
   useEffect(() => {
     if (auctionArray.length > 0 && currentValue) {
       const idAuction = auctionArray.find((elem) =>
-        elem.name === currentValue ? elem.id : null
+        elem.code === currentValue ? elem.id : null
       )
       setIdAuctions(idAuction)
     }
@@ -203,9 +203,9 @@ const Credentials = (props) => {
     // setDataCurrnetClick('')
   }
 
-  const chooseItem = (id) => {
+  const chooseItem = (id, country) => {
     const newArr = btnShow.map((item) => {
-      return item.name === id
+      return item.name === id && item.country.name_ru === country
         ? { ...item, status: true }
         : { ...item, status: false }
     })
@@ -247,6 +247,7 @@ const Credentials = (props) => {
         for (const key in res.credentials) {
           if (idAuctions.code === key) {
             const filterActive = res.credentials[key].filter((el) => el.active)
+
             setDataMaster(
               res.credentials[key].length > 0
                 ? res.credentials[key].slice(limit * (page - 1), limit * page)
@@ -274,7 +275,7 @@ const Credentials = (props) => {
         dispatch(showLoder({ getDataTable: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ getDataTable: 0 }))
       })
   }
@@ -302,14 +303,14 @@ const Credentials = (props) => {
     postRequest('/api/v1/credentials', paramsAccess)
       .then((res) => {
         if (res.status === 'success') {
-          toast.success('Доступ успешно добавлен!')
+          state.createNotification('Доступ успешно добавлен!', 'success')
           reset()
           getDataTable()
           dispatch(showLoder({ createAccessAdd: 0 }))
         }
       })
       .catch((err) => {
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
         dispatch(showLoder({ createAccessAdd: 0 }))
       })
   }
@@ -337,13 +338,13 @@ const Credentials = (props) => {
     putRequest(`/api/v1/credentials/${editId}`, paramsAccess)
       .then((res) => {
         if (res.status === 'success') {
-          toast.success('Доступ успешно назначен!')
+          state.createNotification('Успешно выполнено!', 'success')
           getDataTable()
           dispatch(showLoder({ editCredential: 0 }))
         }
       })
       .catch((err) => {
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
         dispatch(showLoder({ editCredential: 0 }))
       })
   }
@@ -352,14 +353,14 @@ const Credentials = (props) => {
     dispatch(showLoder({ remove: 1 }))
     postRequest(`/api/v1/credentials/${idCred}/unlink`, { users: [+idUser] })
       .then((res) => {
-        toast.success('Доступ успешно отвязан!')
+        state.createNotification('Доступ успешно отвязан!', 'success')
         getDataTable()
         dispatch(showLoder({ remove: 0 }))
         close()
       })
 
       .catch((err) => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ remove: 0 }))
       })
   }
@@ -420,7 +421,7 @@ const Credentials = (props) => {
     }
 
     if (controlUsers.length > 0) {
-      toast.error('Доступ уже был добавлен!')
+      state.createNotification('Доступ уже был добавлен!', 'error')
     } else {
       dispatch(showLoder({ credentials: 1 }))
       putRequest(
@@ -429,13 +430,13 @@ const Credentials = (props) => {
       )
         .then((res) => {
           if (res.status === 'success') {
-            toast.success('Доступ успешно назначен!')
+            state.createNotification('Доступ успешно назначен!', 'success')
             getDataTable()
             dispatch(showLoder({ credentials: 0 }))
           }
         })
         .catch((err) => {
-          toast.error('Проверьте веденные данные!')
+          state.createNotification('Проверьте веденные данные!', 'error')
           dispatch(showLoder({ credentials: 0 }))
         })
     }
@@ -482,7 +483,7 @@ const Credentials = (props) => {
         dispatch(showLoder({ countries: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ countries: 0 }))
       })
   }, [])
@@ -573,7 +574,7 @@ const Credentials = (props) => {
         dispatch(showLoder({ searchRequest: 0 }))
       })
       .catch((err) => {
-        toast.error('Не найдено!')
+        state.createNotification('Не найдено!', 'error')
         setDataTableFilter([])
         dispatch(showLoder({ searchRequest: 0 }))
       })
@@ -1305,7 +1306,6 @@ const Credentials = (props) => {
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
       {/* <Animation.Slide
         unmountOnExit
         transitionAppear
@@ -1504,14 +1504,14 @@ const Credentials = (props) => {
                 className="switcher-btn"
                 style={{ display: btnShow.length > 0 ? 'flex' : 'none' }}
               >
-                {btnShow.map((item) => {
+                {btnShow.map(({ id, name, country, status }) => {
                   return (
                     <span
-                      key={item.id}
-                      onClick={() => chooseItem(item.name)}
-                      className={item.status ? 'active' : item.name}
+                      key={id}
+                      onClick={() => chooseItem(name, country.name_ru)}
+                      className={status ? 'active' : name}
                     >
-                      {item.name}
+                      {name + ' / ' + country.name_ru}
                     </span>
                   )
                 })}

@@ -2,7 +2,6 @@ import React, { useState, useContext } from 'react'
 
 import 'rsuite-table/dist/css/rsuite-table.css'
 
-import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 import { useNavigate } from 'react-router-dom'
@@ -12,7 +11,7 @@ import { postRequest } from '../base/api-request'
 import { showLoder } from '../reducers/actions'
 import ContextApp from '../context/contextApp.js'
 
-const AgentAddProfile = (props) => {
+const AgentAddProfile = () => {
   const [nameAgent, setNameAgent] = useState('')
   const [addressAgent, setAddressAgent] = useState('')
   const [contactAgent, setContactAgent] = useState('')
@@ -38,20 +37,19 @@ const AgentAddProfile = (props) => {
 
     postRequest('/api/v1/partners', params)
       .then(() => {
-        toast.success('Посредник успешно добавлен!')
+        state.createNotification('Успешно выполнено!', 'success')
         navigate(-1)
 
         dispatch(showLoder({ createAgent: 0 }))
       })
       .catch((err) => {
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
         dispatch(showLoder({ createAgent: 0 }))
       })
   }
 
   return (
     <div className="itemContainer itemContainer--agentAdd">
-      <ToastContainer />
       <div className="itemContainer-inner">
         <div
           className="top-item"

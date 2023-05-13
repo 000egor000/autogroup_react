@@ -1,4 +1,5 @@
-import { dataTargetLink } from './const'
+// import { dataTargetLink } from './const'
+import { toast } from 'react-toastify'
 
 const getLinkType = (val) => {
   const nameTypeRus = (item) => {
@@ -161,12 +162,15 @@ const titleCurrentLink = (val) => {
 
     case '/agent':
       return 'Посредники'
+    case '/listOfCountries':
+      return 'Список стран'
+
     case '/carrier':
       return 'Перевозчик'
     case '/carter':
       return 'Перевозчики'
 
-    case '/credentials/copart/open':
+    case '/credentials':
       return 'Назначение доступов'
 
     case '/services/brands-models':
@@ -188,6 +192,8 @@ const titleCurrentLink = (val) => {
 
     case '/arhivePreBid':
       return 'Архив'
+    case '/portOfLoading':
+      return 'Порт погрузки'
 
     case '/setting':
       return 'Общие настройки'
@@ -198,16 +204,34 @@ const titleCurrentLink = (val) => {
       return 'Порт назначения (port of destination)'
     case '/finalDestination/variant/':
       return 'Место назначения (final destination)'
-    case '/listAutions':
+    case '/listofAutions':
       return 'Аукционы'
     case '/paymentMethod':
       return ' Способ оплаты'
+
+    case '/ports':
+      return 'Список портов'
+    case '/counterparty':
+      return 'Список контрагентов'
 
     default:
       switch (val.split('/')[1]) {
         case 'agentProfile':
         case 'carterProfile':
           return ' Профиль'
+
+        case 'costs':
+          switch (val.split('/')[2]) {
+            case 'destination':
+              return 'Затраты места назначения'
+
+            case 'destination-port':
+              return 'Затраты порта назначения'
+            case 'purchase-point':
+              return 'Затраты места покупок'
+            case 'loading-port':
+              return 'Затраты порта погрузки'
+          }
 
         case 'agentAddProfile':
           return 'Добавить посредника'
@@ -361,6 +385,8 @@ const controlWidth = (expanded, openKeys) => {
       if (openKeys.includes('5-1')) {
         width = 410
       }
+    } else if (openKeys.includes('8-1')) {
+      width = 450
     } else if (
       openKeys.includes('8') ||
       openKeys.includes('7') ||
@@ -375,6 +401,11 @@ const controlWidth = (expanded, openKeys) => {
 }
 
 const viewPorts = (val) => {
+  let res = []
+  if (val && val.length > 0) val.map((el) => res.push(el.name))
+  return res.length > 0 ? res.join(', ') : '-'
+}
+const viewDestinations = (val) => {
   let res = []
   if (val && val.length > 0) val.map((el) => res.push(el.title))
   return res.length > 0 ? res.join(', ') : '-'
@@ -412,6 +443,17 @@ const connect = (val) => {
   } else return '-'
 }
 
+const connectTitle = (val) => {
+  let res = []
+  if (val.length > 0) {
+    val.map((item) => {
+      if (!res.includes(item.destination.title))
+        res.push(`${item.destination.title}`)
+    })
+
+    return res.join(',')
+  } else return '-'
+}
 const controlCheck = (pdpSelectDefault, pdpSelect) => {
   let res
   if (pdpSelectDefault.length > pdpSelect.length) {
@@ -429,6 +471,61 @@ const controlIdPdp = (dataCarters) => {
     findfindArrayPdt.push(item.id)
   })
   return findfindArrayPdt.length > 0 ? findfindArrayPdt : []
+}
+const controlIdDestination = (dataCarters) => {
+  let findfindArrayPdt = []
+  dataCarters.destinationPlaceDestinations.map((item) => {
+    findfindArrayPdt.push(item.destination_id)
+  })
+  return findfindArrayPdt.length > 0 ? findfindArrayPdt : []
+}
+
+const createNotification = (message, type) => {
+  const options = {
+    position: 'top-right',
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+  }
+  switch (type) {
+    case 'success':
+      toast.success(message, options)
+      break
+    case 'warning':
+      toast.warn(message, options)
+      break
+    case 'error':
+      toast.error(message, options)
+      break
+    case 'info':
+      toast.info(message, options)
+      break
+    default:
+      toast.info(message, options)
+      break
+  }
+}
+const controlTitle = (id, item) => {
+  if (item) {
+    switch (id) {
+      case 1:
+        return item.title
+
+      case 2:
+        return item.name
+
+      case 3:
+        return item.name
+      case 4:
+        return item.name
+
+      default:
+        break
+    }
+  }
 }
 
 export {
@@ -449,4 +546,9 @@ export {
   controlCheck,
   controlIdPdp,
   dataViewInland,
+  createNotification,
+  viewDestinations,
+  connectTitle,
+  controlTitle,
+  controlIdDestination,
 }

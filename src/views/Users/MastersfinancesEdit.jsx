@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Link } from 'react-router-dom'
 import { Toggle } from 'rsuite'
@@ -62,7 +61,7 @@ const MastersfinancesEdit = (props) => {
         dispatch(showLoder({ rights: 0 }))
       })
       .catch((err) => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ rights: 0 }))
       })
   }, [])
@@ -94,7 +93,7 @@ const MastersfinancesEdit = (props) => {
         dispatch(showLoder({ finances: 0 }))
       })
       .catch((err) => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ finances: 0 }))
       })
   }, [])
@@ -171,7 +170,10 @@ const MastersfinancesEdit = (props) => {
         dispatch(showLoder({ verificationEmail: 0 }))
       })
       .catch((err) => {
-        toast.error('Пользователь с таким email уже создан!')
+        state.createNotification(
+          'Пользователь с таким email уже создан!',
+          'error'
+        )
         refFocus.current.style.outline = 'none'
         refFocus.current.style.border = 'solid'
         refFocus.current.style.borderWidth = '1px'
@@ -208,12 +210,13 @@ const MastersfinancesEdit = (props) => {
 
     putRequest(`/api/v1/finances/${id}`, params)
       .then((res) => {
-        toast.success('Пользователь успешно обновлен!')
+        state.createNotification('Пользователь успешно обновлен!', 'success')
+
         history(-1)
         dispatch(showLoder({ masterCreateForm: 0 }))
       })
       .catch((err) => {
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
         dispatch(showLoder({ masterCreateForm: 0 }))
       })
   }
@@ -256,14 +259,14 @@ const MastersfinancesEdit = (props) => {
   //   postRequest('/api/v1/user/password/update', paramsUpdatePassword)
   //     .then((res) => {
   //       if (res.status === 'success') {
-  //         toast.success('Пароль успешно обновлен!')
+  //
   //         setPassword('')
   //         setPassword_confirmation('')
   //         dispatch(hide())
   //       }
   //     })
   //     .catch((err) => {
-  //       toast.error('Что-то пошло не так!')
+  //     state.createNotification('Что-то пошло не так!', 'error')
   //       dispatch(hide())
   //     })
   // }
@@ -273,20 +276,26 @@ const MastersfinancesEdit = (props) => {
         dispatch(showLoder({ password: 1 }))
         postRequest('/api/v1/user/password/update', paramsUpdatePassword)
           .then((res) => {
-            toast.success('Пароль успешно обновлен!')
+            state.createNotification('Пароль успешно обновлен!', 'success')
             setPassword('')
             setPassword_confirmation('')
             dispatch(showLoder({ password: 0 }))
           })
           .catch((err) => {
-            toast.error('Что-то пошло не так!')
+            state.createNotification('Что-то пошло не так!', 'error')
             dispatch(showLoder({ password: 0 }))
           })
       } else {
-        toast.error('Пароль должен содержать не менее 8 символов!')
+        state.createNotification(
+          'Пароль должен содержать не менее 8 символов!!',
+          'error'
+        )
       }
     } else {
-      toast.error('Проверьте введенные данные, пароли не совпадают!')
+      state.createNotification(
+        'Проверьте введенные данные, пароли не совпадают',
+        'error'
+      )
     }
   }
 
@@ -322,7 +331,6 @@ const MastersfinancesEdit = (props) => {
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
       <div className="itemContainer-inner">
         <div className="top-item " style={{ paddingLeft: state.width }}>
           <div className="btnTransport" style={{ justifyContent: 'left' }}>
@@ -523,7 +531,7 @@ const MastersfinancesEdit = (props) => {
                       value="Обновить пароль системы"
                     />
                     {title !== 'Офис' && title !== 'Дилер' && (
-                      <Link className="btn-blue" to="/credentials/copart/open">
+                      <Link className="btn-blue" to="/credentials">
                         <span>Доступы к аукционам</span>
                       </Link>
                     )}

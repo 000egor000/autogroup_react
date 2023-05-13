@@ -6,9 +6,10 @@ import { Edit, Trash } from '@rsuite/icons'
 import { Pagination, SelectPicker, CheckPicker, Modal } from 'rsuite'
 import 'rsuite-table/dist/css/rsuite-table.css'
 
-import { ToastContainer, toast } from 'react-toastify'
+// import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { viewPorts } from './../helper'
+import NoData from './../components/NoData'
 
 import {
   postRequest,
@@ -22,6 +23,7 @@ import ContextApp from '../context/contextApp.js'
 
 const Location = (props) => {
   const [dataMaster, setDataMaster] = useState([])
+  const [dataMasterInitial, setDataMasterInitial] = useState([])
   const [dataPorts, setDataPorts] = useState([])
   const [dataAuctions, setDataAuctions] = useState([])
   const partsLimit = [20, 50, 100]
@@ -40,9 +42,10 @@ const Location = (props) => {
   const [isModalShowEdit, setIsModalShowEdit] = useState(false)
   const [isModalRemove, setIsModalRemove] = useState(false)
   const [locationValue, setLocationValue] = useState('')
-  const [selectValuePorts, setSelectValuePorts] = useState(1)
+  const [selectValuePorts, setSelectValuePorts] = useState([])
   const [selectValueAuctions, setSelectValueAuctions] = useState(1)
   const [locationsSelect, setLocationsSelect] = useState('')
+  const [portSearch, setPortSearch] = useState('')
   const [locationsArray, setLocationsArray] = useState([])
 
   const [viewControler, setViewControler] = useState([])
@@ -50,6 +53,7 @@ const Location = (props) => {
   const [limit, setLimit] = useState(20)
   const [page, setPage] = useState(1)
   const [itemIsRemove, setItemIsRemove] = useState('')
+  // const [flag, setflag] = useState(false)
 
   const { state, dispatch } = useContext(ContextApp)
 
@@ -60,14 +64,15 @@ const Location = (props) => {
     deleteRequest(`/api/v1/locations/${id}`)
       .then((res) => {
         if (res.status === 'success') {
-          toast.success('Локация успешно удален!')
+          state.createNotification('Успешно удалено!', 'success')
+
           getArray()
           getPorts()
           dispatch(showLoder({ removeLocations: 0 }))
         }
       })
       .catch((err) => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ removeLocations: 0 }))
       })
   }
@@ -79,12 +84,10 @@ const Location = (props) => {
     })
       .then((res) => {
         setDataPorts(res.ports)
-        setSelectValuePorts(res.ports[0].id)
+        // setSelectValuePorts(res.ports[0].id)
         dispatch(showLoder({ getPorts: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
-
         dispatch(showLoder({ getPorts: 0 }))
       })
   }
@@ -100,7 +103,6 @@ const Location = (props) => {
         dispatch(showLoder({ getAuctions: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
         dispatch(showLoder({ getAuctions: 0 }))
       })
   }
@@ -112,6 +114,7 @@ const Location = (props) => {
     })
       .then((res) => {
         setDataMaster(res.locations)
+        setDataMasterInitial(res.locations)
         setPaginationValue(res.pagination)
         setLoadingShow(false)
         dispatch(showLoder({ getArray: 0 }))
@@ -133,49 +136,71 @@ const Location = (props) => {
       .catch((err) => {
         setLocationsArray([])
         dispatch(showLoder({ getAllArray: 0 }))
-        // toast.error('Что-то пошло не так!')
       })
   }
 
-  useEffect(() => {
-    if (locationsSelect) {
-      dispatch(showLoder({ locationsSearch: 1 }))
-      const nameLocation = locationsArray.find(
-        (el) => el.id === locationsSelect
-      )
+  // useEffect(() => {
+  //   getSearchlocations()
+  // }, [locationsSelect, portSearch, page])
 
-      postRequest(`/api/v1/locations/search`, {
-        location_name: nameLocation.name,
+  const getSearchlocations = () => {
+    dispatch(showLoder({ locationsSearch: 1 }))
+    let nameLocation = locationsArray.find((el) => el.id === locationsSelect)
+
+    postRequest(`/api/v1/locations/search?page=${page}`, {
+      location_id: nameLocation ? nameLocation.id : null,
+      port_id: portSearch,
+    })
+      .then((res) => {
+        setDataMaster(res.locations)
+        setDataMasterInitial(res.locations)
+        setPaginationValue(res.pagination)
+        dispatch(showLoder({ locationsSearch: 0 }))
       })
-        .then((res) => {
-          setDataMaster(res.locations)
-          dispatch(showLoder({ locationsSearch: 0 }))
-        })
-        .catch((err) => {
-          setDataMaster([])
-          dispatch(showLoder({ locationsSearch: 0 }))
-          // toast.error('Что-то пошло не так!')
-        })
-    } else {
-      getArray()
-    }
-  }, [locationsSelect])
+      .catch((err) => {
+        setDataMaster([])
+        dispatch(showLoder({ locationsSearch: 0 }))
+      })
+  }
+  // Фильтр на странице (фронт)
+  // useEffect(() => {
+  //   if (portSearch) {
+  //     const filterArr = dataMasterInitial.filter(
+  //       (items) => +items.ports[0]['id'] === +portSearch
+  //     )
+  //     return setDataMaster(filterArr.length > 0 ? filterArr : [])
+  //   } else {
+  //     setDataMaster(dataMasterInitial)
+  //   }
+  // }, [portSearch])
 
   useEffect(() => {
-    getArray()
     getAllArray()
     getPorts()
     getAuctions()
-  }, [page, limit])
+    getArray()
+  }, [])
 
-  const showIdLocation = (name, ports, auction_id, id, copart_name) => {
+  useEffect(() => {
+    if (locationsSelect || portSearch) {
+      getSearchlocations()
+    } else {
+      getArray()
+    }
+  }, [locationsSelect, portSearch, page, limit])
+
+  useEffect(() => {
+    setPage(1)
+  }, [locationsSelect, portSearch])
+
+  const showIdLocation = ({ name, ports, auction, id, copart_name }) => {
     let resIdPorts = []
     ports.map((el) => resIdPorts.push(el.id))
     setLocationCopartEditValue(copart_name ? copart_name : '')
     setLocationEditValue(name ? name : '')
 
     setSelectValueEditPorts(resIdPorts ? resIdPorts : '')
-    setSelectValueEditAuctions(auction_id ? auction_id : '')
+    setSelectValueEditAuctions(auction.id ? auction.id : '')
     setIdEdit(id ? id : '')
     setIsModalShowEdit(!isModalShowEdit)
   }
@@ -200,7 +225,7 @@ const Location = (props) => {
     setIsModalShow(false)
     postRequest('/api/v1/locations', params)
       .then(() => {
-        toast.success('Локация успешно добавлена!')
+        state.createNotification('Успешно выполнено!', 'success')
         getArray()
         getPorts()
         close()
@@ -208,7 +233,7 @@ const Location = (props) => {
         dispatch(showLoder({ createLocation: 0 }))
       })
       .catch((err) => {
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
         dispatch(showLoder({ createLocation: 0 }))
       })
   }
@@ -218,14 +243,15 @@ const Location = (props) => {
     setIsModalShowEdit(false)
     putRequest(`/api/v1/locations/${idEdit}`, paramsEdit)
       .then(() => {
-        toast.success('Локация успешно изменена!')
+        state.createNotification('Успешно выполнено!', 'success')
         getArray()
         getPorts()
         close()
         dispatch(showLoder({ editLocation: 0 }))
       })
       .catch((err) => {
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
+
         dispatch(showLoder({ editLocation: 0 }))
       })
   }
@@ -271,9 +297,15 @@ const Location = (props) => {
       : bool
   }
 
+  const styleTopItem = {
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    padding: `10px 10px 0 ${state.width}`,
+  }
+  const styleBottomItemFooter = { paddingLeft: state.width, color: 'black' }
+
   return (
     <div className="itemContainer">
-      <ToastContainer />
       <div className="modal-container">
         <Modal
           backdrop={'static'}
@@ -318,42 +350,6 @@ const Location = (props) => {
           <Modal.Body>
             <form onSubmit={editLocation}>
               {/* <h2>Редактировать локацию</h2> */}
-
-              <label>
-                <span>Локация</span>
-                <input
-                  className=""
-                  type="text"
-                  value={locationEditValue}
-                  onChange={(e) => setLocationEditValue(e.target.value)}
-                  placeholder="Локация"
-                  required
-                />
-              </label>
-
-              <label>
-                <span>Локация Copart</span>
-                <input
-                  className=""
-                  type="text"
-                  value={locationCopartEditValue}
-                  onChange={(e) => setLocationCopartEditValue(e.target.value)}
-                  placeholder="Локация Copart"
-                  required
-                />
-              </label>
-              <div className="customCheckPicker">
-                <span className="titleCheckPicker">Порт</span>
-
-                <CheckPicker
-                  value={selectValueEditPorts}
-                  onChange={setSelectValueEditPorts}
-                  data={dataPorts.map((item) => {
-                    return { label: item.name, value: item.id }
-                  })}
-                />
-              </div>
-
               <label>
                 <span>Аукцион</span>
                 <select
@@ -371,6 +367,42 @@ const Location = (props) => {
                   })}
                 </select>
               </label>
+              <label>
+                <span>Локация страны покупки</span>
+                <input
+                  className=""
+                  type="text"
+                  value={locationEditValue}
+                  onChange={(e) => setLocationEditValue(e.target.value)}
+                  placeholder="Локация страны покупки"
+                  required
+                />
+              </label>
+              {locationEditValue && (
+                <label>
+                  <span>Локация аукциона</span>
+                  <input
+                    className=""
+                    type="text"
+                    value={locationCopartEditValue}
+                    onChange={(e) => setLocationCopartEditValue(e.target.value)}
+                    placeholder="Локация аукциона"
+                    required
+                  />
+                </label>
+              )}
+
+              <div className="customCheckPicker">
+                <span className="titleCheckPicker">Порт погрузки</span>
+
+                <CheckPicker
+                  value={selectValueEditPorts}
+                  onChange={setSelectValueEditPorts}
+                  data={dataPorts.map((item) => {
+                    return { label: item.name, value: item.id }
+                  })}
+                />
+              </div>
 
               <button type="submit" className="btn-success-preBid">
                 Подтвердить
@@ -393,57 +425,6 @@ const Location = (props) => {
           <Modal.Body>
             <form onSubmit={createLocation}>
               {/* <h2>Добавить локацию</h2> */}
-
-              <label>
-                <span>Локация</span>
-                <input
-                  className=""
-                  type="text"
-                  value={locationValue}
-                  onChange={(e) => setLocationValue(e.target.value)}
-                  placeholder="Локация"
-                  required
-                />
-              </label>
-
-              <label>
-                <span>Локация Copart</span>
-                <input
-                  className=""
-                  type="text"
-                  value={locationCopartValue}
-                  onChange={(e) => setLocationCopartValue(e.target.value)}
-                  placeholder="Локация Copart"
-                  required
-                />
-              </label>
-              {/* <label>
-								<span>Порт</span>
-								<select
-									value={selectValuePorts}
-									onChange={(event) => setSelectValuePorts(event.target.value)}
-								>
-									{dataPorts.map((elem) => {
-										return (
-											<option key={elem.id} value={elem.id}>
-												{elem.name}
-											</option>
-										)
-									})}
-								</select>
-							</label> */}
-
-              <div className="customCheckPicker">
-                <span className="titleCheckPicker">Порт</span>
-
-                <CheckPicker
-                  value={selectValueEditPorts}
-                  onChange={setSelectValueEditPorts}
-                  data={dataPorts.map((item) => {
-                    return { label: item.name, value: item.id }
-                  })}
-                />
-              </div>
               <label>
                 <span>Аукцион</span>
                 <select
@@ -461,6 +442,58 @@ const Location = (props) => {
                   })}
                 </select>
               </label>
+              <label>
+                <span>Локация страны покупки</span>
+                <input
+                  className=""
+                  type="text"
+                  value={locationValue}
+                  onChange={(e) => setLocationValue(e.target.value)}
+                  placeholder="Локация страны покупки"
+                  required
+                />
+              </label>
+              {locationValue && (
+                <label>
+                  <span>Локация аукциона</span>
+                  <input
+                    className=""
+                    type="text"
+                    value={locationCopartValue}
+                    onChange={(e) => setLocationCopartValue(e.target.value)}
+                    placeholder="Локация аукциона"
+                    required
+                  />
+                </label>
+              )}
+
+              {/* <label>
+								<span>Порт</span>
+								<select
+									value={selectValuePorts}
+									onChange={(event) => setSelectValuePorts(event.target.value)}
+								>
+									{dataPorts.map((elem) => {
+										return (
+											<option key={elem.id} value={elem.id}>
+												{elem.name}
+											</option>
+										)
+									})}
+								</select>
+							</label> */}
+
+              <div className="customCheckPicker">
+                <span className="titleCheckPicker">Порт погрузки</span>
+
+                <CheckPicker
+                  value={selectValuePorts}
+                  onChange={setSelectValuePorts}
+                  data={dataPorts.map((item) => {
+                    return { label: item.name, value: item.id }
+                  })}
+                />
+              </div>
 
               <button type="submit" className="btn-success-preBid">
                 Подтвердить
@@ -471,26 +504,10 @@ const Location = (props) => {
       </div>
 
       <div className="itemContainer-inner">
-        <div
-          className="top-item "
-          style={{
-            paddingLeft: state.width,
-            justifyContent: 'space-between',
-            alignItems: 'inherit',
-          }}
-        >
-          <div
-            style={{
-              marginBottom: '30px',
-              display: 'flex',
-              flexDirection: 'column',
-              visibility: locationsArray.length > 0 ? 'visible' : 'none',
-            }}
-          >
-            <div>
-              <label htmlFor="selectCustomId">Название площадки</label>
-            </div>
-            <div>
+        <div className="top-item " style={styleTopItem}>
+          <div className="groupSearch">
+            <div className="customCheckPicker">
+              {/* <label htmlFor="selectCustomId">Название площадки</label> */}
               <SelectPicker
                 id="selectCustomId"
                 data={locationsArray}
@@ -502,8 +519,22 @@ const Location = (props) => {
                 loading={!locationsArray.length}
               />
             </div>
+            <div className="customCheckPicker">
+              {/* <label htmlFor="selectCustomId">Порт</label> */}
+
+              <SelectPicker
+                id="selectCustomId"
+                data={dataPorts}
+                valueKey="id"
+                labelKey="name"
+                value={portSearch}
+                onChange={setPortSearch}
+                placeholder="Выберите порт"
+                loading={!dataPorts.length}
+              />
+            </div>
           </div>
-          <div className="btnTransport" style={{ marginTop: '10px' }}>
+          <div className="btnTransport">
             <button
               className="btnInfo"
               onClick={() => setIsModalShow(!isModalShow)}
@@ -512,10 +543,7 @@ const Location = (props) => {
             </button>
           </div>
         </div>
-        <div
-          className="bottom-itemFooter"
-          style={{ paddingLeft: state.width, color: 'black' }}
-        >
+        <div className="bottom-itemFooter" style={styleBottomItemFooter}>
           {dataMaster.length > 0 ? (
             <div className="Table">
               <Table
@@ -527,20 +555,13 @@ const Location = (props) => {
                 loading={loadingShow}
               >
                 <Column align="center" fixed flexGrow={1}>
-                  <HeaderCell>Локация</HeaderCell>
+                  <HeaderCell>Локация страны покупки</HeaderCell>
                   <Cell>
                     {(rowData, rowIndex) => {
                       return (
                         <span
                           onClick={() => {
-                            viewBlock(109) &&
-                              showIdLocation(
-                                rowData.name,
-                                rowData.ports,
-                                rowData.auction.id,
-                                rowData.id,
-                                rowData.copart_name
-                              )
+                            viewBlock(109) && showIdLocation(rowData)
                           }}
                         >
                           {<span>{rowData.name}</span>}
@@ -551,20 +572,13 @@ const Location = (props) => {
                 </Column>
 
                 <Column align="center" fixed flexGrow={1}>
-                  <HeaderCell>Локация Copart</HeaderCell>
+                  <HeaderCell>Локация аукциона</HeaderCell>
                   <Cell>
                     {(rowData, rowIndex) => {
                       return (
                         <span
                           onClick={() => {
-                            viewBlock(109) &&
-                              showIdLocation(
-                                rowData.name,
-                                rowData.ports,
-                                rowData.auction.id,
-                                rowData.id,
-                                rowData.copart_name
-                              )
+                            viewBlock(109) && showIdLocation(rowData)
                           }}
                         >
                           {<span>{rowData.copart_name}</span>}
@@ -575,20 +589,13 @@ const Location = (props) => {
                 </Column>
 
                 <Column align="center" fixed flexGrow={1}>
-                  <HeaderCell>Порт</HeaderCell>
+                  <HeaderCell>Порт погрузки</HeaderCell>
                   <Cell>
                     {(rowData, rowIndex) => {
                       return (
                         <span
                           onClick={() => {
-                            viewBlock(109) &&
-                              showIdLocation(
-                                rowData.name,
-                                rowData.ports,
-                                rowData.auction.id,
-                                rowData.id,
-                                rowData.copart_name
-                              )
+                            viewBlock(109) && showIdLocation(rowData)
                           }}
                         >
                           {viewPorts(rowData.ports)}
@@ -604,14 +611,7 @@ const Location = (props) => {
                       return (
                         <span
                           onClick={() => {
-                            viewBlock(109) &&
-                              showIdLocation(
-                                rowData.name,
-                                rowData.ports,
-                                rowData.auction.id,
-                                rowData.id,
-                                rowData.copart_name
-                              )
+                            viewBlock(109) && showIdLocation(rowData)
                           }}
                         >
                           {rowData.auction.name}
@@ -632,13 +632,7 @@ const Location = (props) => {
                               {viewBlock(109) && (
                                 <button
                                   onClick={() => {
-                                    showIdLocation(
-                                      rowData.name,
-                                      rowData.ports,
-                                      rowData.auction.id,
-                                      rowData.id,
-                                      rowData.copart_name
-                                    )
+                                    showIdLocation(rowData)
                                   }}
                                 >
                                   <Edit />
@@ -663,13 +657,13 @@ const Location = (props) => {
                   </Cell>
                 </Column>
               </Table>
-              {dataMaster.length >= limit ? (
+              {dataMaster.length > 0 && (
                 <div className="paginationBlock">
                   <Pagination
                     prev
                     next
-                    // first
-                    // last
+                    first
+                    last
                     ellipsis
                     // boundaryLinks
                     maxButtons={5}
@@ -683,12 +677,10 @@ const Location = (props) => {
                     onChangeLimit={handleChangeLimit}
                   />
                 </div>
-              ) : (
-                ''
               )}
             </div>
           ) : (
-            'Нет локаций!'
+            <NoData />
           )}
         </div>
       </div>

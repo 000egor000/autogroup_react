@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getRequest } from '../base/api-request'
+import NoData from './NoData'
 
 import { Pagination } from 'rsuite'
 // import PropTypes from 'prop-types'
@@ -322,10 +323,10 @@ const WalletsInner = ({ dataAray, nameAndSecondName, titleRates }) => {
             </div>
           </React.Fragment>
         ) : (
-          <span>Нет информации по автомобилю!</span>
+          <NoData />
         )}
       </td>
     </tr>
   )
 }
-export default WalletsInner
+export default memo(WalletsInner)

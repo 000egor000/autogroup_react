@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect, memo } from 'react'
 import { config } from '../config.js'
 
 import { getRequest, getRequestFile } from '../base/api-request'
@@ -79,4 +79,4 @@ AuctionTransportDocumentsDoc.propTypes = {
   invoiceInformationId: PropTypes.number,
 }
 
-export default AuctionTransportDocumentsDoc
+export default memo(AuctionTransportDocumentsDoc)

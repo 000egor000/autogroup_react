@@ -80,13 +80,17 @@ const VatrianView = ({}) => {
         dispatch(showLoder({ carriers: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         setDataArray([])
         dispatch(showLoder({ carriers: 0 }))
       })
   }
 
-  const getPorts = () => setDataArray(arrayPort)
+  const getPorts = () => setDataArray(arrayPort.map(({ id, name }) => ({
+    label: name,
+    value: id,
+  }))
+  )
 
   const getCarter = () => {
     dispatch(showLoder({ getArray: 1 }))
@@ -178,6 +182,7 @@ const VatrianView = ({}) => {
 
     return res ? res.label : ''
   }
+  console.log(conrolActiveRates)
 
   const blockView = (active) => {
     const findCurrent = dataArray.find((item) => item.value == dataSelect)

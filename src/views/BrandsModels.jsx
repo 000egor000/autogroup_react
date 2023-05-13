@@ -3,7 +3,7 @@ import React, { useState, useContext, useEffect } from 'react'
 import ContextApp from '../context/contextApp'
 
 import 'rsuite-table/dist/css/rsuite-table.css'
-import { ToastContainer, toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
 import { AddOutline, CloseOutline } from '@rsuite/icons'
 
@@ -83,7 +83,7 @@ const BrandsModels = (props) => {
 
     postRequest('/api/v1/transport-brand', paramsAddBrand)
       .then((res) => {
-        toast.success('Марка успешно создана!')
+        state.createNotification('Успешно выполнено!', 'success')
         setNewBrands('')
         setShowBlockBrands(!showBlockBrands)
         getArray()
@@ -91,7 +91,7 @@ const BrandsModels = (props) => {
       })
       .catch((err) => {
         dispatch(showLoder({ createFormTransportBrand: 0 }))
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
       })
   }
   const createFormModel = (e) => {
@@ -101,20 +101,20 @@ const BrandsModels = (props) => {
       .then((res) => {
         if (res.status === 'success') {
           getArray()
-          toast.success('Модель успешно создана!')
+
+          state.createNotification('Успешно выполнено!', 'info')
 
           dispatch(showLoder({ createFormModel: 0 }))
         }
       })
       .catch((err) => {
         dispatch(showLoder({ createFormModel: 0 }))
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
       })
   }
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
       <div className="itemContainer-inner">
         <div className="top-item " style={{ paddingLeft: state.width }}>
           <div className="btnTransport"></div>

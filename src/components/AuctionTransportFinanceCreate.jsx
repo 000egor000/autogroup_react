@@ -1,17 +1,18 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, memo } from 'react'
 import { useParams } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css'
 
 import nextId, { setPrefix } from 'react-id-generator'
 import ContextApp from '../context/contextApp'
 import { showLoder } from '../reducers/actions'
-import { ToastContainer, toast } from 'react-toastify'
+
 import { putRequest, getRequest, postRequest } from '../base/api-request'
 import AuctionTransportFinance from './AuctionTransportFinance'
 import AuctionTransportFinanceDrop from './AuctionTransportFinanceDrop'
 import AuctionTransportFinanceTop from './AuctionTransportFinanceTop'
 
 import PropTypes from 'prop-types'
+import { arrayPort } from '../const.js'
 
 const AuctionTransportFinanceCreate = ({
   viewBlock,
@@ -35,8 +36,14 @@ const AuctionTransportFinanceCreate = ({
   const [flagSendReq, setFlagSendReq] = useState(false)
   const [autoInfo, setAutoInfo] = useState({})
   const [dataPriseObject, setDataPriseObject] = useState({})
-  const getToastSucces = (val) => toast.success(val)
-  const getToastError = (val) => toast.error(val)
+
+  const [costsDestinationsArray, setCostsDestinationsArray] = useState([])
+  const [costsPurchasePointsArray, setCostsPurchasePointsArray] = useState([])
+  const [costsDestinationsPortsArray, setCostsDestinationsPortsArray] =
+    useState([])
+  const [costsLoadingPortArray, setCostsLoadingPortArray] = useState([])
+  const [dataCarters, setDataCarters] = useState([])
+  const [dataPorts, setDataPorts] = useState([])
 
   const { dispatch } = useContext(ContextApp)
 
@@ -93,9 +100,33 @@ const AuctionTransportFinanceCreate = ({
 
       .catch((err) => {
         dispatch(showLoder({ auto: 0 }))
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
       })
   }, [])
+
+  const controlArray = (id) => {
+    const { place_destination_id, destination_id } = autoInfo
+    switch (id) {
+      case 1:
+        return carrierArray
+
+      case 2:
+        return dataCarters.filter(({ destinationPlaceDestinations }) =>
+          destinationPlaceDestinations.find(
+            (el) => el.place_destination_id == place_destination_id
+          )
+        )
+
+      case 3:
+        return arrayPort
+
+      case 4:
+        return dataPorts
+
+      default:
+        break
+    }
+  }
 
   const getStartInfo = (val) => {
     dispatch(showLoder({ info: 1 }))
@@ -188,24 +219,25 @@ const AuctionTransportFinanceCreate = ({
         {filterWithStatusTrue.length > 0 ? (
           <AuctionTransportFinanceDrop
             carrierArray={carrierArray}
-            getToastSucces={getToastSucces}
-            getToastError={getToastError}
             initialValue={filterWithStatusTrue}
             financeDateArray={financeDateArray}
+            dataCarters={dataCarters}
             getFinanceArray={getFinanceArray}
             dataResultAecDrop={dataResultAecDrop}
             dataResultAgDrop={dataResultAgDrop}
             viewBlock={viewBlock}
             titleBlock={leftItem}
             controlParamsClear={controlParamsClear}
+            controlDataSelect={controlDataSelect}
+            dataPorts={dataPorts}
+            controlArray={controlArray}
           />
         ) : null}
 
         {filterWithStatusFalse.length > 0 ? (
           <AuctionTransportFinanceDrop
             carrierArray={carrierArray}
-            getToastSucces={getToastSucces}
-            getToastError={getToastError}
+            dataCarters={dataCarters}
             initialValue={filterWithStatusFalse}
             financeDateArray={financeDateArray}
             getFinanceArray={getFinanceArray}
@@ -214,6 +246,9 @@ const AuctionTransportFinanceCreate = ({
             viewBlock={viewBlock}
             titleBlock={rightItem}
             controlParamsClear={controlParamsClear}
+            controlDataSelect={controlDataSelect}
+            dataPorts={dataPorts}
+            controlArray={controlArray}
           />
         ) : null}
 
@@ -222,19 +257,155 @@ const AuctionTransportFinanceCreate = ({
           statusDrop && (
             <AuctionTransportFinanceDrop
               carrierArray={carrierArray}
-              getToastSucces={getToastSucces}
-              getToastError={getToastError}
+              dataCarters={dataCarters}
               initialValue={initialValue}
               financeDateArray={financeDateArray}
               getFinanceArray={getFinanceArray}
+              controlDataSelect={controlDataSelect}
               dataResultAecDrop={dataResultAecDrop}
               viewBlock={viewBlock}
               titleBlock={leftItem}
               controlParamsClear={controlParamsClear}
+              dataPorts={dataPorts}
+              controlArray={controlArray}
             />
           )}
       </React.Fragment>
     )
+  }
+
+  useEffect(() => {
+    getAllArrayDestination()
+    getAllArrayPurchase()
+    getAllArrayDestinationPorts()
+    getAllArrayLoadingPort()
+    getAllPorts()
+
+    getAllCarters()
+  }, [])
+  const getAllArrayDestination = () => {
+    dispatch(showLoder({ getAllArray: 1 }))
+    getRequest(`/api/v1/costs/destination?limit=1000`, {
+      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+    })
+      .then((res) => {
+        const filterDataArray = res.CostDestinations.filter(
+          (item) => item.active
+        )
+
+        setCostsDestinationsArray(filterDataArray)
+        dispatch(showLoder({ getAllArray: 0 }))
+      })
+      .catch((err) => {
+        setCostsDestinationsArray([])
+        dispatch(showLoder({ getAllArray: 0 }))
+        //state.createNotification('Успешно обновлено!', 'error')
+      })
+  }
+  const getAllArrayPurchase = () => {
+    dispatch(showLoder({ getAllArray: 1 }))
+    getRequest(`/api/v1/costs/purchase-point?limit=1000`, {
+      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+    })
+      .then((res) => {
+        const filterDataArray = res.CostPurchasePoints.filter(
+          (item) => item.active
+        )
+        // const resultAll = [{ id: 0, title: 'Выбрать из существующих' }].concat(
+        //   filterDataArray ? filterDataArray : []
+        // )
+        setCostsPurchasePointsArray(filterDataArray)
+        dispatch(showLoder({ getAllArray: 0 }))
+      })
+      .catch((err) => {
+        setCostsPurchasePointsArray([])
+        dispatch(showLoder({ getAllArray: 0 }))
+        //state.createNotification('Успешно обновлено!', 'error')
+      })
+  }
+
+  const getAllCarters = () => {
+    dispatch(showLoder({ getAllCarters: 1 }))
+    getRequest(`/api/v1/carters`, {
+      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+    })
+      .then(({ carters }) => {
+        setDataCarters(carters)
+
+        dispatch(showLoder({ getAllCarters: 0 }))
+      })
+      .catch((err) => {
+        dispatch(showLoder({ getAllCarters: 0 }))
+        setDataCarters([])
+      })
+  }
+  const getAllArrayDestinationPorts = () => {
+    dispatch(showLoder({ getAllArrayDestinationPorts: 1 }))
+    getRequest(`/api/v1/costs/destination-port?limit=1000`, {
+      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+    })
+      .then((res) => {
+        const filterDataArray = res.CostDestinationPorts.filter(
+          (item) => item.active
+        )
+        setCostsDestinationsPortsArray(filterDataArray)
+        dispatch(showLoder({ getAllArrayDestinationPorts: 0 }))
+      })
+      .catch((err) => {
+        setCostsDestinationsPortsArray([])
+        dispatch(showLoder({ getAllArrayDestinationPorts: 0 }))
+        //state.createNotification('Успешно обновлено!', 'error')
+      })
+  }
+  const getAllArrayLoadingPort = () => {
+    dispatch(showLoder({ getAllArray: 1 }))
+    getRequest(`/api/v1/costs/loading-port?limit=1000`, {
+      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+    })
+      .then((res) => {
+        const filterDataArray = res.CostLoadingPorts.filter(
+          (item) => item.active
+        )
+        setCostsLoadingPortArray(filterDataArray)
+        dispatch(showLoder({ getAllArray: 0 }))
+      })
+      .catch((err) => {
+        setCostsLoadingPortArray([])
+        dispatch(showLoder({ getAllArray: 0 }))
+        //state.createNotification('Успешно обновлено!', 'error')
+      })
+  }
+
+  const getAllPorts = () => {
+    dispatch(showLoder({ getPorts: 1 }))
+    getRequest(`/api/v1/ports?limit=1000`, {
+      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+    })
+      .then((res) => {
+        setDataPorts(res.ports)
+
+        dispatch(showLoder({ getPorts: 0 }))
+      })
+      .catch((err) => {
+        //state.createNotification('Успешно обновлено!', 'error')
+
+        dispatch(showLoder({ getPorts: 0 }))
+      })
+  }
+
+  const controlDataSelect = (idValue) => {
+    switch (idValue) {
+      case 1:
+        return costsPurchasePointsArray
+      case 2:
+        return costsDestinationsArray
+      case 3:
+        return costsDestinationsPortsArray
+      case 4:
+        return costsLoadingPortArray
+      default:
+        return costsDestinationsArray
+    }
   }
 
   const createDropInvoice = () => {
@@ -299,10 +470,7 @@ const AuctionTransportFinanceCreate = ({
 
   return (
     <div className="innerFinance">
-      <ToastContainer />
       <AuctionTransportFinanceTop
-        getToastSucces={getToastSucces}
-        getToastError={getToastError}
         getFlagSendReq={setFlagSendReq}
         dataResult={dataResultAec}
         getCurrentAucFunc={getCurrentAucFunc}
@@ -313,14 +481,14 @@ const AuctionTransportFinanceCreate = ({
         viewBlock={viewBlock}
         shortInfoArray={shortInfoArray}
         carrierArray={carrierArray}
+        dataCarters={dataCarters}
         setPay_info={setPay_info}
         autoInfo={autoInfo}
+        dataPorts={dataPorts}
       />
 
       <div className="itemFinance">
         <AuctionTransportFinance
-          getToastSucces={getToastSucces}
-          getToastError={getToastError}
           dataPriseObject={dataPriseObject}
           getStartInfo={getStartInfo}
           flagSendReq={flagSendReq}
@@ -334,11 +502,14 @@ const AuctionTransportFinanceCreate = ({
           viewBlock={viewBlock}
           shortInfoArray={shortInfoArray}
           carrierArray={carrierArray}
+          dataCarters={dataCarters}
           pay_info={pay_info}
+          controlDataSelect={controlDataSelect}
+          dataPorts={dataPorts}
+          autoInfo={autoInfo}
+          controlArray={controlArray}
         />
         <AuctionTransportFinance
-          getToastSucces={getToastSucces}
-          getToastError={getToastError}
           dataPriseObject={dataPriseObject}
           pay_info={pay_info}
           getStartInfo={getStartInfo}
@@ -352,6 +523,11 @@ const AuctionTransportFinanceCreate = ({
           viewBlock={viewBlock}
           shortInfoArray={shortInfoArray}
           carrierArray={carrierArray}
+          dataCarters={dataCarters}
+          controlDataSelect={controlDataSelect}
+          dataPorts={dataPorts}
+          autoInfo={autoInfo}
+          controlArray={controlArray}
         />
       </div>
 
@@ -446,4 +622,4 @@ AuctionTransportFinanceCreate.propTypes = {
   shortInfoArray: PropTypes.object,
 }
 
-export default AuctionTransportFinanceCreate
+export default memo(AuctionTransportFinanceCreate)

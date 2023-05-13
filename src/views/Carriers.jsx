@@ -5,7 +5,7 @@ import { Edit, Trash } from '@rsuite/icons'
 
 import 'rsuite-table/dist/css/rsuite-table.css'
 import { Modal } from 'rsuite'
-import { ToastContainer, toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
 
 import {
@@ -37,14 +37,14 @@ const Carriers = (props) => {
     deleteRequest(`/api/v1/carriers/${id}`)
       .then((res) => {
         if (res.status === 'success') {
-          toast.success('успешно удалено!')
+          state.createNotification('Успешно удален!', 'success')
           getArray()
 
           dispatch(showLoder({ remove: 0 }))
         }
       })
       .catch((err) => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ remove: 0 }))
       })
   }
@@ -87,7 +87,7 @@ const Carriers = (props) => {
     setIsModalShowAdd(false)
     postRequest('/api/v1/carriers', params)
       .then(() => {
-        toast.success('Посредник успешно добавлен!')
+        state.createNotification('Успешно выполнено!', 'success')
 
         getArray()
         close()
@@ -96,7 +96,7 @@ const Carriers = (props) => {
         dispatch(showLoder({ createAgent: 0 }))
       })
       .catch((err) => {
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
         dispatch(showLoder({ createAgent: 0 }))
       })
   }
@@ -107,14 +107,14 @@ const Carriers = (props) => {
 
     putRequest(`/api/v1/carriers/${idEdit}`, params)
       .then(() => {
-        toast.success('Посредник успешно изменен!')
+        state.createNotification('Успешно изменено!', 'success')
         getArray()
         close()
 
         dispatch(showLoder({ editAgent: 0 }))
       })
       .catch((err) => {
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
         dispatch(showLoder({ editAgent: 0 }))
       })
   }
@@ -162,7 +162,6 @@ const Carriers = (props) => {
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
       <div className="modal-container">
         <Modal
           backdrop={'static'}

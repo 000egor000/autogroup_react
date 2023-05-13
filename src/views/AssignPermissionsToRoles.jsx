@@ -3,7 +3,7 @@ import React, { useState, useContext, useEffect } from 'react'
 import { getRequest, putRequest } from '../base/api-request'
 import ContextApp from '../context/contextApp'
 import { showLoder } from '../reducers/actions'
-import { ToastContainer, toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
 
 const AssignPermissionsToRoles = (props) => {
@@ -120,14 +120,14 @@ const AssignPermissionsToRoles = (props) => {
     putRequest(`/api/v1/user-role/${JSON.parse(valueSelect).id}`, params)
       .then((res) => {
         if (res.status === 'success') {
-          toast.success('Права по ролям успешно созданы!')
+          state.createNotification('Успешно выполнено!', 'info')
           setStatusInitialValue(false)
           dispatch(showLoder({ allCheckFinish: 0 }))
         }
       })
       .catch((err) => {
         dispatch(showLoder({ allCheckFinish: 0 }))
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
       })
   }
   const controlCheck = (id) => {
@@ -166,7 +166,6 @@ const AssignPermissionsToRoles = (props) => {
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
       <div className="itemContainer-inner">
         <div className="top-item " style={{ paddingLeft: state.width }}>
           <div className="btnTransport">

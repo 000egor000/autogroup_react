@@ -1,7 +1,6 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect, memo } from 'react'
 
 import 'react-toastify/dist/ReactToastify.css'
-import { ToastContainer, toast } from 'react-toastify'
 
 import { ArrowRightLine, ArrowDownLine } from '@rsuite/icons'
 
@@ -11,10 +10,10 @@ import WalletsInner from '../components/WalletsInner'
 import ContextApp from '../context/contextApp'
 import { Pagination, SelectPicker } from 'rsuite'
 import { useParams } from 'react-router-dom'
-import { Table, Column, HeaderCell, Cell } from 'rsuite-table'
+// import { Table, Column, HeaderCell, Cell } from 'rsuite-table'
 import { showLoder } from '../reducers/actions'
-import nextId from 'react-id-generator'
-import { activeUsers } from '../const.js'
+// import nextId from 'react-id-generator'
+// import { activeUsers } from '../const.js'
 
 const TransactionsCustom = (props) => {
   const { state, dispatch } = useContext(ContextApp)
@@ -52,7 +51,6 @@ const TransactionsCustom = (props) => {
   const [activeUsersSelect, setActiveUsersSelect] = useState(1)
 
   const [cryptoSearchSelect, setCryptoSearchSelect] = useState('')
-  console.log(cryptoSearchSelect)
 
   const handleShow = ({ id, max_id, read }) => {
     let filtered = dropShow.filter((e) => id === e)
@@ -443,7 +441,7 @@ const TransactionsCustom = (props) => {
         dispatch(showLoder({ credentials: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ credentials: 0 }))
       })
   }, [])
@@ -484,8 +482,6 @@ const TransactionsCustom = (props) => {
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
-
       <div className="itemContainer-inner">
         <div
           className="bottom-itemFooter"
@@ -577,4 +573,4 @@ const TransactionsCustom = (props) => {
     </div>
   )
 }
-export default TransactionsCustom
+export default memo(TransactionsCustom)

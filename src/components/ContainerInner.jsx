@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
+// import { toast } from 'react-toastify'
 import { Pagination } from 'rsuite'
 import { Table, Column, HeaderCell, Cell } from 'rsuite-table'
 import { showLoder } from '../reducers/actions'
 import { getDateFunc } from '../helper.js'
-
+import NoData from './NoData'
 import ContextApp from '../context/contextApp'
 import { putRequest } from '../base/api-request'
 import PropTypes from 'prop-types'
@@ -23,7 +23,7 @@ const ContainerInner = ({
   const [page, setPage] = useState(1)
   const [paginationValue, setPaginationValue] = useState(0)
   const [accessRights, setAccessRights] = useState([])
-  const { dispatch } = useContext(ContextApp)
+  const { state, dispatch } = useContext(ContextApp)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -93,12 +93,12 @@ const ContainerInner = ({
         statutsModalNow(false)
 
         // getInfo()
-        toast.success('Успешно добавлено!')
+        state.createNotification('Успешно выполнено!', 'success')
         dataAllInitial()
         dispatch(showLoder({ updateContainer: 0 }))
       })
       .catch((err) => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ updateContainer: 0 }))
       })
   }
@@ -286,7 +286,7 @@ const ContainerInner = ({
       </div>
     </React.Fragment>
   ) : (
-    'Нет информации по контейнеру!'
+    <NoData />
   )
 }
 
@@ -298,4 +298,4 @@ ContainerInner.propTypes = {
   statutsModalNow: PropTypes.func,
   currentClick: PropTypes.any,
 }
-export default ContainerInner
+export default memo(ContainerInner)

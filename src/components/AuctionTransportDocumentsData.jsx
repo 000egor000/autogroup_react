@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { ToastContainer, toast } from 'react-toastify'
+import React, { useState, useEffect, useContext, memo } from 'react'
+
 import 'react-toastify/dist/ReactToastify.css'
 
 import { postRequest, putRequest } from '../base/api-request'
@@ -29,7 +29,7 @@ const AuctionTransportDocumentsData = ({
   // const [documentsFlag, setDocumentsFlag] = useState(documentsArray[0]['id'])
   const [documents_flag, setDocuments_flag] = useState(documentsArray[0]['id'])
 
-  const { dispatch } = useContext(ContextApp)
+  const { state, dispatch } = useContext(ContextApp)
 
   useEffect(() => {
     if (+documents_flag === 1) {
@@ -70,13 +70,12 @@ const AuctionTransportDocumentsData = ({
     if (dataUserArray.length > 0)
       setDataUserSelect(dataNewId ? dataNewId : dataUserArray[0]['id'])
   }, [dataNewId, dataUserArray])
-  console.log(dataUserArray)
 
   const createDocumentsData = () => {
     dispatch(showLoder({ createDocumentsData: 1 }))
     postRequest('/api/v1/order/customer', paramsCreateOrUpdate)
       .then((res) => {
-        toast.success('Успешно создано!')
+        state.createNotification('Успешно создано!', 'success')
         getArrayCustomer()
         setDataNewId(res.customer_information_id)
         dispatch(showLoder({ createDocumentsData: 0 }))
@@ -84,7 +83,7 @@ const AuctionTransportDocumentsData = ({
 
       .catch(() => {
         dispatch(showLoder({ createDocumentsData: 0 }))
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
       })
   }
 
@@ -92,7 +91,7 @@ const AuctionTransportDocumentsData = ({
     dispatch(showLoder({ updateDocumentsData: 1 }))
     putRequest(`/api/v1/order/customer/${id}`, paramsCreateOrUpdate)
       .then((res) => {
-        toast.success('Успешно обновлен!')
+        state.createNotification('Успешно обновлено!', 'success')
 
         setDataNewId(res.customer_information_id)
         getArrayCustomer()
@@ -100,7 +99,7 @@ const AuctionTransportDocumentsData = ({
       })
 
       .catch(() => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ updateDocumentsData: 0 }))
       })
   }
@@ -208,7 +207,6 @@ const AuctionTransportDocumentsData = ({
       className="accessUsers  accessUsers--doc"
       style={{ display: itemStatus ? 'block' : 'none' }}
     >
-      <ToastContainer />
       <form onSubmit={controlSendFunc}>
         <div className="contentBlockTop">
           <div className="dropBlockContent dropBlockContent--doc">
@@ -367,4 +365,4 @@ AuctionTransportDocumentsData.propTypes = {
   getArrayCustomer: PropTypes.func,
 }
 
-export default AuctionTransportDocumentsData
+export default memo(AuctionTransportDocumentsData)

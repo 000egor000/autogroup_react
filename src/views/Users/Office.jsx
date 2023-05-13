@@ -5,7 +5,7 @@ import 'rsuite-table/dist/css/rsuite-table.css'
 
 import { Link, useNavigate } from 'react-router-dom'
 import { Modal, Pagination } from 'rsuite'
-import { ToastContainer, toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
 
 import { Edit, Trash, CloseOutline, CheckOutline, Exit } from '@rsuite/icons'
@@ -41,12 +41,12 @@ const Office = (props) => {
     dispatch(showLoder({ remove: 1 }))
     deleteRequest(`/api/v1/offices/${id}`)
       .then((res) => {
-        toast.success('Пользователь успешно удален!')
+        state.createNotification('Пользователь успешно удален!', 'success')
         getArray()
         dispatch(showLoder({ remove: 0 }))
       })
       .catch((err) => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ remove: 0 }))
       })
   }
@@ -60,13 +60,13 @@ const Office = (props) => {
     postRequest('/api/v1/user/active', { user_id: id })
       .then((res) => {
         getArray()
-        toast.success('Успешно активирован!')
+        state.createNotification('Успешно активирован!', 'success')
         close()
         dispatch(showLoder({ activationOrUnactivation: 0 }))
       })
       .catch(() => {
         dispatch(showLoder({ activationOrUnactivation: 0 }))
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
       })
   }
 
@@ -96,7 +96,7 @@ const Office = (props) => {
         dispatch(showLoder({ setAuth: 0 }))
       })
       .catch(() => {
-        toast.error(`Ошибка при попытке авторизации`)
+        state.createNotification('Ошибка при попытке авторизации!', 'error')
         dispatch(showLoder({ setAuth: 0 }))
       })
   }
@@ -172,7 +172,6 @@ const Office = (props) => {
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
       <div className="modal-container">
         <Modal
           backdrop={'static'}

@@ -19,7 +19,7 @@ import { btnShowAuto } from '../../const'
 
 import { showLoder } from '../../reducers/actions'
 
-const AuctionsTransportsControl = (props) => {
+const AuctionsTransportsControl = () => {
   const { id } = useParams()
   const [currentValue, setCurrentValue] = useState('')
   const [viewControler, setViewControler] = useState([])
@@ -67,7 +67,7 @@ const AuctionsTransportsControl = (props) => {
       })
       .catch((err) => {
         dispatch(showLoder({ destinations: 0 }))
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
       })
   }, [])
 
@@ -82,7 +82,7 @@ const AuctionsTransportsControl = (props) => {
       })
       .catch((err) => {
         dispatch(showLoder({ credentials: 0 }))
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
       })
   }, [])
 
@@ -98,7 +98,7 @@ const AuctionsTransportsControl = (props) => {
       })
       .catch((err) => {
         dispatch(showLoder({ auctions: 0 }))
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
       })
   }, [])
 

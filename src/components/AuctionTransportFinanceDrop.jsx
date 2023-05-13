@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from 'react'
+import React, { useState, useEffect, useContext, useRef, memo } from 'react'
 import nextId, { setPrefix } from 'react-id-generator'
 import { Modal } from 'rsuite'
 import 'react-toastify/dist/ReactToastify.css'
@@ -7,15 +7,14 @@ import ContextApp from '../context/contextApp'
 import { showLoder } from '../reducers/actions'
 import { putRequest } from '../base/api-request'
 import PropTypes from 'prop-types'
-import { controlNumber } from '../helper.js'
-import { toast } from 'react-toastify'
-import { Dropdown } from 'rsuite'
+import { controlNumber, controlTitle } from '../helper.js'
+// import { toast } from 'react-toastify'
+import { Dropdown, Whisper, Tooltip } from 'rsuite'
 
-import { arrayPort, dataAdd } from '../const.js'
+import { dataAdd } from '../const.js'
+
 const AuctionTransportFinanceDrop = ({
-  carrierArray,
-  getToastSucces,
-  getToastError,
+  // carrierArray,
   initialValue,
   financeDateArray,
   getFinanceArray,
@@ -24,6 +23,8 @@ const AuctionTransportFinanceDrop = ({
   viewBlock,
   titleBlock,
   controlParamsClear,
+  controlDataSelect,
+  controlArray,
 }) => {
   const [dateValueGenerationRight, setDateValueGenerationRight] = useState([])
   const [dateValueGenerationLeft, setDateValueGenerationLeft] = useState([])
@@ -106,7 +107,10 @@ const AuctionTransportFinanceDrop = ({
       container.push({ id: nextId(), title: '', value: '' })
       setDateValueGenerationRight([...dateValueGenerationRight, ...container])
     } else {
-      getToastError('Заполните текущие поля, до открытия новых!')
+      state.createNotification(
+        'Заполните текущие поля, до открытия новых!',
+        'error'
+      )
     }
   }
 
@@ -139,7 +143,7 @@ const AuctionTransportFinanceDrop = ({
   //     })
   //     setDateValueGenerationLeft([...dateValueGenerationLeft, ...container])
   //   } else {
-  //     getToastError('Заполните текущие поля, до открытия новых!')
+  //         state.createNotification('Заполните текущие поля, до открытия новых!', 'error')
   //   }
   // }
 
@@ -162,7 +166,10 @@ const AuctionTransportFinanceDrop = ({
       })
       setDateValueGenerationLeft([...dateValueGenerationLeft, ...container])
     } else {
-      getToastError('Заполните текущие поля, до открытия новых!')
+      state.createNotification(
+        'Заполните текущие поля, до открытия новых!',
+        'error'
+      )
     }
   }
 
@@ -247,13 +254,14 @@ const AuctionTransportFinanceDrop = ({
       .catch(() => {
         close()
 
-        getToastError('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
+
         dispatch(showLoder({ closeInvoceAll: 0 }))
       })
   }
   const controlField = (resStatusArrayRight, ag, resStatusArrayLeft, usa) => {
     if (resStatusArrayRight.length > 0 && !ag.status) {
-      getToastError('Заполните все выбранные поля!')
+      state.createNotification('Заполните все выбранные поля!', 'error')
       let refArray = [refFocusRight1, refFocusRight2]
       let a = refArray.filter((el) =>
         el.current && !el.current.value ? el.current : null
@@ -279,7 +287,7 @@ const AuctionTransportFinanceDrop = ({
 
       setIsModalClose(false)
     } else if (resStatusArrayLeft.length > 0 && !usa.status) {
-      getToastError('Заполните все выбранные поля!')
+      state.createNotification('Заполните все выбранные поля!', 'error')
       let refArray = [refFocusLeft1, refFocusLeft2]
       let a = refArray.filter((el) =>
         el.current && !el.current.value ? el.current : null
@@ -431,7 +439,7 @@ const AuctionTransportFinanceDrop = ({
       .catch(() => {
         close()
 
-        getToastError('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         setContainerCurrent('')
         dispatch(showLoder({ updateAuctionAuto: 0 }))
       })
@@ -495,7 +503,7 @@ const AuctionTransportFinanceDrop = ({
         dispatch(showLoder({ clearFieldRequst: 0 }))
       })
       .catch(() => {
-        getToastError('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ clearFieldRequst: 0 }))
       })
   }
@@ -581,14 +589,12 @@ const AuctionTransportFinanceDrop = ({
                 }}
               >
                 <div className="topContenet">
-                  {' '}
                   <div className="generationBlock">
                     {elemMain.dataArray.length > 0 &&
                       elemMain.dataArray.map(
                         (elem, i) =>
                           Object.keys(elem).includes('usa_finance') &&
                           elem.usa_finance.map((el) => {
-                            console.log(el)
                             return (
                               <React.Fragment key={el.id}>
                                 <div
@@ -620,18 +626,21 @@ const AuctionTransportFinanceDrop = ({
                                       value={el.carrier}
                                       disabled={elemMain.status}
                                     >
-                                      {(+el.dataArrayInitial === 1
-                                        ? carrierArray
-                                        : arrayPort
-                                      ).map((item, i) => {
-                                        return (
-                                          <option key={item.id} value={item.id}>
-                                            {el.dataArrayInitial == 1
-                                              ? item.title
-                                              : item.label}
-                                          </option>
-                                        )
-                                      })}
+                                      {controlArray(el.dataArrayInitial).map(
+                                        (item, i) => {
+                                          return (
+                                            <option
+                                              key={item.id}
+                                              value={item.id}
+                                            >
+                                              {controlTitle(
+                                                +el.dataArrayInitial,
+                                                item
+                                              )}
+                                            </option>
+                                          )
+                                        }
+                                      )}
                                     </select>
                                   </label>
                                 </div>
@@ -756,6 +765,37 @@ const AuctionTransportFinanceDrop = ({
                                   onBlur={() => updateAuctionAuto()}
                                   ref={refFocusLeft1}
                                 />
+                                {!statusDropUsa &&
+                                  controlDataSelect(elem.dataArrayInitial)
+                                    .length > 0 && (
+                                    <Whisper
+                                      followCursor
+                                      placement="right"
+                                      speaker={
+                                        <Tooltip>
+                                          Выбрать из существующих затрат
+                                        </Tooltip>
+                                      }
+                                    >
+                                      <Dropdown>
+                                        {controlDataSelect(
+                                          elem.dataArrayInitial
+                                        ).map((item) => (
+                                          <Dropdown.Item
+                                            key={elem.id}
+                                            onClick={() =>
+                                              generationInputLeft(elem, {
+                                                title: item.title,
+                                              })
+                                            }
+                                          >
+                                            {item.title}
+                                          </Dropdown.Item>
+                                        ))}
+                                      </Dropdown>
+                                    </Whisper>
+                                  )}
+
                                 {/* )} */}
                               </span>
 
@@ -781,24 +821,24 @@ const AuctionTransportFinanceDrop = ({
                                 }
                                 disabled={state.loader || statusDropUsa}
                               >
-                                {(+elem.dataArrayInitial === 1
-                                  ? carrierArray
-                                  : arrayPort
-                                ).map((item, i) => {
-                                  return (
-                                    <option
-                                      key={item.id}
-                                      value={item.id}
-                                      // disabled={
-                                      //   elem.id === 0 || (elem.id === 3 && statusMoney)
-                                      // }
-                                    >
-                                      {+elem.dataArrayInitial === 1
-                                        ? item.title
-                                        : item.label}
-                                    </option>
-                                  )
-                                })}
+                                {controlArray(elem.dataArrayInitial).map(
+                                  (item, i) => {
+                                    return (
+                                      <option
+                                        key={item.id}
+                                        value={item.id}
+                                        // disabled={
+                                        //   elem.id === 0 || (elem.id === 3 && statusMoney)
+                                        // }
+                                      >
+                                        {controlTitle(
+                                          +elem.dataArrayInitial,
+                                          item
+                                        )}
+                                      </option>
+                                    )
+                                  }
+                                )}
                               </select>
                             </label>
                           </div>
@@ -848,7 +888,11 @@ const AuctionTransportFinanceDrop = ({
                       <input
                         onClick={() => {
                           updateAuctionAuto()
-                          toast.success('Информация сохранена')
+
+                          state.createNotification(
+                            'Информация сохранена',
+                            'success'
+                          )
                         }}
                         type="button"
                         className="btn btn--closeInvoice"
@@ -971,7 +1015,10 @@ const AuctionTransportFinanceDrop = ({
                         <input
                           onClick={() => {
                             updateAuctionAuto()
-                            toast.success('Информация сохранена')
+                            state.createNotification(
+                              'Информация сохранена',
+                              'success'
+                            )
                           }}
                           type="button"
                           className="btn btn--closeInvoice"
@@ -1010,4 +1057,4 @@ AuctionTransportFinanceDrop.propTypes = {
   controlParamsClear: PropTypes.bool,
 }
 
-export default AuctionTransportFinanceDrop
+export default memo(AuctionTransportFinanceDrop)

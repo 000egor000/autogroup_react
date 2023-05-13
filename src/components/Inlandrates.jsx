@@ -1,8 +1,8 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect, memo } from 'react'
 
-import { Pagination, SelectPicker } from 'rsuite'
+import { Pagination } from 'rsuite'
 import 'rsuite-table/dist/css/rsuite-table.css'
-import { ToastContainer, toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
 
 import { getRequest, putRequest } from '../base/api-request'
@@ -25,8 +25,8 @@ const Inlandrates = ({ currentRates, viewBlock, dataArray }) => {
   const [limit, setLimit] = useState(300)
   const [page, setPage] = useState(1)
   // const [currentUrlId, setCurrentUrlId] = useState('')
-  const [locationsSelect, setLocationsSelect] = useState('')
-  const [locationsArray, setLocationsArray] = useState([])
+  // const [locationsSelect, setLocationsSelect] = useState('')
+  // const [locationsArray, setLocationsArray] = useState([])
 
   // useEffect(() => {
   //   if (currentRates) {
@@ -67,7 +67,7 @@ const Inlandrates = ({ currentRates, viewBlock, dataArray }) => {
   //     .catch((err) => {
   //       dispatch(hide())
   //       setLocationsArray([])
-  //       // toast.error('Что-то пошло не так!')
+  //       //state.createNotification('Успешно обновлено!', 'error')
   //     })
   // }
 
@@ -86,34 +86,34 @@ const Inlandrates = ({ currentRates, viewBlock, dataArray }) => {
   //       .catch((err) => {
   //         dispatch(showLoder({ calculator: 0 }))
   //         setLocationsArray([])
-  //         // toast.error('Что-то пошло не так!')
+  //         //state.createNotification('Успешно обновлено!', 'error')
   //       })
   //   }
   // }, [locationsArray, currentUrlId])
   // console.log(locationsArray)
   // console.log(currentUrlId)
 
-  useEffect(() => {
-    if (currentRates && !locationsArray.length > 0) {
-      getlocationsArray()
-    }
-  }, [currentRates, currentRates])
+  // useEffect(() => {
+  //   if (currentRates && !locationsArray.length > 0) {
+  //     getlocationsArray()
+  //   }
+  // }, [currentRates, currentRates])
 
-  const getlocationsArray = () => {
-    dispatch(showLoder({ calculator: 1 }))
-    getRequest(`/api/v1/locations-calculator?limit=1000`, {
-      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
-    })
-      .then((res) => {
-        setLocationsArray(res.locations)
-        dispatch(showLoder({ calculator: 0 }))
-      })
-      .catch((err) => {
-        dispatch(showLoder({ calculator: 0 }))
-        setLocationsArray([])
-        // toast.error('Что-то пошло не так!')
-      })
-  }
+  // const getlocationsArray = () => {
+  //   dispatch(showLoder({ calculator: 1 }))
+  //   getRequest(`/api/v1/locations-calculator?limit=1000`, {
+  //     Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+  //   })
+  //     .then((res) => {
+  //       setLocationsArray(res.locations)
+  //       dispatch(showLoder({ calculator: 0 }))
+  //     })
+  //     .catch((err) => {
+  //       dispatch(showLoder({ calculator: 0 }))
+  //       setLocationsArray([])
+  //       //state.createNotification('Успешно обновлено!', 'error')
+  //     })
+  // }
 
   const getInlandRatesArray = () => {
     dispatch(showLoder({ getInlandRatesArray: 1 }))
@@ -124,8 +124,8 @@ const Inlandrates = ({ currentRates, viewBlock, dataArray }) => {
     const { linkName, value, dataResName } = findObj
 
     url = `/api/v1/${linkName}=${value}&page=${page}&limit=${limit}`
-    if (locationsSelect)
-      url = `/api/v1/${linkName}=${value}&page=${1}&limit=${limit}&location_id=${locationsSelect}`
+    // if (locationsSelect)
+    //   url = `/api/v1/${linkName}=${value}&page=${1}&limit=${limit}&location_id=${locationsSelect}`
     getRequest(url, {
       Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
     })
@@ -138,14 +138,14 @@ const Inlandrates = ({ currentRates, viewBlock, dataArray }) => {
       })
 
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ getInlandRatesArray: 0 }))
       })
   }
 
   useEffect(
     () => currentRates && getInlandRatesArray(),
-    [page, limit, currentRates, locationsSelect, titleRates]
+    [page, limit, currentRates, titleRates]
   )
 
   const changeTableOrEdit = () => {
@@ -220,7 +220,6 @@ const Inlandrates = ({ currentRates, viewBlock, dataArray }) => {
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
       {currentRates && inlandRatesArray.length > 0 ? (
         <>
           <div className="itemContainer-inner">
@@ -229,7 +228,7 @@ const Inlandrates = ({ currentRates, viewBlock, dataArray }) => {
                 className="btnTransport"
                 style={{ justifyContent: 'space-between', marginRight: '20px' }}
               >
-                <div
+                {/* <div
                   style={{
                     marginBottom: '30px',
                     visibility: locationsArray.length > 0 ? 'visible' : 'none',
@@ -250,7 +249,7 @@ const Inlandrates = ({ currentRates, viewBlock, dataArray }) => {
                       loading={!locationsArray.length}
                     />
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
 
@@ -426,4 +425,4 @@ Inlandrates.propTypes = {
   currentRates: PropTypes.string,
   viewBlock: PropTypes.func,
 }
-export default Inlandrates
+export default memo(Inlandrates)

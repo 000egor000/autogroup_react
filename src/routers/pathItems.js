@@ -16,19 +16,21 @@ const LazyContainersImport = React.lazy(() =>
 const CostsPurchasePoint = React.lazy(() =>
   import('../views/CostsPurchasePoint')
 )
-const CostsLoadingPort = React.lazy(() =>
-  import('../views/CostsLoadingPort')
-)
+const CostsLoadingPort = React.lazy(() => import('../views/CostsLoadingPort'))
 const CostsDestinationPort = React.lazy(() =>
   import('../views/CostsDestinationPort')
 )
-const CostsDestination = React.lazy(() =>
-  import('../views/CostsDestination')
-)
+const CostsDestination = React.lazy(() => import('../views/CostsDestination'))
 const LazyContainerInfoDetails = React.lazy(() =>
   import('../components/ContainerInfoDetails')
 )
 const LazyRatesControl = React.lazy(() => import('../views/RatesControl'))
+const LazyAgLogisticInlandRates = React.lazy(() =>
+  import('../components/AgLogisticInlandRates')
+)
+const LazyAgLogisticDestinationInlandRates = React.lazy(() =>
+  import('../components/AgLogisticDestinationInlandRates')
+)
 const LazyMasters = React.lazy(() => import('../views/Users/Masters.jsx'))
 const LazyMastersCreate = React.lazy(() =>
   import('../views/Users/MastersCreate.jsx')
@@ -119,11 +121,18 @@ const LazyAgCalculatorSetting = React.lazy(() =>
 
 const LazyAuthorization = React.lazy(() => import('../views/Authorization.jsx'))
 const LazyVatianView = React.lazy(() => import('../components/VatrianView.jsx'))
-const LazyListAuctions = React.lazy(() =>
-  import('../components/ListAuctions.jsx')
+const LazyListOfAuctions = React.lazy(() =>
+  import('../views/ListOfAuctions.jsx')
 )
 const LazyPaymentMethod = React.lazy(() =>
   import('../components/PaymentMethod')
+)
+
+const LazyPortOfLoading = React.lazy(() => import('../views/PortOfLoading'))
+const LazyListOfCountries = React.lazy(() => import('../views/ListOfCountries'))
+const LazyListOfPorts = React.lazy(() => import('../views/ListOfPorts'))
+const ListOfСounterparty = React.lazy(() =>
+  import('../views/ListOfСounterparty')
 )
 
 const pathItems = [
@@ -256,6 +265,14 @@ const pathItems = [
   { path: namePath.AEC_NAMERATES, element: <LazyRatesControl /> },
   { path: namePath.AUTO_UNIVERSE_NAMERATES, element: <LazyRatesControl /> },
   { path: namePath.AGLOGISTIC_NAMERATES, element: <LazyRatesControl /> },
+  {
+    path: namePath.AGLOGISTIC_INLANDRATES,
+    element: <LazyAgLogisticInlandRates />,
+  },
+  {
+    path: namePath.AGLOGISTIC_DESTINATION,
+    element: <LazyAgLogisticDestinationInlandRates />,
+  },
   { path: namePath.SETTING, element: <LazyAgCalculatorSetting /> },
   { path: namePath.AGLOGISTIC_SEARATES, element: <LazyAgCalculatorSetting /> },
   { path: namePath.WALLETS_NAME, element: <LazyWallets /> },
@@ -306,8 +323,12 @@ const pathItems = [
   { path: namePath.DESTINATIONS, element: <LazyDestinations /> },
   { path: namePath.PLACE_DESTINATIONS, element: <LazyPlaceDestinations /> },
   { path: namePath.SERVICES_BRANDS_MODELS, element: <LazyBrandsModels /> },
-  { path: namePath.CREDENTIALS_COPART_OPEN, element: <LazyCredentials /> },
-  { path: namePath.LISTAUCTIONS, element: <LazyListAuctions /> },
+  { path: namePath.CREDENTIALS, element: <LazyCredentials /> },
+  { path: namePath.LISTOFAUCTIONS, element: <LazyListOfAuctions /> },
   { path: namePath.PAYMENTMETHOD, element: <LazyPaymentMethod /> },
+  { path: namePath.PORTOFLOADING, element: <LazyPortOfLoading /> },
+  { path: namePath.LISTOFCOUNTRIES, element: <LazyListOfCountries /> },
+  { path: namePath.LISTOFPORTS, element: <LazyListOfPorts /> },
+  { path: namePath.COUNTERPARTY, element: <ListOfСounterparty /> },
 ]
 export { pathItems }

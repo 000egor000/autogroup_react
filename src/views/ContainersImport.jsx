@@ -5,8 +5,6 @@ import { postRequest } from '../base/api-request'
 import ContextApp from '../context/contextApp'
 import { showLoder } from '../reducers/actions'
 
-import { ToastContainer, toast } from 'react-toastify'
-
 const ContainersImport = () => {
   const [newContainers, setNewContainers] = useState('')
 
@@ -29,18 +27,18 @@ const ContainersImport = () => {
     postRequest(`/api/v1/containers/import`, { params })
       .then(() => {
         setNewContainers('')
-        toast.success('Успешно выполнено!')
+
+        state.createNotification('Успешно выполнено!', 'success')
         dispatch(showLoder({ createImport: 0 }))
       })
       .catch((err) => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ createImport: 0 }))
       })
   }
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
       <div className="itemContainer-inner">
         <div className="top-item ">
           <div className="btnTransport"></div>

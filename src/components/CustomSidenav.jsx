@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { Sidenav, Nav } from 'rsuite'
@@ -149,4 +149,4 @@ function CustomSidenav({
   )
 }
 
-export default CustomSidenav
+export default memo(CustomSidenav)

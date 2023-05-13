@@ -9,7 +9,6 @@ import {
 import { Loader, Modal } from 'rsuite'
 
 import 'react-toastify/dist/ReactToastify.css'
-import { ToastContainer, toast } from 'react-toastify'
 
 import {
   ArrowRightLine,
@@ -29,7 +28,7 @@ import { showLoder } from '../../reducers/actions'
 
 import PreBidNav from '../../components/PreBidNav'
 import { controlNumber } from '../../helper.js'
-const PreBid = (props) => {
+const PreBid = () => {
   const { title } = JSON.parse(window.sessionStorage.getItem('role'))
 
   const [dataTable, setDataTable] = useState([])
@@ -95,8 +94,8 @@ const PreBid = (props) => {
     const messageFail = 'fail' || 'lose'
     messageSuccess ?? messageFail
       ? messageSuccess
-        ? toast.success(message.message)
-        : toast.error(message.message)
+        ? state.createNotification(message.message, 'success')
+        : state.createNotification(message.message, 'error')
       : console.log('invalid request')
 
     getDataTable()
@@ -149,7 +148,7 @@ const PreBid = (props) => {
       })
       .catch(() => {
         dispatch(showLoder({ createPreBid: 0 }))
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
       })
   }
 
@@ -198,7 +197,10 @@ const PreBid = (props) => {
     if (valueInput || buyed_price)
       (valueInput ? valueInput : buyed_price) <= maxPrice
         ? (flagStatus = true)
-        : toast.error(`Сумма должна быть не больше ${maxPrice}`)
+        : state.createNotification(
+            `Сумма должна быть не больше ${maxPrice}`,
+            'error'
+          )
     else {
       flagStatus = true
     }
@@ -212,7 +214,7 @@ const PreBid = (props) => {
         })
         .catch(() => {
           dispatch(showLoder({ bidConfirm: 0 }))
-          toast.error('Что-то пошло не так!')
+          state.createNotification('Что-то пошло не так!', 'error')
         })
     }
   }
@@ -231,7 +233,7 @@ const PreBid = (props) => {
       })
       .catch(() => {
         dispatch(showLoder({ controlContrPrice: 0 }))
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
       })
   }
 
@@ -271,7 +273,7 @@ const PreBid = (props) => {
       })
       .catch((err) => {
         dispatch(showLoder({ readPrebid: 0 }))
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
       })
   }
 
@@ -285,7 +287,7 @@ const PreBid = (props) => {
       })
       .catch((err) => {
         dispatch(showLoder({ rejectPrebid: 0 }))
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
       })
   }
   const deletePrebid = ({ id }) => {
@@ -298,7 +300,7 @@ const PreBid = (props) => {
       })
       .catch((err) => {
         dispatch(showLoder({ deletePrebid: 0 }))
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
       })
   }
 
@@ -321,7 +323,7 @@ const PreBid = (props) => {
       })
       .catch((err) => {
         dispatch(showLoder({ detailUp: 0 }))
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
       })
   }
 
@@ -339,7 +341,7 @@ const PreBid = (props) => {
         dispatch(showLoder({ parseFunction: 0 }))
       })
       .catch(() => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         setStatusLoader(false)
         dispatch(showLoder({ parseFunction: 0 }))
       })
@@ -360,13 +362,12 @@ const PreBid = (props) => {
       })
       .catch(() => {
         dispatch(showLoder({ createPreBidPrise: 0 }))
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
       })
   }
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
       <div className="modal-container">
         <Modal
           backdrop={'static'}

@@ -5,42 +5,34 @@ import { Edit, Trash } from '@rsuite/icons'
 
 import 'rsuite-table/dist/css/rsuite-table.css'
 import { Modal } from 'rsuite'
-
 import 'react-toastify/dist/ReactToastify.css'
 
-import { getRequest, deleteRequestData } from '../base/api-request'
-// import { Pagination } from 'rsuite'
+import { getRequest, deleteRequest } from '../base/api-request'
 import { showLoder } from '../reducers/actions'
 import ContextApp from '../context/contextApp.js'
-import NoData from '../components/NoData'
 import { useNavigate } from 'react-router-dom'
-import { connect, connectTitle } from '../helper'
+import NoData from '../components/NoData'
 
-const Сarter = ({ currentRates }) => {
+const ListOfСounterparty = (props) => {
+  const [dataPartners, setDataPartners] = useState([])
   const [dataCarters, setDataCarters] = useState([])
 
   const [idEdit, setIdEdit] = useState('')
+  const [isModalRemove, setIsModalRemove] = useState(false)
+  // const [viewControler, setViewControler] = useState([])
+  const { state, dispatch } = useContext(ContextApp)
   const navigate = useNavigate()
 
-  const [isModalRemove, setIsModalRemove] = useState(false)
-
-  const { state, dispatch } = useContext(ContextApp)
-
-  useEffect(() => {
-    getArray()
-  }, [currentRates])
-
-  const remove = ({ id, pdtArray }) => {
+  const remove = (id) => {
     setIsModalRemove(false)
     dispatch(showLoder({ remove: 1 }))
 
-    deleteRequestData(`/api/v1/carters/${id}`, {
-      pd_id_add: pdtArray.split(','),
-    })
+    deleteRequest(`/api/v1/partners/${id}`)
       .then((res) => {
         if (res.status === 'success') {
-          state.createNotification('Успешно удалено!', 'success')
+          state.createNotification('успешно удалено!', 'success')
           getArray()
+          getCarters()
 
           dispatch(showLoder({ remove: 0 }))
         }
@@ -53,23 +45,40 @@ const Сarter = ({ currentRates }) => {
 
   const getArray = () => {
     dispatch(showLoder({ getArray: 1 }))
-    getRequest(`/api/v1/carters`, {
+    getRequest(`/api/v1/partners`, {
       Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
     })
-      .then(({ carters }) => {
-        setDataCarters(
-          currentRates
-            ? carters.filter(({ id }) => id == currentRates)
-            : carters
-        )
+      .then((res) => {
+        setDataPartners(res.partners)
 
         dispatch(showLoder({ getArray: 0 }))
       })
       .catch((err) => {
         dispatch(showLoder({ getArray: 0 }))
+        setDataPartners([])
+      })
+  }
+
+  const getCarters = () => {
+    dispatch(showLoder({ getCarters: 1 }))
+    getRequest(`/api/v1/carters`, {
+      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+    })
+      .then((res) => {
+        setDataCarters(res.carters)
+
+        dispatch(showLoder({ getCarters: 0 }))
+      })
+      .catch((err) => {
+        dispatch(showLoder({ getCarters: 0 }))
         setDataCarters([])
       })
   }
+
+  useEffect(() => {
+    getArray()
+    getCarters()
+  }, [])
 
   // useEffect(
   //   () =>
@@ -103,14 +112,14 @@ const Сarter = ({ currentRates }) => {
   return (
     <div className="itemContainer">
       <div className="modal-container">
-        <Modal
+        {/* <Modal
           backdrop={'static'}
           keyboard={false}
           open={isModalRemove}
           onClose={() => setIsModalRemove(false)}
         >
           <Modal.Header>
-            <Modal.Title>Удаление перевозчика</Modal.Title>
+            <Modal.Title>Удаление партнера</Modal.Title>
           </Modal.Header>
 
           <Modal.Body>Вы действительно хотите удалить?</Modal.Body>
@@ -130,7 +139,7 @@ const Сarter = ({ currentRates }) => {
               Нет
             </button>
           </Modal.Footer>
-        </Modal>
+        </Modal> */}
       </div>
 
       <div className="itemContainer-inner">
@@ -138,32 +147,51 @@ const Сarter = ({ currentRates }) => {
           className="top-item "
           style={{ paddingLeft: state.width, justifyContent: 'right' }}
         >
-          {!currentRates && (
-            <div className="btnTransport">
-              {/* {viewBlock(101) && ( */}
-              <button
-                className="btnInfo"
-                onClick={() => navigate('/carterAddProfile')}
-              >
-                <span>Добавить</span>
-              </button>
-              {/* )} */}
-            </div>
-          )}
+          <div className="btnTransport">
+            {/* {viewBlock(101) && ( */}
+            <button
+              className="btnInfo"
+              onClick={() => navigate('/agentAddProfile')}
+            >
+              <span>Добавить</span>
+            </button>
+            {/* )} */}
+          </div>
         </div>
         <div
           className="bottom-itemFooter"
           style={{ paddingLeft: state.width, color: 'black' }}
         >
-          {dataCarters.length > 0 ? (
+          {dataPartners.length > 0 || dataCarters.length > 0 ? (
             <div className="Table">
               <Table
                 autoHeight
                 cellBordered={true}
                 hover={true}
                 bordered={true}
-                data={dataCarters}
+                data={
+                  dataCarters.length > 0
+                    ? dataPartners.concat(dataCarters)
+                    : dataPartners
+                }
               >
+                <Column align="center" fixed flexGrow={1}>
+                  <HeaderCell>Тип</HeaderCell>
+                  <Cell>
+                    {(rowData, rowIndex) => {
+                      return (
+                        <span
+                          onClick={() =>
+                            // viewBlock(102) &&
+                            navigate(`/agentProfile/${rowData.id}`)
+                          }
+                        >
+                          {<span>-</span>}
+                        </span>
+                      )
+                    }}
+                  </Cell>
+                </Column>
                 <Column align="center" fixed flexGrow={1}>
                   <HeaderCell>Наименование компании</HeaderCell>
                   <Cell>
@@ -172,7 +200,7 @@ const Сarter = ({ currentRates }) => {
                         <span
                           onClick={() =>
                             // viewBlock(102) &&
-                            navigate(`/carterProfile/${rowData.id}`)
+                            navigate(`/agentProfile/${rowData.id}`)
                           }
                         >
                           {<span>{rowData.name}</span>}
@@ -189,7 +217,7 @@ const Сarter = ({ currentRates }) => {
                         <span
                           onClick={() =>
                             // viewBlock(102) &&
-                            navigate(`/carterProfile/${rowData.id}`)
+                            navigate(`/agentProfile/${rowData.id}`)
                           }
                         >
                           {<span>{rowData.address}</span>}
@@ -206,7 +234,7 @@ const Сarter = ({ currentRates }) => {
                         <span
                           onClick={() =>
                             // viewBlock(102) &&
-                            navigate(`/carterProfile/${rowData.id}`)
+                            navigate(`/agentProfile/${rowData.id}`)
                           }
                         >
                           {<span>{rowData.contact}</span>}
@@ -223,7 +251,7 @@ const Сarter = ({ currentRates }) => {
                         <span
                           onClick={() =>
                             // viewBlock(102) &&
-                            navigate(`/carterProfile/${rowData.id}`)
+                            navigate(`/agentProfile/${rowData.id}`)
                           }
                         >
                           {<span>{rowData.phone}</span>}
@@ -240,7 +268,7 @@ const Сarter = ({ currentRates }) => {
                         <span
                           onClick={() =>
                             // viewBlock(102) &&
-                            navigate(`/carterProfile/${rowData.id}`)
+                            navigate(`/agentProfile/${rowData.id}`)
                           }
                         >
                           {<span>{rowData.messenger}</span>}
@@ -257,7 +285,7 @@ const Сarter = ({ currentRates }) => {
                         <span
                           onClick={() =>
                             // viewBlock(102) &&
-                            navigate(`/carterProfile/${rowData.id}`)
+                            navigate(`/agentProfile/${rowData.id}`)
                           }
                         >
                           {<span>{rowData.email}</span>}
@@ -267,91 +295,63 @@ const Сarter = ({ currentRates }) => {
                   </Cell>
                 </Column>
 
-                <Column align="center" fixed flexGrow={2}>
-                  <HeaderCell>Порты</HeaderCell>
-                  <Cell>
-                    {(rowData, rowIndex) => {
-                      return (
-                        <span
-                          onClick={() =>
-                            // viewBlock(102) &&
-                            navigate(`/carterProfile/${rowData.id}`)
-                          }
-                        >
-                          {
-                            <span>
-                              {connectTitle(rowData.destinationPlaceDestinations)}
-                            </span>
-                          }
-                        </span>
-                      )
-                    }}
-                  </Cell>
-                </Column>
+                {/* {(viewBlock(102) || viewBlock(103)) && (
+                  <Column align="center" flexGrow={1}>
+                    <HeaderCell>Действие</HeaderCell>
+                    <Cell>
+                      {(rowData, rowIndex) => {
+                        return (
+                          <div>
+                            <div className="Dropdown">
+                              <div className="DropdownShow">
+                                {viewBlock(102) && (
+                                  <button
+                                    onClick={() =>
+                                      navigate(`/agentProfile/${rowData.id}`)
+                                    }
+                                  >
+                                    <Edit />
+                                  </button>
+                                )}
 
-                {/* {(viewBlock(102) || viewBlock(103)) && ( */}
-
-                <Column align="center" flexGrow={1}>
-                  <HeaderCell>Действие</HeaderCell>
-                  <Cell>
-                    {(rowData, rowIndex) => {
-                      return (
-                        <div>
-                          <div className="Dropdown">
-                            <div className="DropdownShow">
-                              {/* {viewBlock(102) && ( */}
-                              <button
-                                onClick={() =>
-                                  navigate(`/carterProfile/${rowData.id}`)
-                                }
-                              >
-                                <Edit />
-                              </button>
-                              {/* )} */}
-
-                              {/* {viewBlock(103) && ( */}
-                              <button
-                                onClick={() => {
-                                  setIdEdit({
-                                    id: rowData.id,
-                                    pdtArray: connect(
-                                      rowData.destinationPlaceDestinations
-                                    ),
-                                  })
-                                  setIsModalRemove(true)
-                                }}
-                              >
-                                <Trash />
-                              </button>
-                              {/* )} */}
+                                {viewBlock(103) && (
+                                  <button
+                                    onClick={() => {
+                                      setIdEdit(rowData.id)
+                                      setIsModalRemove(true)
+                                    }}
+                                  >
+                                    <Trash />
+                                  </button>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      )
-                    }}
-                  </Cell>
-                </Column>
-                {/* )} */}
+                        )
+                      }}
+                    </Cell>
+                  </Column>
+                )} */}
               </Table>
-              {/* <div className="paginationBlock">
-                <Pagination
-                  prev
-                  next
-                  // first
-                  // last
-                  ellipsis
-                  // boundaryLinks
-                  maxButtons={5}
-                  size="xs"
-                  layout={['total', 'pager']}
-                  total={paginationValue.total_results}
-                  limitOptions={[5, 10]}
-                  limit={limit}
-                  activePage={page}
-                  onChangePage={setPage}
-                  onChangeLimit={handleChangeLimit}
-                />
-              </div> */}
+              {/* <div className='paginationBlock'>
+								<Pagination
+									prev
+									next
+									// first
+									// last
+									ellipsis
+									// boundaryLinks
+									maxButtons={5}
+									size='xs'
+									layout={['total', 'pager']}
+									total={paginationValue.total_results}
+									limitOptions={[5, 10]}
+									limit={limit}
+									activePage={page}
+									onChangePage={setPage}
+									onChangeLimit={handleChangeLimit}
+								/>
+							</div> */}
             </div>
           ) : (
             <NoData />
@@ -361,4 +361,4 @@ const Сarter = ({ currentRates }) => {
     </div>
   )
 }
-export default Сarter
+export default ListOfСounterparty

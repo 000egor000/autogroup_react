@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef, useContext } from 'react'
+import React, { useState, useEffect, useRef, useContext, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Modal, SelectPicker, Toggle } from 'rsuite'
 import { Check, Close, Search, DocPass } from '@rsuite/icons'
 
-import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 import { postRequest, getRequest } from '../base/api-request'
@@ -99,7 +98,7 @@ const AuctionTransportAutoCreate = ({
         })
 
         .catch((err) => {
-          // toast.error('Что-то пошло не так!')
+          //state.createNotification('Успешно обновлено!', 'error')
           dispatch(showLoder({ docfees: 0 }))
         })
     }
@@ -109,44 +108,57 @@ const AuctionTransportAutoCreate = ({
     }
   }, [currentUrlId])
 
-  useEffect(() => {
-    dispatch(showLoder({ auctions: 1 }))
-    getRequest('/api/v1/auctions', {
-      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
-    })
-        .then((res) => {
-          setAuctionArray(res.auction)
+  // useEffect(() => {
+  //   dispatch(showLoder({ auctions: 1 }))
+  //   getRequest('/api/v1/auctions', {
+  //     Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+  //   })
+  //     .then((res) => {
+  //       setAuctionArray(res.auction)
 
-          dispatch(showLoder({ auctions: 0 }))
-        })
-        .catch((err) => {
-          dispatch(showLoder({ auctions: 0 }))
-          // toast.error('Что-то пошло не так!')
-        })
-  }, [])
-  useEffect(() => {
-    if (auctionArray.length > 0) {
-      setAuctionSelect(JSON.stringify(auctionArray[0]))
-    }
-    else
-      setAuctionSelect(0)
-  }, [auctionArray])
-  useEffect(() => {
-    dispatch(showLoder({ auctions: 1 }))
-    getRequest('/api/v1/auctions', {
-      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
-    })
-        .then((res) => {
-          let auctionsArr = res.auction.filter((elem) => elem.country.id == JSON.parse(countrySelect).id)
-          setAuctionArray(auctionsArr)
+  //       dispatch(showLoder({ auctions: 0 }))
+  //     })
+  //     .catch((err) => {
+  //       dispatch(showLoder({ auctions: 0 }))
+  //       //state.createNotification('Успешно обновлено!', 'error')
+  //     })
+  // }, [])
+  // useEffect(() => {
+  //   if (auctionArray.length > 0) {
+  //     setAuctionSelect(JSON.stringify(auctionArray[0]))
+  //   } else setAuctionSelect(0)
+  // }, [auctionArray])
 
-          dispatch(showLoder({ auctions: 0 }))
-        })
-        .catch((err) => {
-          dispatch(showLoder({ auctions: 0 }))
-          // toast.error('Что-то пошло не так!')
-        })
-  }, [countrySelect])
+  //   useEffect(() => {
+  //   if (countrySelect) {
+  //     setAuctionSelect(JSON.stringify(countrySelect.[0]))
+  //   } else setAuctionSelect(0)
+  // }, [countrySelect])
+
+  // useEffect(() => {
+  //   if (dataCountries.length > 0) getAuctions()
+  // }, [countrySelect])
+
+  // const getAuctions = () => {
+  //   dispatch(showLoder({ auctions: 1 }))
+  //   getRequest('/api/v1/auctions', {
+  //     Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+  //   })
+  //     .then((res) => {
+  //       let auctionsArr = res.auction.filter(
+  //         (elem) => elem.country.id == JSON.parse(countrySelect).id
+  //       )
+
+  //       setAuctionArray(auctionsArr)
+
+  //       dispatch(showLoder({ auctions: 0 }))
+  //     })
+  //     .catch((err) => {
+  //       dispatch(showLoder({ auctions: 0 }))
+  //       //state.createNotification('Успешно обновлено!', 'error')
+  //     })
+  // }
+  // console.log(JSON.parse(countrySelect))
 
   useEffect(() => {
     if (carrierArray.length > 0)
@@ -164,11 +176,13 @@ const AuctionTransportAutoCreate = ({
     }
   }, [destinationsArray])
 
-  {/*useEffect(() => {
+  {
+    /*useEffect(() => {
     if (placeDestinationsArray.length > 0) {
       setPlaceDestinationsSelect(placeDestinationsArray[0]['id'])
     }
-  }, [placeDestinationsArray])*/}
+  }, [placeDestinationsArray])*/
+  }
 
   useEffect(() => {
     if (auctionSelect) {
@@ -194,11 +208,10 @@ const AuctionTransportAutoCreate = ({
           setPortNameSelect('')
           setPortNameArray([])
           // setPortName([])
-          // toast.error('Что-то пошло не так!')
+          //state.createNotification('Успешно обновлено!', 'error')
           dispatch(showLoder({ locations: 0 }))
         })
-    }
-    else {
+    } else {
       setLocationsArray([])
     }
     return () => {
@@ -226,11 +239,40 @@ const AuctionTransportAutoCreate = ({
       Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
     })
       .then((res) => {
-        setDataCountries(res.countries)
+        const filterAray = res.countries.filter((item) => item.is_buyed)
+        const filterArayDefault = filterAray.find((item) =>
+          item.auctions.find((el) => el.is_default)
+        )
+
+        setDataCountries(filterAray)
+
+        setCountrySelect(
+          JSON.stringify(filterArayDefault ? filterArayDefault : filterAray[0])
+        )
         dispatch(showLoder({ offices: 0 }))
       })
       .catch(() => dispatch(showLoder({ offices: 0 })))
   }, [])
+
+  useEffect(() => {
+    getAuctions(countrySelect)
+  }, [countrySelect])
+
+  const getAuctions = (val) => {
+    const { auctions } = JSON.parse(val)
+
+    if (auctions && auctions.length > 0) {
+      const is_default = auctions.find(({ is_default }) => !!is_default)
+
+      setAuctionArray(auctions)
+      setAuctionSelect(
+        is_default ? JSON.stringify(is_default) : JSON.stringify(auctions[0])
+      )
+    } else {
+      setAuctionArray([])
+      setAuctionSelect(0)
+    }
+  }
 
   useEffect(() => {
     dispatch(showLoder({ autotype: 1 }))
@@ -245,7 +287,7 @@ const AuctionTransportAutoCreate = ({
       .catch((err) => {
         setTransportTypeArray([])
 
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ autotype: 0 }))
       })
   }, [])
@@ -444,7 +486,7 @@ const AuctionTransportAutoCreate = ({
             if (elem.place_destinations !== null) {
               setPlaceDestinationsArray(elem.place_destinations)
               setPlaceDestinationsSelect(elem.place_destinations[0].id)
-            }else {
+            } else {
               setPlaceDestinationsArray([])
               setPlaceDestinationsSelect('')
             }
@@ -497,12 +539,12 @@ const AuctionTransportAutoCreate = ({
             })
           }
 
-          toast.success('Успешно найдено!')
+          state.createNotification('Успешно найдено!', 'success')
           dispatch(showLoder({ parseFunction: 0 }))
         }
       )
       .catch(() => {
-        toast.error('Не найдено')
+        state.createNotification('Не найдено!', 'error')
         dispatch(showLoder({ parseFunction: 0 }))
       })
   }
@@ -553,21 +595,24 @@ const AuctionTransportAutoCreate = ({
               ...dataParse,
             })
               .then((res) => {
-                toast.success('Успешно созданно!')
+                state.createNotification('Успешно создано!', 'success')
                 navigate(
                   `/auction-transport/edit/${res.general_information_id}`
                 )
                 dispatch(showLoder({ createAuctionTransport: 0 }))
               })
               .catch((res) => {
-                toast.error('Что-то пошло не так!')
+                state.createNotification('Что-то пошло не так!', 'error')
                 dispatch(showLoder({ createAuctionTransport: 0 }))
               })
           } else {
-            toast.error('Лот должен содержать 8 символов!')
+            state.createNotification(
+              'Лот должен содержать  8 символов!',
+              'error'
+            )
           }
         } else {
-          toast.error('Подтвердите тип ТС!')
+          state.createNotification('Подтвердите тип ТС!', 'error')
         }
       } else {
         refFocus.current.focus()
@@ -576,8 +621,9 @@ const AuctionTransportAutoCreate = ({
         refFocus.current.style.borderWidth = '1px'
         refFocus.current.style.borderColor = 'red'
 
-        toast.error(
-          `Неверное количество символов (${vin.length}) vin(Должно быть равное 17)`
+        state.createNotification(
+          `Неверное количество символов (${vin.length}) vin(Должно быть равное 17)`,
+          'error'
         )
       }
     }
@@ -611,7 +657,8 @@ const AuctionTransportAutoCreate = ({
         dispatch(showLoder({ verification: 0 }))
       })
       .catch((err) => {
-        toast.error(textError)
+        state.createNotification(textError, 'error')
+
         if (fieldName === 'lot') {
           refFocusLot.current.style.outline = 'none'
           refFocusLot.current.style.border = 'solid'
@@ -637,18 +684,18 @@ const AuctionTransportAutoCreate = ({
     postRequest(`/api/v1/order/transport-auto/get-info-by-vin`, { vin })
       .then((res) => {
         setGetInfoId(res.info)
-        toast.success('Успешно выполнено!')
+
+        state.createNotification('Успешно выполнено!', 'success')
         dispatch(showLoder({ getInfoByVin: 0 }))
       })
       .catch((err) => {
-        toast.error('Не найдено!')
+        state.createNotification('Не найдено!', 'error')
         dispatch(showLoder({ getInfoByVin: 0 }))
       })
   }
 
   return (
     <form onSubmit={createAuctionTransport}>
-      <ToastContainer />
       <div className="contentBlockTop">
         <div className="modal-container">
           <Modal
@@ -761,17 +808,19 @@ const AuctionTransportAutoCreate = ({
           >
             <label htmlFor="selectCustomId">Название площадки</label>
             {locationsArray.length > 0 ? (
-                <SelectPicker
-                    id="selectCustomId"
-                    data={locationsArray}
-                    valueKey="id"
-                    labelKey="name"
-                    value={locationsSelect}
-                    onChange={setLocationsSelect}
-                    placeholder="Выберите площадку"
-                    loading={!locationsArray.length}
-                />
-            ) : ('Нет данных')}
+              <SelectPicker
+                id="selectCustomId"
+                data={locationsArray}
+                valueKey="id"
+                labelKey="name"
+                value={locationsSelect}
+                onChange={setLocationsSelect}
+                placeholder="Выберите площадку"
+                loading={!locationsArray.length}
+              />
+            ) : (
+              'Нет данных'
+            )}
           </div>
 
           <label>
@@ -842,7 +891,7 @@ const AuctionTransportAutoCreate = ({
                 {placeDestinationsArray.map((elem) => {
                   return (
                     <option key={elem.id} value={elem.id}>
-                      {elem.title}
+                      {elem.title + ' , ' + elem.country.name_ru}
                     </option>
                   )
                 })}
@@ -1097,4 +1146,4 @@ const AuctionTransportAutoCreate = ({
     </form>
   )
 }
-export default AuctionTransportAutoCreate
+export default memo(AuctionTransportAutoCreate)

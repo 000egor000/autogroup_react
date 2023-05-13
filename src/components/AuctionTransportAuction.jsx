@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
 
-import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 import { showLoder } from '../reducers/actions'
@@ -59,7 +58,6 @@ const AuctionTransportAutoCreate = () => {
       })
       .catch((err) => {
         dispatch(showLoder({ getAuctionData: 0 }))
-        // toast.error('Что-то пошло не так!')
       })
   }
 
@@ -82,7 +80,6 @@ const AuctionTransportAutoCreate = () => {
       })
       .catch((err) => {
         dispatch(showLoder({ fuel: 0 }))
-        // toast.error('Что-то пошло не так!')
       })
   }, [])
 
@@ -104,7 +101,6 @@ const AuctionTransportAutoCreate = () => {
       })
       .catch((err) => {
         dispatch(showLoder({ systems: 0 }))
-        // toast.error('Что-то пошло не так!')
       })
   }, [])
 
@@ -124,7 +120,6 @@ const AuctionTransportAutoCreate = () => {
       })
       .catch((err) => {
         dispatch(showLoder({ transmission: 0 }))
-        // toast.error('Что-то пошло не так!')
       })
   }, [])
 
@@ -144,7 +139,6 @@ const AuctionTransportAutoCreate = () => {
       })
       .catch((err) => {
         dispatch(showLoder({ drive: 0 }))
-        // toast.error('Что-то пошло не так!')
       })
   }, [])
 
@@ -164,7 +158,6 @@ const AuctionTransportAutoCreate = () => {
       })
       .catch((err) => {
         dispatch(showLoder({ highlight: 0 }))
-        // toast.error('Что-то пошло не так!')
       })
   }, [])
   const myRound10 = (val) => Math.ceil(val / 50) * 50
@@ -275,13 +268,15 @@ const AuctionTransportAutoCreate = () => {
       putRequest(`/api/v1/order/transport-auto/updateSale/${id}`, paramsEdit)
         .then((res) => {
           getAuctionData(id)
-          toast.success('Успешно обновлено!')
+          state.createNotification('Успешно обновлено!', 'success')
+
           setIsModalClose(false)
           dispatch(showLoder({ updateSale: 0 }))
         })
         .catch((err) => {
           setIsModalClose(false)
-          toast.error('Что-то пошло не так!')
+          state.createNotification('Что-то пошло не так!', 'error')
+
           dispatch(showLoder({ updateSale: 0 }))
         })
     }
@@ -313,7 +308,10 @@ const AuctionTransportAutoCreate = () => {
           setIsModalClose(true)
         }
       } else {
-        toast.error('Заполните стартовую и минимальную цену продажи!')
+        state.createNotification(
+          'Заполните стартовую и минимальную цену продажи!',
+          'error'
+        )
       }
     } else {
       updateSale()
@@ -325,13 +323,14 @@ const AuctionTransportAutoCreate = () => {
     putRequest(`/api/v1/order/transport-auto/updatePredSale/${id}`)
       .then((res) => {
         getAuctionData(id)
-        // toast.success('Успешно обновлено!')
+
         setIsModalClose(false)
         dispatch(showLoder({ updatePredSale: 0 }))
       })
       .catch((err) => {
         setIsModalClose(false)
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
+
         dispatch(showLoder({ updatePredSale: 0 }))
       })
   }
@@ -374,7 +373,6 @@ const AuctionTransportAutoCreate = () => {
 
   return (
     <div>
-      <ToastContainer />
       <div className="modal-container">
         <Modal
           backdrop={'static'}

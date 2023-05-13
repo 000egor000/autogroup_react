@@ -5,7 +5,7 @@ import { Edit, Trash } from '@rsuite/icons'
 
 import 'rsuite-table/dist/css/rsuite-table.css'
 import { Modal } from 'rsuite'
-import { ToastContainer, toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
 
 import { getRequest, deleteRequest } from '../base/api-request'
@@ -14,7 +14,7 @@ import { showLoder } from '../reducers/actions'
 import ContextApp from '../context/contextApp.js'
 
 import { useNavigate } from 'react-router-dom'
-const Agent = (props) => {
+const Agent = () => {
   const [dataPartners, setDataPartners] = useState([])
 
   const [idEdit, setIdEdit] = useState('')
@@ -33,14 +33,14 @@ const Agent = (props) => {
     deleteRequest(`/api/v1/partners/${id}`)
       .then((res) => {
         if (res.status === 'success') {
-          toast.success('успешно удалено!')
+          state.createNotification('успешно удалено!', 'success')
           getArray()
 
           dispatch(showLoder({ remove: 0 }))
         }
       })
       .catch((err) => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ remove: 0 }))
       })
   }
@@ -96,7 +96,6 @@ const Agent = (props) => {
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
       <div className="modal-container">
         <Modal
           backdrop={'static'}

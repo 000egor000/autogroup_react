@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 
 import 'react-toastify/dist/ReactToastify.css'
-import { ToastContainer, toast } from 'react-toastify'
 
 import { ArrowRightLine, ArrowDownLine } from '@rsuite/icons'
 
@@ -473,7 +472,7 @@ const WalletsAuctions = ({ nameProps, carterId, dataAray }) => {
         dispatch(showLoder({ credentials: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ credentials: 0 }))
       })
   }
@@ -976,8 +975,6 @@ const WalletsAuctions = ({ nameProps, carterId, dataAray }) => {
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
-
       <div className="itemContainer-inner">
         <div
           className="top-item"

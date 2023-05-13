@@ -1,11 +1,11 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect, memo } from 'react'
 import { Table, Column, HeaderCell, Cell } from 'rsuite-table'
 
 import { Edit, Trash } from '@rsuite/icons'
 
 import { Pagination, Modal } from 'rsuite'
 import 'rsuite-table/dist/css/rsuite-table.css'
-import { ToastContainer, toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
 import NoData from './NoData'
 
@@ -94,12 +94,10 @@ const Docfess = ({ currentRates, viewBlock, dataArray }) => {
 
   useEffect(() => {
     if (dataArray.length > 0) {
-      const idCarrier = dataArray.find((elem) => elem.value == currentRates)
+      // const idCarrier = dataArray.find((elem) => elem.value == currentRates)
 
-      if (idCarrier && idCarrier.id) {
-        setCurrentUrlId(idCarrier.id)
-        getArray(idCarrier.id)
-      }
+      setCurrentUrlId(currentRates)
+      getArray(currentRates)
     } else {
       setCurrentUrlId('')
       setDataArrayDoc([])
@@ -110,13 +108,13 @@ const Docfess = ({ currentRates, viewBlock, dataArray }) => {
     dispatch(showLoder({ remove: 1 }))
     deleteRequest(`/api/v1/rates-fees/doc-fees/${id}`)
       .then((res) => {
-        toast.success('Успешно удален!')
+        state.createNotification('Успешно удалено!', 'success')
         getArray()
         setIsModalRemove(false)
         dispatch(showLoder({ remove: 0 }))
       })
       .catch((err) => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ remove: 0 }))
       })
   }
@@ -150,12 +148,12 @@ const Docfess = ({ currentRates, viewBlock, dataArray }) => {
     setIsModalShowEdit(false)
     putRequest(`/api/v1/rates-fees/doc-fees/${idEdit}`, paramsEdit)
       .then(() => {
-        toast.success('Успешно изменена!')
+        state.createNotification('Успешно изменено!', 'success')
         getArray()
         dispatch(showLoder({ editLocation: 0 }))
       })
       .catch((err) => {
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
         dispatch(showLoder({ editLocation: 0 }))
       })
   }
@@ -201,11 +199,11 @@ const Docfess = ({ currentRates, viewBlock, dataArray }) => {
         getArray()
         setIsModalShow(false)
         dispatch(showLoder({ createDoc: 0 }))
-        toast.success('Успешно добавлена!')
+        state.createNotification('Успешно выполнено!', 'success')
       })
       .catch((err) => {
         dispatch(showLoder({ createDoc: 0 }))
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
       })
   }
 
@@ -233,8 +231,6 @@ const Docfess = ({ currentRates, viewBlock, dataArray }) => {
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
-
       <div className="modal-container">
         <Modal
           backdrop={'static'}
@@ -419,7 +415,7 @@ const Docfess = ({ currentRates, viewBlock, dataArray }) => {
           </Modal.Body>
         </Modal>
       </div>
-      {currentUrlId ? (
+      {currentUrlId && dataArrayDoc.length > 0 ? (
         <>
           <div className="itemContainer-inner">
             <div className="top-item " style={{ paddingLeft: state.width }}>
@@ -437,7 +433,7 @@ const Docfess = ({ currentRates, viewBlock, dataArray }) => {
               className="bottom-itemFooter"
               style={{ paddingLeft: state.width, color: 'black' }}
             >
-              {dataArrayDoc.length > 0 ? (
+              {dataArrayDoc.length > 0 && (
                 <div className="Table">
                   <Table
                     autoHeight
@@ -446,7 +442,7 @@ const Docfess = ({ currentRates, viewBlock, dataArray }) => {
                     bordered={true}
                     data={dataArrayDoc}
                   >
-                    <Column align="center" fixed flexGrow={1}>
+                    <Column align="center" fixed flexGrow={0.2}>
                       <HeaderCell>№</HeaderCell>
                       <Cell>
                         {(rowData, rowIndex) => {
@@ -598,8 +594,6 @@ const Docfess = ({ currentRates, viewBlock, dataArray }) => {
                     />
                   </div>
                 </div>
-              ) : (
-                'Нет данных!'
               )}
             </div>
           </div>
@@ -615,4 +609,4 @@ Docfess.propTypes = {
   currentRates: PropTypes.string,
   viewBlock: PropTypes.func,
 }
-export default Docfess
+export default memo(Docfess)

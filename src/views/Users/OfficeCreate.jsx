@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { PagePrevious, Check, Close, Send } from '@rsuite/icons'
-import { ToastContainer, toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
 import { Toggle } from 'rsuite'
 
@@ -66,7 +66,7 @@ const OfficeCreate = () => {
         dispatch(showLoder({ rights: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ rights: 0 }))
       })
   }, [])
@@ -88,7 +88,7 @@ const OfficeCreate = () => {
         dispatch(showLoder({ role: 0 }))
       })
       .catch((err) => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ role: 0 }))
       })
   }, [])
@@ -106,7 +106,7 @@ const OfficeCreate = () => {
           dispatch(showLoder({ countriesId: 0 }))
         })
         .catch((err) => {
-          // toast.error('Что-то пошло не так!')
+          //state.createNotification('Успешно обновлено!', 'error')
           dispatch(showLoder({ countriesId: 0 }))
         })
     }
@@ -122,7 +122,7 @@ const OfficeCreate = () => {
         dispatch(showLoder({ countries: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ countries: 0 }))
       })
   }, [])
@@ -165,7 +165,10 @@ const OfficeCreate = () => {
         dispatch(showLoder({ verificationEmail: 0 }))
       })
       .catch((err) => {
-        toast.error('Пользователь с таким email уже создан!')
+        state.createNotification(
+          'Пользователь с таким email уже создан!',
+          'error'
+        )
         refFocus.current.style.outline = 'none'
         refFocus.current.style.border = 'solid'
         refFocus.current.style.borderWidth = '1px'
@@ -231,13 +234,13 @@ const OfficeCreate = () => {
 
     postRequest('/api/v1/offices', params)
       .then((res) => {
-        toast.success('Пользователь создан!')
+        state.createNotification('Пользователь создан!', 'success')
         history(-1)
         dispatch(showLoder({ masterCreateForm: 0 }))
       })
       .catch((err) => {
         dispatch(showLoder({ masterCreateForm: 0 }))
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
       })
   }
   const rightsSettingFunction = () => {
@@ -303,7 +306,6 @@ const OfficeCreate = () => {
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
       <div className="itemContainer-inner">
         <div className="top-item " style={{ paddingLeft: state.width }}>
           <div className="btnTransport" style={{ justifyContent: 'left' }}>

@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect } from 'react'
 
 import 'rsuite-table/dist/css/rsuite-table.css'
 
-import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 import { useNavigate } from 'react-router-dom'
@@ -15,48 +14,69 @@ import { CheckPicker } from 'rsuite'
 import { dataView } from '../helper'
 
 const CarterAddProfile = (props) => {
-  const [nameСarter, setNameСarter] = useState('')
-  const [addressСarter, setAddressСarter] = useState('')
-  const [contactСarter, setContactСarter] = useState('')
+  const [nameCarter, setNameCarter] = useState('')
+    const [dataMaster, setDataMaster] = useState([])
+  const [addressCarter, setAddressCarter] = useState('')
+  const [contactCarter, setContactCarter] = useState('')
   const [pdp, setPdp] = useState([])
   const [pdpSelect, setPdpSelect] = useState([])
-  const [phoneСarter, setPhoneСarter] = useState('')
-  const [messengerСarter, setMessengerСarter] = useState('')
-  const [emailСarter, setEmailСarter] = useState('')
+  const [phoneCarter, setPhoneCarter] = useState('')
+  const [messengerCarter, setMessengerCarter] = useState('')
+  const [emailCarter, setEmailCarter] = useState('')
   const navigate = useNavigate()
   const { state, dispatch } = useContext(ContextApp)
 
   const params = {
-    name: nameСarter,
-    address: addressСarter,
-    contact: contactСarter,
-    phone: phoneСarter,
-    messenger: messengerСarter,
-    email: emailСarter,
+    name: nameCarter,
+    address: addressCarter,
+    contact: contactCarter,
+    phone: phoneCarter,
+    messenger: messengerCarter,
+    email: emailCarter,
     code: '',
     pd_id_add: pdpSelect,
   }
   useEffect(() => {
     getPdp()
+      getArray()
   }, [])
 
-  const createСarter = (e) => {
-    dispatch(showLoder({ createСarter: 1 }))
+  const createCarter = (e) => {
+    dispatch(showLoder({ createCarter: 1 }))
     e.preventDefault()
 
     postRequest('/api/v1/carters', params)
       .then(() => {
-        toast.success('Перевозчик успешно добавлен!')
+        state.createNotification('Успешно выполнено!', 'success')
+
         navigate(-1)
 
-        dispatch(showLoder({ createСarter: 0 }))
+        dispatch(showLoder({ createCarter: 0 }))
       })
       .catch((err) => {
-        toast.error('Проверьте веденные данные!')
-        dispatch(showLoder({ createСarter: 0 }))
+        state.createNotification('Проверьте веденные данные!', 'error')
+        dispatch(showLoder({ createCarter: 0 }))
       })
   }
 
+    const getArray = () => {
+        dispatch(showLoder({ getArray: 1 }))
+        getRequest(`/api/v1/destinations?page=1&limit=1000`, {
+            Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+        })
+            .then(({ destinations }) => {
+                const data = destinations.map(({ id, title }) => ({
+                    label: title,
+                    value: id,
+                }))
+                setDataMaster(data)
+                dispatch(showLoder({ getArray: 0 }))
+            })
+            .catch((err) => {
+                setDataMaster([])
+                dispatch(showLoder({ getArray: 0 }))
+            })
+    }
   const getPdp = () => {
     dispatch(showLoder({ getPdp: 1 }))
     getRequest(`/api/v1/pdp`, {
@@ -78,7 +98,6 @@ const CarterAddProfile = (props) => {
 
   return (
     <div className="itemContainer itemContainer--agentAdd">
-      <ToastContainer />
       <div className="itemContainer-inner">
         <div
           className="top-item"
@@ -95,17 +114,17 @@ const CarterAddProfile = (props) => {
                 <div className="dropBlockContent">
                   <h2>Добавить перевозчика</h2>
 
-                  <form onSubmit={createСarter}>
-                    {pdp.length > 0 && (
+                  <form onSubmit={createCarter}>
+                    {dataMaster.length > 0 && (
                       <div className="selectCustom selectCustom--space">
                         <span className="titleCheckPicker">
-                          Название связей
+                          Порт
                         </span>
 
                         <CheckPicker
                           value={pdpSelect}
                           onChange={setPdpSelect}
-                          data={pdp}
+                          data={dataMaster}
                           required
                         />
                       </div>
@@ -116,11 +135,11 @@ const CarterAddProfile = (props) => {
                       <input
                         className=""
                         type="text"
-                        value={nameСarter}
+                        value={nameCarter}
                         onChange={(e) => {
                           let value = e.target.value
                           value = value.replace(/[^A-Za-z0-9.,-\s]+/gi, '')
-                          return setNameСarter(value)
+                          return setNameCarter(value)
                         }}
                         placeholder="Наименование компании"
                         required
@@ -131,11 +150,11 @@ const CarterAddProfile = (props) => {
                       <input
                         className=""
                         type="text"
-                        value={addressСarter}
+                        value={addressCarter}
                         onChange={(e) => {
                           let value = e.target.value
                           value = value.replace(/[^A-Za-z0-9.,-\s]+/gi, '')
-                          return setAddressСarter(value)
+                          return setAddressCarter(value)
                         }}
                         placeholder="Адрес регистрации"
                         required
@@ -146,11 +165,11 @@ const CarterAddProfile = (props) => {
                       <input
                         className=""
                         type="text"
-                        value={contactСarter}
+                        value={contactCarter}
                         onChange={(e) => {
                           let value = e.target.value
                           value = value.replace(/[^A-Za-z\s]+/gi, '')
-                          return setContactСarter(value)
+                          return setContactCarter(value)
                         }}
                         placeholder="Контактное лицо"
                         required
@@ -161,11 +180,11 @@ const CarterAddProfile = (props) => {
                       <input
                         className=""
                         type="text"
-                        value={phoneСarter}
+                        value={phoneCarter}
                         onChange={(e) => {
                           let value = e.target.value
                           value = value.replace(/[^0-9.+,-\s]+/gi, '')
-                          return setPhoneСarter(value)
+                          return setPhoneCarter(value)
                         }}
                         placeholder="Номер телефона"
                         required
@@ -176,11 +195,11 @@ const CarterAddProfile = (props) => {
                       <input
                         className=""
                         type="text"
-                        value={messengerСarter}
+                        value={messengerCarter}
                         onChange={(e) => {
                           let value = e.target.value
                           value = value.replace(/[^A-Za-z0-9.,-\s]+/gi, '')
-                          return setMessengerСarter(value)
+                          return setMessengerCarter(value)
                         }}
                         placeholder="Мессенджер"
                         required
@@ -191,11 +210,11 @@ const CarterAddProfile = (props) => {
                       <input
                         className=""
                         type="text"
-                        value={emailСarter}
+                        value={emailCarter}
                         onChange={(e) => {
                           let value = e.target.value
                           value = value.replace(/[^A-Za-z0-9.,-\s]+/gi, '')
-                          return setEmailСarter(value)
+                          return setEmailCarter(value)
                         }}
                         placeholder="E-mail"
                         required

@@ -60,7 +60,7 @@ const Сalculator = () => {
       })
       .catch((err) => {
         dispatch(showLoder({ auctions: 0 }))
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
       })
   }, [])
 
@@ -81,7 +81,7 @@ const Сalculator = () => {
         setTransportTypeArray([])
         setTransportTypeSelect('')
         dispatch(showLoder({ size: 0 }))
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
       })
   }, [])
 
@@ -106,7 +106,7 @@ const Сalculator = () => {
         })
         .catch((err) => {
           dispatch(showLoder({ calculatorLocations: 0 }))
-          // toast.error('Что-то пошло не так!')
+          //state.createNotification('Успешно обновлено!', 'error')
         })
     }
     return () => {
@@ -141,7 +141,7 @@ const Сalculator = () => {
 
       .catch((err) => {
         dispatch(showLoder({ carriers: 0 }))
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
       })
   }, [])
 
@@ -164,7 +164,7 @@ const Сalculator = () => {
 
         .catch((err) => {
           dispatch(showLoder({ carrierId: 0 }))
-          // toast.error('Что-то пошло не так!')
+          //state.createNotification('Успешно обновлено!', 'error')
         })
     }
     return () => {
@@ -185,7 +185,7 @@ const Сalculator = () => {
       })
 
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ destinations: 0 }))
       })
   }, [])

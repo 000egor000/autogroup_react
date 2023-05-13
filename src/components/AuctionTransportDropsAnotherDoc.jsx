@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { ToastContainer, toast } from 'react-toastify'
+import React, { useState, useEffect, useContext, memo } from 'react'
+
 import 'react-toastify/dist/ReactToastify.css'
 import { Attachment, CheckOutline } from '@rsuite/icons'
 import { getRequest, postRequestFile } from '../base/api-request'
@@ -45,7 +45,7 @@ const AuctionTransportDropsAnotherDoc = ({
       setShowIcon(true)
       setFileGive(e.target.files[0])
       setFileName(e.target.files[0].name)
-      toast.success('Файл прикреплен!')
+      state.createNotification('Успешно выполнено!', 'success')
     }
   }
 
@@ -55,7 +55,7 @@ const AuctionTransportDropsAnotherDoc = ({
     if (fileGive) {
       postRequestFile('/api/v1/order/drops', formData)
         .then((res) => {
-          toast.success('Успешно создано!')
+          state.createNotification('Успешно создано!', 'success')
           setDescribe('')
           setFileName('')
           setShowIcon(false)
@@ -63,11 +63,11 @@ const AuctionTransportDropsAnotherDoc = ({
           dispatch(showLoder({ createDropFunc: 0 }))
         })
         .catch(() => {
-          toast.error('Что-то пошло не так!')
+          state.createNotification('Что-то пошло не так!', 'error')
           dispatch(showLoder({ createDropFunc: 0 }))
         })
     } else {
-      toast.error('Прикрепите файл!')
+      state.createNotification('Прикрепите файл!', 'error')
       dispatch(showLoder({ createDropFunc: 0 }))
     }
   }
@@ -79,7 +79,6 @@ const AuctionTransportDropsAnotherDoc = ({
         display: itemStatus ? 'block' : 'none',
       }}
     >
-      <ToastContainer />
       <div className="contentBlockTop">
         <div className="dropBlockContent dropBlockContent--doc">
           <form onSubmit={createDropFunc}>
@@ -155,4 +154,4 @@ AuctionTransportDropsAnotherDoc.propTypes = {
   propsId: PropTypes.number,
   viewBlock: PropTypes.func,
 }
-export default AuctionTransportDropsAnotherDoc
+export default memo(AuctionTransportDropsAnotherDoc)

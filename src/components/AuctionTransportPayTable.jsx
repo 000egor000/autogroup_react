@@ -1,6 +1,6 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect, memo } from 'react'
 import { useParams } from 'react-router-dom'
-import { ToastContainer, toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
 import { Table, Column, HeaderCell, Cell } from 'rsuite-table'
 import { Modal } from 'rsuite'
@@ -37,7 +37,7 @@ const AuctionTransportPayTable = ({
   const [commentValue, setCommentValue] = useState('')
   const [currentValueToggleFist, setCurrentValueToggleFist] = useState(false)
 
-  const { dispatch } = useContext(ContextApp)
+  const { state, dispatch } = useContext(ContextApp)
 
   useEffect(() => {
     if (dataArray.length > 0) return setDataPayArray(dataArray)
@@ -75,18 +75,21 @@ const AuctionTransportPayTable = ({
           controlParams
         )
           .then((res) => {
-            toast.success('Подтверждено!')
+            state.createNotification('Успешно выполнено!', 'success')
             getPaymentArray()
             clearFunc()
             dispatch(showLoder({ priceUpdate: 0 }))
           })
           .catch(() => {
-            toast.error('Что-то пошло не так!')
+            state.createNotification('Что-то пошло не так!', 'error')
             clearFunc()
             dispatch(showLoder({ priceUpdate: 0 }))
           })
       } else {
-        toast.error('Сумма зачисления не может превышать сумму отправки!')
+        state.createNotification(
+          `Сумма зачисления не может превышать сумму отправки!`,
+          'error'
+        )
       }
     }
 
@@ -94,7 +97,7 @@ const AuctionTransportPayTable = ({
       if (currentValueToggleFist) {
         paymentSend()
       } else {
-        toast.error('Подтвердите сумму зачисления!')
+        state.createNotification(`Подтвердите сумму зачисления!`, 'error')
       }
     } else {
       paymentSend()
@@ -144,7 +147,6 @@ const AuctionTransportPayTable = ({
 
   return (
     <div className="blockInfoPrice">
-      <ToastContainer />
       <div className="modal-container">
         <Modal
           backdrop={'static'}
@@ -406,4 +408,4 @@ AuctionTransportPayTable.propTypes = {
   viewBlockProp: PropTypes.func,
 }
 
-export default AuctionTransportPayTable
+export default memo(AuctionTransportPayTable)

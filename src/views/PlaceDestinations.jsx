@@ -6,9 +6,9 @@ import { Edit, Trash } from '@rsuite/icons'
 import { Pagination, SelectPicker, CheckPicker, Modal } from 'rsuite'
 import 'rsuite-table/dist/css/rsuite-table.css'
 
-import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { viewPorts } from './../helper'
+import { viewDestinations } from './../helper'
+import NoData from '../components/NoData'
 
 import {
   postRequest,
@@ -25,13 +25,12 @@ const PlaceDestinations = (props) => {
   const [dataPlaceDestinations, setDataPlaceDestinations] = useState([])
   const partsLimit = [20, 50, 100]
 
-  const [locationEditValue, setLocationEditValue] = useState('')
-  const [locationCodeEditValue, setLocationCodeEditValue] = useState('')
+  // const [locationEditValue, setLocationEditValue] = useState('')
 
-  const [
-    selectValueEditPlaceDestinations,
-    setSelectValueEditPlaceDestinations,
-  ] = useState([])
+  // const [
+  //   selectValueEditPlaceDestinations,
+  //   setSelectValueEditPlaceDestinations,
+  // ] = useState([])
   const [idEdit, setIdEdit] = useState('')
 
   const [paginationValue, setPaginationValue] = useState([])
@@ -40,12 +39,13 @@ const PlaceDestinations = (props) => {
   const [isModalShowEdit, setIsModalShowEdit] = useState(false)
   const [isModalRemove, setIsModalRemove] = useState(false)
   const [locationValue, setLocationValue] = useState('')
-  const [locationValueCode, setLocationValueCode] = useState('')
+
   const [selectValuePlaceDestinations, setSelectValuePlaceDestinations] =
-    useState(1)
+    useState([])
   const [destinationsSelect, setDestinationsSelect] = useState('')
   const [destinationsArray, setDestinationsArray] = useState([])
-
+  const [dataCountries, setDataCountries] = useState([])
+  const [dataCountriesValue, setDataCountriesValue] = useState('')
   const [viewControler, setViewControler] = useState([])
 
   const [limit, setLimit] = useState(20)
@@ -61,14 +61,14 @@ const PlaceDestinations = (props) => {
     deleteRequest(`/api/v1/place-destinations/${id}`)
       .then((res) => {
         if (res.status === 'success') {
-          toast.success('Порт назначения успешно удален!')
+          state.createNotification('Успешно удалено!', 'success')
           getArray()
           getPlaceDestinations()
           dispatch(showLoder({ removeDestinations: 0 }))
         }
       })
       .catch((err) => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ removeDestinations: 0 }))
       })
   }
@@ -80,11 +80,11 @@ const PlaceDestinations = (props) => {
     })
       .then((res) => {
         setDataPlaceDestinations(res.destinations)
-        setSelectValuePlaceDestinations(res.destinations[0].id)
+        // setSelectValuePlaceDestinations(res.destinations[0].id)
         dispatch(showLoder({ getPlaceDestinations: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
 
         dispatch(showLoder({ getPlaceDestinations: 0 }))
       })
@@ -118,7 +118,7 @@ const PlaceDestinations = (props) => {
       .catch((err) => {
         setDestinationsArray([])
         dispatch(showLoder({ getAllArray: 0 }))
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
       })
   }
 
@@ -139,7 +139,7 @@ const PlaceDestinations = (props) => {
         .catch((err) => {
           setDataMaster([])
           dispatch(showLoder({ destinationsSearch: 0 }))
-          // toast.error('Что-то пошло не так!')
+          //state.createNotification('Успешно обновлено!', 'error')
         })
     } else {
       getArray()
@@ -147,36 +147,51 @@ const PlaceDestinations = (props) => {
   }, [destinationsSelect])
 
   useEffect(() => {
+    dispatch(showLoder({ getСountries: 1 }))
+    getRequest(`/api/v1/countries?page=${page}&limit=${limit}`, {
+      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+    })
+      .then((res) => {
+        setDataCountries(res.countries)
+
+        dispatch(showLoder({ getСountries: 0 }))
+      })
+      .catch(() => dispatch(showLoder({ getСountries: 0 })))
+  }, [])
+
+  useEffect(() => {
     getArray()
     getAllArray()
     getPlaceDestinations()
   }, [page, limit])
 
-  const showIdLocation = (name, code, placeDestinations, id) => {
+  const showIdLocation = ({ title, destinations, id, country }) => {
     let resIdPlaceDestinations = []
-    if (placeDestinations !== null)
-      placeDestinations.map((el) => resIdPlaceDestinations.push(el.id))
-    setLocationEditValue(name ? name : '')
-    setLocationCodeEditValue(code ? code : '')
+    if (!!destinations)
+      destinations.map((el) => resIdPlaceDestinations.push(el.id))
+    setLocationValue(title ? title : '')
 
-    setSelectValueEditPlaceDestinations(
-      resIdPlaceDestinations ? resIdPlaceDestinations : ''
+    setSelectValuePlaceDestinations(
+      resIdPlaceDestinations.length > 0 ? resIdPlaceDestinations : []
     )
     setIdEdit(id ? id : '')
     setIsModalShowEdit(!isModalShowEdit)
+    setDataCountriesValue(country.id)
   }
 
   let params = {
     title: locationValue,
-    code: locationValueCode,
+    // code: locationValueCode,
     destination_id: selectValuePlaceDestinations,
+    country_id: dataCountriesValue,
   }
 
-  let paramsEdit = {
-    title: locationEditValue,
-    code: locationCodeEditValue,
-    destination_id: selectValueEditPlaceDestinations,
-  }
+  // let paramsEdit = {
+  //   title: locationEditValue,
+  //   // code: locationCodeEditValue,
+  //   destination_id: selectValueEditPlaceDestinations,
+  //   country_id: dataCountriesValue,
+  // }
 
   const createLocation = (e) => {
     dispatch(showLoder({ createLocation: 1 }))
@@ -184,7 +199,7 @@ const PlaceDestinations = (props) => {
     setIsModalShow(false)
     postRequest('/api/v1/place-destinations', params)
       .then(() => {
-        toast.success('Порт назначения успешно добавлена!')
+        state.createNotification('Успешно выполнено!', 'success')
         getArray()
         getPlaceDestinations()
         close()
@@ -192,7 +207,7 @@ const PlaceDestinations = (props) => {
         dispatch(showLoder({ createLocation: 0 }))
       })
       .catch((err) => {
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
         dispatch(showLoder({ createLocation: 0 }))
       })
   }
@@ -200,16 +215,16 @@ const PlaceDestinations = (props) => {
     dispatch(showLoder({ editLocation: 1 }))
     e.preventDefault()
     setIsModalShowEdit(false)
-    putRequest(`/api/v1/place-destinations/${idEdit}`, paramsEdit)
+    putRequest(`/api/v1/place-destinations/${idEdit}`, params)
       .then(() => {
-        toast.success('Порт назначения успешно изменена!')
+        state.createNotification('Успешно изменено!', 'success')
         getArray()
         getPlaceDestinations()
         close()
         dispatch(showLoder({ editLocation: 0 }))
       })
       .catch((err) => {
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
         dispatch(showLoder({ editLocation: 0 }))
       })
   }
@@ -222,8 +237,9 @@ const PlaceDestinations = (props) => {
     setIsModalShowEdit(false)
     setIsModalShow(false)
     setLocationValue('')
-    setLocationValueCode('')
-    setSelectValueEditPlaceDestinations([])
+    setSelectValuePlaceDestinations([])
+    setDataCountriesValue('')
+    // setLocationEditValue('')
   }
 
   useEffect(
@@ -257,7 +273,6 @@ const PlaceDestinations = (props) => {
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
       <div className="modal-container">
         <Modal
           backdrop={'static'}
@@ -266,7 +281,7 @@ const PlaceDestinations = (props) => {
           onClose={() => close()}
         >
           <Modal.Header>
-            <Modal.Title>Удаление порта назначения</Modal.Title>
+            <Modal.Title>Удаление места назначения</Modal.Title>
           </Modal.Header>
 
           <Modal.Body>Вы действительно хотите удалить?</Modal.Body>
@@ -296,7 +311,7 @@ const PlaceDestinations = (props) => {
           onClose={() => close()}
         >
           <Modal.Header>
-            <Modal.Title>Редактировать порт назначения</Modal.Title>
+            <Modal.Title>Редактировать место назначения</Modal.Title>
           </Modal.Header>
 
           <Modal.Body>
@@ -308,29 +323,31 @@ const PlaceDestinations = (props) => {
                 <input
                   className=""
                   type="text"
-                  value={locationEditValue}
-                  onChange={(e) => setLocationEditValue(e.target.value)}
+                  value={locationValue}
+                  onChange={(e) => setLocationValue(e.target.value)}
                   placeholder="Место назначения"
                   required
                 />
               </label>
-              <label>
-                <span>Код</span>
-                <input
-                  className=""
-                  type="text"
-                  value={locationCodeEditValue}
-                  onChange={(e) => setLocationCodeEditValue(e.target.value)}
-                  placeholder="Код"
-                  required
+
+              <div className="customCheckPicker">
+                <span className="titleCheckPicker">Страна</span>
+
+                <SelectPicker
+                  data={dataCountries}
+                  valueKey="id"
+                  labelKey="name_ru"
+                  value={dataCountriesValue}
+                  onChange={setDataCountriesValue}
+                  placeholder="Страна"
                 />
-              </label>
+              </div>
               <div className="customCheckPicker">
                 <span className="titleCheckPicker">Порт назначения</span>
 
                 <CheckPicker
-                  value={selectValueEditPlaceDestinations}
-                  onChange={setSelectValueEditPlaceDestinations}
+                  value={selectValuePlaceDestinations}
+                  onChange={setSelectValuePlaceDestinations}
                   data={dataPlaceDestinations.map((item) => {
                     return { label: item.title, value: item.id }
                   })}
@@ -352,7 +369,7 @@ const PlaceDestinations = (props) => {
           onClose={() => close()}
         >
           <Modal.Header>
-            <Modal.Title>Добавить порт назначения</Modal.Title>
+            <Modal.Title>Добавить место назначения</Modal.Title>
           </Modal.Header>
 
           <Modal.Body>
@@ -370,24 +387,25 @@ const PlaceDestinations = (props) => {
                   required
                 />
               </label>
-              <label>
-                <span>Код</span>
-                <input
-                  className=""
-                  type="text"
-                  value={locationValueCode}
-                  onChange={(e) => setLocationValueCode(e.target.value)}
-                  placeholder="Код"
-                  required
+              <div className="customCheckPicker">
+                <span className="titleCheckPicker">Страна</span>
+
+                <SelectPicker
+                  data={dataCountries}
+                  valueKey="id"
+                  labelKey="name_ru"
+                  value={dataCountriesValue}
+                  onChange={setDataCountriesValue}
+                  placeholder="Страна"
                 />
-              </label>
+              </div>
 
               <div className="customCheckPicker">
                 <span className="titleCheckPicker">Порт назначения</span>
 
                 <CheckPicker
-                  value={selectValueEditPlaceDestinations}
-                  onChange={setSelectValueEditPlaceDestinations}
+                  value={selectValuePlaceDestinations}
+                  onChange={setSelectValuePlaceDestinations}
                   data={dataPlaceDestinations.map((item) => {
                     return { label: item.title, value: item.id }
                   })}
@@ -465,16 +483,27 @@ const PlaceDestinations = (props) => {
                       return (
                         <span
                           onClick={() => {
-                            viewBlock(109) &&
-                              showIdLocation(
-                                rowData.title,
-                                rowData.code,
-                                rowData.destinations,
-                                rowData.id
-                              )
+                            viewBlock(109) && showIdLocation(rowData)
                           }}
                         >
                           {<span>{rowData.title}</span>}
+                        </span>
+                      )
+                    }}
+                  </Cell>
+                </Column>
+
+                <Column align="center" fixed flexGrow={1}>
+                  <HeaderCell>Страна</HeaderCell>
+                  <Cell>
+                    {(rowData, rowIndex) => {
+                      return (
+                        <span
+                          onClick={() => {
+                            viewBlock(109) && showIdLocation(rowData)
+                          }}
+                        >
+                          <span>{rowData.country.name_ru}</span>
                         </span>
                       )
                     }}
@@ -488,16 +517,10 @@ const PlaceDestinations = (props) => {
                       return (
                         <span
                           onClick={() => {
-                            viewBlock(109) &&
-                              showIdLocation(
-                                rowData.title,
-                                rowData.code,
-                                rowData.destinations,
-                                rowData.id
-                              )
+                            viewBlock(109) && showIdLocation(rowData)
                           }}
                         >
-                          {viewPorts(rowData.destinations)}
+                          {viewDestinations(rowData.destinations)}
                         </span>
                       )
                     }}
@@ -515,12 +538,7 @@ const PlaceDestinations = (props) => {
                               {viewBlock(109) && (
                                 <button
                                   onClick={() => {
-                                    showIdLocation(
-                                      rowData.title,
-                                      rowData.code,
-                                      rowData.destinations,
-                                      rowData.id
-                                    )
+                                    showIdLocation(rowData)
                                   }}
                                 >
                                   <Edit />
@@ -570,7 +588,7 @@ const PlaceDestinations = (props) => {
               )}
             </div>
           ) : (
-            'Нет портов назначения!'
+            <NoData />
           )}
         </div>
       </div>

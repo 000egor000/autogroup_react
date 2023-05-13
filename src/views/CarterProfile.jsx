@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect } from 'react'
 
 import 'rsuite-table/dist/css/rsuite-table.css'
 
-import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useParams } from 'react-router-dom'
 import NoData from '../components/NoData'
@@ -12,10 +11,11 @@ import { useNavigate } from 'react-router-dom'
 import { showLoder } from '../reducers/actions'
 import ContextApp from '../context/contextApp.js'
 import { CheckPicker } from 'rsuite'
-import { dataView, controlCheck, controlIdPdp } from '../helper'
+import { dataView, controlCheck, controlIdPdp,controlIdDestination } from '../helper'
 
 const CarterProfile = (props) => {
   const [dataCarters, setDataCarters] = useState([])
+  const [dataMaster, setDataMaster] = useState([])
   const { id } = useParams()
   const navigate = useNavigate()
   const [nameCarters, setNameCarters] = useState('')
@@ -43,6 +43,7 @@ const CarterProfile = (props) => {
 
   useEffect(() => {
     getPdp()
+    getArray()
   }, [])
 
   useEffect(() => {
@@ -66,7 +67,7 @@ const CarterProfile = (props) => {
   }, [])
   useEffect(() => {
     if (dataCarters.id && dataCarters.destinationPlaceDestinations.length > 0) {
-      const res = controlIdPdp(dataCarters)
+      const res = controlIdDestination(dataCarters)
       if (res) {
         setPdpSelect(res)
         setPdpSelectDefault(res)
@@ -100,16 +101,34 @@ const CarterProfile = (props) => {
       [status ? 'pd_id_add' : 'pd_id_delete']: value,
     })
       .then(() => {
-        toast.success('Информация обновлена!')
+        state.createNotification('Информация обновлена!', 'success')
         if (status == undefined) navigate(-1)
         dispatch(showLoder({ editCarters: 0 }))
       })
       .catch((err) => {
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
         dispatch(showLoder({ editCarters: 0 }))
       })
   }
 
+  const getArray = () => {
+    dispatch(showLoder({ getArray: 1 }))
+    getRequest(`/api/v1/destinations?page=1&limit=1000`, {
+      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+    })
+        .then(({ destinations }) => {
+          const data = destinations.map(({ id, title }) => ({
+            label: title,
+            value: id,
+          }))
+          setDataMaster(data)
+          dispatch(showLoder({ getArray: 0 }))
+        })
+        .catch((err) => {
+          setDataMaster([])
+          dispatch(showLoder({ getArray: 0 }))
+        })
+  }
   const getPdp = () => {
     dispatch(showLoder({ getPdp: 1 }))
     getRequest(`/api/v1/pdp`, {
@@ -131,7 +150,6 @@ const CarterProfile = (props) => {
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
       <div className="itemContainer-inner">
         <div
           className="top-item "
@@ -155,16 +173,16 @@ const CarterProfile = (props) => {
 
                   {dataCarters.id ? (
                     <>
-                      {pdp.length > 0 && (
+                      {dataMaster.length > 0 && (
                         <div className="selectCustom selectCustom--space">
                           <span className="titleCheckPicker">
-                            Название связей
+                            Порты
                           </span>
 
                           <CheckPicker
                             value={pdpSelect}
                             onChange={setPdpSelect}
-                            data={pdp}
+                            data={dataMaster}
                             required
                           />
                         </div>

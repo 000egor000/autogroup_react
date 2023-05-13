@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, memo } from 'react'
 
 import { useParams } from 'react-router-dom'
 import { getRequest } from '../base/api-request'
@@ -121,4 +121,4 @@ const AuctionTransportDrops = ({ viewBlock }) => {
 AuctionTransportDrops.propTypes = {
   viewBlock: PropTypes.func,
 }
-export default AuctionTransportDrops
+export default memo(AuctionTransportDrops)

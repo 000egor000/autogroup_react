@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import NoData from '../components/NoData'
 import {
   ArrowRightLine,
   ArrowDownLine,
@@ -80,7 +81,7 @@ const Containers = () => {
       })
       .catch((err) => {
         dispatch(showLoder({ lines: 0 }))
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
       })
   }, [])
 
@@ -109,7 +110,7 @@ const Containers = () => {
   // 		.catch((err) => {
   // 			setContainerArray([])
   // 			dispatch(hide())
-  // 			// toast.error('Что-то пошло не так!')
+  // 			//state.createNotification('Успешно обновлено!', 'error')
   // 		})
   // }, [])
   useEffect(() => {
@@ -123,7 +124,7 @@ const Containers = () => {
       })
       .catch((err) => {
         dispatch(showLoder({ unconfirm: 0 }))
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
       })
   }, [])
 
@@ -140,7 +141,7 @@ const Containers = () => {
         dispatch(showLoder({ ports: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ ports: 0 }))
       })
   }, [])
@@ -242,7 +243,7 @@ const Containers = () => {
           setContainerArray([])
           dispatch(showLoder({ containers: 0 }))
           setContainerArray([])
-          // toast.error('Что-то пошло не так!')
+          //state.createNotification('Успешно обновлено!', 'error')
         })
     }
   }
@@ -267,7 +268,7 @@ const Containers = () => {
   // 			dispatch(hide())
   // 		})
   // 		.catch(() => {
-  // 			// toast.error('Что-то пошло не так!')
+  // 			//state.createNotification('Успешно обновлено!', 'error')
   // 			dispatch(hide())
   // 			setTransportArray([])
   // 			// setPaginationValue([])
@@ -313,13 +314,13 @@ const Containers = () => {
     }
     postRequest('/api/v1/containers', params)
       .then(() => {
-        toast.success('Лист погрузки успешно добавлена!')
+        state.createNotification('Успешно выполнено!', 'success')
         dispatch(showLoder({ createContainer: 0 }))
         getContainerList()
         close()
       })
       .catch((err) => {
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
         dispatch(showLoder({ createContainer: 0 }))
       })
   }
@@ -343,7 +344,7 @@ const Containers = () => {
       })
       .catch((err) => {
         setShowModalDisband(false)
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ editContainer: 0 }))
       })
   }
@@ -359,7 +360,7 @@ const Containers = () => {
       })
       .catch((err) => {
         setShowModalRemove(false)
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ removeContainer: 0 }))
       })
   }
@@ -389,7 +390,7 @@ const Containers = () => {
         .catch(() => {
           dispatch(showLoder({ searchFunction: 0 }))
           setContainerArray([])
-          // toast.error('Что-то пошло не так!')
+          //state.createNotification('Успешно обновлено!', 'error')
         })
     }
   }
@@ -500,7 +501,7 @@ const Containers = () => {
       })
       .catch((err) => {
         setShowModalDisband(false)
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ containersConfirm: 0 }))
       })
 
@@ -1057,7 +1058,7 @@ const Containers = () => {
 							</div> */}
             </div>
           ) : (
-            'Нет информации'
+            <NoData />
           )}
         </div>
       </div>

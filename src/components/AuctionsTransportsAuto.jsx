@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, memo } from 'react'
 import { useParams } from 'react-router-dom'
 import { getRequest } from '../base/api-request'
 // import 'rsuite-table/dist/css/rsuite-table.css'
-import { ToastContainer, toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
 
 import AuctionTransportAutoCreate from '../components/AuctionTransportAutoCreate'
@@ -41,7 +41,7 @@ const AuctionsTransportsAuto = ({
 
       .catch((err) => {
         dispatch(showLoder({ getDataInfo: 0 }))
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
       })
   }
 
@@ -68,15 +68,10 @@ const AuctionsTransportsAuto = ({
       />
     )
 
-  return (
-    <React.Fragment>
-      <ToastContainer />
-      {viewCreateOrEdit(id)}
-    </React.Fragment>
-  )
+  return viewCreateOrEdit(id)
 }
 AuctionsTransportsAuto.propTypes = {
   viewBlock: PropTypes.func,
 }
 
-export default AuctionsTransportsAuto
+export default memo(AuctionsTransportsAuto)

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getLinkType, getDateFunc } from '../helper.js'
+import NoData from './NoData'
 
 const NoticeInner = ({ dataAray, type_notification, toastClick }) => {
   const navigate = useNavigate()
@@ -179,10 +180,10 @@ const NoticeInner = ({ dataAray, type_notification, toastClick }) => {
             </tbody>
           </table>
         ) : (
-          <span>Нет информации по автомобилю!</span>
+          <NoData />
         )}
       </td>
     </tr>
   )
 }
-export default NoticeInner
+export default memo(NoticeInner)

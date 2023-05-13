@@ -9,12 +9,11 @@ import { postRequest, getRequest, putRequest } from '../base/api-request'
 // import { Link } from 'react-router-dom'
 // import ArowBackIcon from '@rsuite/icons/ArowBack'
 import { ArrowRightLine, ArrowDownLine, InfoOutline } from '@rsuite/icons'
-
+import NoData from '../components/NoData'
 import { showLoder } from '../reducers/actions'
 import ContextApp from '../context/contextApp.js'
 import { Pagination } from 'rsuite'
 import NoticeInner from '../components/NoticeInner'
-import { ToastContainer, toast } from 'react-toastify'
 
 const NoticeTransport = (
   {
@@ -78,13 +77,12 @@ const NoticeTransport = (
         dispatch(showLoder({ notifications: 0 }))
       })
   }, [])
-  const toastClick = (val) => toast.info(val)
+
+  const toastClick = (val) => state.createNotification(val, 'info')
 
   return (
     <div className="noticeTransport">
       <div className="itemContainer">
-        <ToastContainer />
-
         <div className="itemContainer-inner">
           <div
             className="top-item "
@@ -157,7 +155,7 @@ const NoticeTransport = (
                 </div>
               </div>
             ) : (
-              <span> Нет уведомлений!</span>
+              <NoData />
             )}
           </div>
         </div>

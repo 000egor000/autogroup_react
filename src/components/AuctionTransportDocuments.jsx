@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect, memo } from 'react'
 import { useParams } from 'react-router-dom'
 import { getRequest } from '../base/api-request'
 import 'react-toastify/dist/ReactToastify.css'
@@ -127,8 +127,8 @@ const AuctionTransportDocuments = ({
             itemStatus={val.status}
             carrierArray={carrierArray}
             idItem={id}
-            priseAutoProps={
-              financeDateArray.length > 0 ? financeDateArray[0].ag_price : 0
+            financeDateArray={
+              financeDateArray.length > 0 ? financeDateArray : []
             }
             dataInfo={dataInfo}
             invoiceId={invoiceId}
@@ -233,4 +233,4 @@ AuctionTransportDocuments.propTypes = {
   viewBlock: PropTypes.func,
 }
 
-export default AuctionTransportDocuments
+export default memo(AuctionTransportDocuments)

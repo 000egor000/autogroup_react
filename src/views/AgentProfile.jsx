@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect } from 'react'
 
 import 'rsuite-table/dist/css/rsuite-table.css'
 
-import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useParams } from 'react-router-dom'
 import NoData from '../components/NoData'
@@ -41,12 +40,12 @@ const AgentProfile = (props) => {
 
     putRequest(`/api/v1/partners/${id}`, params)
       .then(() => {
-        toast.success('Информация обновлена!')
+        state.createNotification('Информация обновлена!', 'success')
         navigate(-1)
         dispatch(showLoder({ editAgent: 0 }))
       })
       .catch((err) => {
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
         dispatch(showLoder({ editAgent: 0 }))
       })
   }
@@ -83,7 +82,6 @@ const AgentProfile = (props) => {
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
       <div className="itemContainer-inner">
         <div
           className="top-item "

@@ -359,7 +359,7 @@ function HeaderItem() {
     //             placement="right"
     //             speaker={<Tooltip>Доступы</Tooltip>}
     //           >
-    //             <Link to="/credentials/copart/open">
+    //             <Link to="/credentials">
     //               <Code style={{ width: '20px', height: '20px' }} />
     //             </Link>
     //           </Whisper>
@@ -821,7 +821,7 @@ function HeaderItem() {
     //         viewBlock({ keyTitle: 'credential', id: 99 }) ||
     //         viewBlock({ keyTitle: 'credential', id: 100 })) && (
     //         <li onClick={() => controlLink()}>
-    //           <Link to="/credentials/copart/open">
+    //           <Link to="/credentials">
     //             <Code />
     //             <span>Доступы</span>
     //           </Link>

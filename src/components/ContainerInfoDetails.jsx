@@ -36,7 +36,7 @@ const ContainerInfoDetails = () => {
       .catch((err) => {
         setContainerArray([])
         dispatch(showLoder({ getArray: 0 }))
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
       })
   }
 

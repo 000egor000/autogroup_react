@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { config } from '../config.js'
 import nextId from 'react-id-generator'
 import PropTypes from 'prop-types'
@@ -59,4 +59,4 @@ AuctionTransportPayEnd.propTypes = {
   itemStatus: PropTypes.bool,
   dataPayArray: PropTypes.array,
 }
-export default AuctionTransportPayEnd
+export default memo(AuctionTransportPayEnd)

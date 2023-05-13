@@ -1,10 +1,9 @@
 import React, { useState, useContext } from 'react'
 
-import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useParams } from 'react-router-dom'
 import { config } from '../config.js'
-import { Pagination, Modal, Whisper, Tooltip } from 'rsuite'
+import { Modal, Whisper, Tooltip } from 'rsuite'
 import { Trash, Attachment, CheckOutline } from '@rsuite/icons'
 import ReloadIcon from '@rsuite/icons/Reload'
 
@@ -24,7 +23,7 @@ import { useEffect } from 'react'
 // import ImageGallery from 'react-image-gallery'
 // import 'react-image-gallery/styles/css/image-gallery.css'
 
-const AuctionPictures = ({ viewBlock }) => {
+const AuctionPictures = () => {
   const [dataContainer, setDataContainer] = useState([])
   const [fileGive, setFileGive] = useState('')
   const { state, dispatch } = useContext(ContextApp)
@@ -51,11 +50,13 @@ const AuctionPictures = ({ viewBlock }) => {
     })
       .then((res) => {
         getPicturesFunc()
-        toast.success('Успешно найдено!')
+
+        state.createNotification('Успешно найдено!', 'success')
         dispatch(showLoder({ getParsFunc: 0 }))
       })
       .catch(() => {
-        toast.error('Не найдено')
+        state.createNotification(`Не найдено!`, 'error')
+
         dispatch(showLoder({ getParsFunc: 0 }))
       })
   }
@@ -72,11 +73,8 @@ const AuctionPictures = ({ viewBlock }) => {
 
         // setPaginationValue(res.pagination)
         dispatch(showLoder({ getPicturesFunc: 0 }))
-        // toast.success('Успешно найдено!')
       })
       .catch(() => {
-        // toast.error('Не найдено')
-
         setDataContainer([])
 
         setItemsPhotoClick('')
@@ -100,12 +98,14 @@ const AuctionPictures = ({ viewBlock }) => {
       .then((res) => {
         close()
         getPicturesFunc()
-        toast.success('Успешно удалено!')
+        state.createNotification('Успешно удалено!', 'success')
+
         dispatch(showLoder({ removePicture: 0 }))
       })
       .catch(() => {
         close()
-        toast.error('Что-то пошло не так')
+
+        state.createNotification(`Что-то пошло не так!`, 'error')
         dispatch(showLoder({ removePicture: 0 }))
       })
   }
@@ -115,7 +115,7 @@ const AuctionPictures = ({ viewBlock }) => {
       setShowIcon(true)
       setFileGive(e.target.files[0])
       setFileName(e.target.files[0].name)
-      toast.success('Файл прикреплен!')
+      state.createNotification('Успешно выполнено!', 'success')
     }
   }
 
@@ -136,7 +136,7 @@ const AuctionPictures = ({ viewBlock }) => {
       dispatch(showLoder({ addPicture: 1 }))
       postRequestFile('/api/v1/order/image', formData)
         .then((res) => {
-          toast.success('Успешно создано!')
+          state.createNotification('Успешно создано!', 'success')
 
           closeFile()
 
@@ -144,11 +144,11 @@ const AuctionPictures = ({ viewBlock }) => {
           dispatch(showLoder({ addPicture: 0 }))
         })
         .catch(() => {
-          toast.error('Что-то пошло не так!')
+          state.createNotification('Что-то пошло не так!', 'error')
           dispatch(showLoder({ addPicture: 0 }))
         })
     } else {
-      toast.error('Прикрепите файл!')
+      state.createNotification('Прикрепите файл!', 'error')
     }
   }
 
@@ -167,7 +167,6 @@ const AuctionPictures = ({ viewBlock }) => {
 
   return (
     <React.Fragment>
-      <ToastContainer />
       <Modal
         backdrop={'static'}
         keyboard={false}

@@ -1,8 +1,7 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect, memo } from 'react'
 
 import 'rsuite-table/dist/css/rsuite-table.css'
 
-import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 import { getRequest, putRequest } from '../base/api-request'
@@ -13,7 +12,7 @@ import NoData from './NoData'
 import PropTypes from 'prop-types'
 
 const Searates = ({ currentRates, viewBlock, dataArray }) => {
-  const [currentUrlId, setCurrentUrlId] = useState('')
+  // const [currentUrlId, setCurrentUrlId] = useState('')
   const { state, dispatch } = useContext(ContextApp)
   const [currentValue, setCurrentValue] = useState('')
   const [btnShow, setBtnShow] = useState([])
@@ -26,7 +25,7 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
   useEffect(() => {
     currentRates && getTitle(currentRates)
   }, [currentRates])
-  console.log(currentRates)
+
   const getTitle = (val) => {
     switch (val) {
       case 'aec':
@@ -58,23 +57,23 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
   //       })
 
   //       .catch((err) => {
-  //         toast.error('Что-то пошло не так!')
+  //       state.createNotification('Что-то пошло не так!', 'error')
 
   //         dispatch(showLoder({ carriers: 0 }))
   //       })
   //   }
   // }, [currentRates, titleRates])
 
-  useEffect(() => {
-    if (dataArray.length > 0) {
-      const idCarrier = dataArray.find((elem) => elem.value == currentRates)
+  // useEffect(() => {
+  //   if (dataArray.length > 0) {
+  //     const idCarrier = dataArray.find((elem) => elem.value == currentRates)
+  //     console.log(idCarrier)
+  //     idCarrier && setCurrentUrlId(idCarrier.value)
+  //   }
+  // }, [currentRates, dataArray])
 
-      idCarrier && setCurrentUrlId(idCarrier.id)
-    }
-  }, [currentRates, dataArray])
-
   useEffect(() => {
-    if (currentUrlId) {
+    if (currentRates) {
       dispatch(showLoder({ destinations: 1 }))
       getRequest('/api/v1/destinations', {
         Authorization: `Bearer ${window.sessionStorage.getItem(
@@ -92,11 +91,11 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
         })
 
         .catch((err) => {
-          toast.error('Что-то пошло не так!')
+          state.createNotification('Что-то пошло не так!', 'error')
           dispatch(showLoder({ destinations: 0 }))
         })
     }
-  }, [currentUrlId])
+  }, [currentRates])
 
   const chooseItem = (id) => {
     const newArr = btnShow.map((item) => {
@@ -107,7 +106,7 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
 
     setBtnShow(newArr)
   }
-
+  console.log(btnShow)
   useEffect(() => {
     if (btnShow.length > 0) {
       let result = btnShow.filter((elem) => elem.status === true)
@@ -118,9 +117,9 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
   const getSeaRatesArray = () => {
     dispatch(showLoder({ getSeaRatesArray: 1 }))
     let container = []
-    if (currentValue && currentUrlId) {
+    if (currentValue && currentRates) {
       getRequest(
-        `/api/v1/rates-fees/sea-rates?carrier_id=${currentUrlId}&destination_id=${currentValue}`,
+        `/api/v1/rates-fees/sea-rates?carrier_id=${currentRates}&destination_id=${currentValue}`,
         {
           Authorization: `Bearer ${window.sessionStorage.getItem(
             'access_token'
@@ -135,17 +134,17 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
         })
 
         .catch((err) => {
-          // toast.error('Что-то пошло не так!')
+          //state.createNotification('Успешно обновлено!', 'error')
           showSeaRatesArray([])
           dispatch(showLoder({ getSeaRatesArray: 0 }))
         })
     }
   }
   useEffect(() => {
-    if (currentUrlId) {
+    if (currentRates) {
       getSeaRatesArray()
     }
-  }, [currentValue, currentUrlId])
+  }, [currentValue, currentRates])
 
   // const showIdLocation = (c) => {
 
@@ -163,14 +162,14 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
   // 	deleteRequest(`/api/v1/rates-fees/doc-fees/${id}`)
   // 		.then((res) => {
   // 			if (res.status === 'success') {
-  // 				toast.success('Успешно удален!')
+  //
 
   // 				setIsModalRemove(false)
   // 				dispatch(hide())
   // 			}
   // 		})
   // 		.catch((err) => {
-  // 			toast.error('Что-то пошло не так!')
+  //
   // 			dispatch(hide())
   // 		})
   // }
@@ -186,7 +185,6 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
       .then(() => {
         getSeaRatesArray()
         dispatch(showLoder({ changeTableOrEdit: 0 }))
-        // toast.success('Изменены данные!')
       })
       .catch(() => dispatch(showLoder({ changeTableOrEdit: 0 })))
   }
@@ -197,7 +195,7 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
   // 			() => {
   // 				getSeaRatesArray()
   // 				dispatch(hide())
-  // 				// toast.success('Изменены данные!')
+  //
   // 			}
   // 		)
   // 	}
@@ -241,8 +239,7 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
-      {currentUrlId ? (
+      {currentRates && seaRatesArray.length > 0 ? (
         <div className="itemContainer-inner">
           <div className="top-item " style={{ paddingLeft: state.width }}>
             <div className="btnTransport">
@@ -270,7 +267,7 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
             className="bottom-itemFooter"
             style={{ paddingLeft: state.width, color: 'black' }}
           >
-            {seaRatesArray.length > 0 ? (
+            {seaRatesArray.length > 0 && (
               <div className="overFlowBlock">
                 <table>
                   <thead>
@@ -405,8 +402,6 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
 								/>
 							</div> */}
               </div>
-            ) : (
-              'Нет данных'
             )}
           </div>
         </div>
@@ -421,4 +416,4 @@ Searates.propTypes = {
   currentRates: PropTypes.string,
   viewBlock: PropTypes.func,
 }
-export default Searates
+export default memo(Searates)

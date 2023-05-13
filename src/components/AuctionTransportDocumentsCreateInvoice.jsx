@@ -1,6 +1,5 @@
-import React, { useState, useContext, useEffect, useRef } from 'react'
+import React, { useState, useContext, useEffect, useRef, memo } from 'react'
 
-import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { showLoder } from '../reducers/actions'
 import ContextApp from '../context/contextApp'
@@ -15,7 +14,8 @@ const AuctionTransportDocumentsCreateInvoice = ({
   itemStatus,
   idItem,
   invoiceId,
-  priseAutoProps,
+  // priseAutoProps,
+  financeDateArray,
   dataUserArray,
   getArrayCustomer,
   carrierArray,
@@ -30,7 +30,7 @@ const AuctionTransportDocumentsCreateInvoice = ({
   // const [recipientPaySelectDefault, setRecipientPaySelectDefault] = useState(0)
   const [priceInvoice, setPriceInvoice] = useState('')
   const [codePayArray, setCodePayArray] = useState([])
-  const [financeDateArray, setFinanceDateArray] = useState([])
+  // const [financeDateArray, setFinanceDateArray] = useState([])
   const [codePaySelect, setCodePaySelect] = useState(0)
   const [numberLot, setNumberLot] = useState('')
   const [vin, setVin] = useState('')
@@ -43,8 +43,10 @@ const AuctionTransportDocumentsCreateInvoice = ({
 
   const [currentValue, setCurrentValue] = useState(0)
 
-  const { dispatch } = useContext(ContextApp)
+  const { state, dispatch } = useContext(ContextApp)
   const refFocus = useRef()
+
+  console.log(financeDateArray)
 
   useEffect(() => {
     if (formInvoiceArray.length > 0)
@@ -72,7 +74,7 @@ const AuctionTransportDocumentsCreateInvoice = ({
   useEffect(() => {
     if (recipientPaySelect && currentValue) {
       if (JSON.parse(recipientPaySelect).code !== currentValue.code) {
-        setVin('')
+        // setVin('')
         setNumberLot('')
       } else {
         setNumberLot(dataInfo.lot)
@@ -192,27 +194,27 @@ const AuctionTransportDocumentsCreateInvoice = ({
 
   useEffect(() => {
     getPriseInvoice()
-  }, [formInvoiceSelect, dataInfo, priseAutoProps])
+  }, [formInvoiceSelect, dataInfo, financeDateArray])
 
   useEffect(() => {
     controlStyle()
     return () => {}
   }, [vin])
 
-  useEffect(() => {
-    dispatch(showLoder({ info: 1 }))
-    getRequest(`/api/v1/order/finance/${idItem}/info`, {
-      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
-    })
-      .then((res) => {
-        setFinanceDateArray(res.finance_information)
-        dispatch(showLoder({ info: 0 }))
-      })
-      .catch((err) => {
-        setFinanceDateArray([])
-        dispatch(showLoder({ info: 0 }))
-      })
-  }, [])
+  // useEffect(() => {
+  //   dispatch(showLoder({ info: 1 }))
+  //   getRequest(`/api/v1/order/finance/${idItem}/info`, {
+  //     Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+  //   })
+  //     .then((res) => {
+  //       setFinanceDateArray(res.finance_information)
+  //       dispatch(showLoder({ info: 0 }))
+  //     })
+  //     .catch((err) => {
+  //       setFinanceDateArray([])
+  //       dispatch(showLoder({ info: 0 }))
+  //     })
+  // }, [])
 
   const getPriseInvoice = () => {
     switch (+formInvoiceSelect) {
@@ -220,7 +222,11 @@ const AuctionTransportDocumentsCreateInvoice = ({
         setPriceInvoice(dataInfo.price ? dataInfo.price : '')
         break
       case 2:
-        setPriceInvoice(priseAutoProps ? priseAutoProps : '')
+        setPriceInvoice(
+          financeDateArray.length > 0
+            ? JSON.parse(financeDateArray.at(-1).ag_finance).resultPrice
+            : ''
+        )
         break
       case 3:
         setPriceInvoice('')
@@ -290,20 +296,25 @@ const AuctionTransportDocumentsCreateInvoice = ({
             invoiceId(res.invoice_information_id)
             getArrayCustomer()
             closefield()
-            toast.success('Успешно создано!')
+
+            state.createNotification('Успешно создано!', 'success')
             dispatch(showLoder({ createDocumentsInvoice: 0 }))
           })
           .catch(() => {
             dispatch(showLoder({ createDocumentsInvoice: 0 }))
-            toast.error('Что-то пошло не так!')
+            state.createNotification('Что-то пошло не так!', 'error')
           })
       } else {
-        toast.error(
-          `Неверное количество символов (${vin.length}) vin(Должно быть равное 17)`
+        state.createNotification(
+          `Неверное количество символов (${vin.length}) vin(Должно быть равное 17)`,
+          'error'
         )
       }
     } else {
-      toast.error('Данные получателя/плательщика не выбраны!')
+      state.createNotification(
+        'Данные получателя/плательщика не выбраны!',
+        'error'
+      )
     }
   }
 
@@ -330,7 +341,7 @@ const AuctionTransportDocumentsCreateInvoice = ({
   // 			dispatch(hide())
   // 		})
   // 		.catch((err) => {
-  // 			toast.error('Данный VIN существует в системе!')
+  //
   // 			refFocus.current.style.outline = 'none'
   // 			refFocus.current.style.border = 'solid'
   // 			refFocus.current.style.borderWidth = '1px'
@@ -389,7 +400,6 @@ const AuctionTransportDocumentsCreateInvoice = ({
       className="accessUsers accessUsers--doc"
       style={{ display: itemStatus ? 'block' : 'none' }}
     >
-      <ToastContainer />
       <form onSubmit={createDocumentsInvoice}>
         <div className="contentBlockTop">
           <div className="dropBlockContent dropBlockContent--doc">
@@ -536,9 +546,9 @@ AuctionTransportDocumentsCreateInvoice.propTypes = {
   itemStatus: PropTypes.bool,
   idItem: PropTypes.string,
   invoiceId: PropTypes.func,
-  priseAutoProps: PropTypes.number,
+  financeDateArray: PropTypes.array,
   dataUserArray: PropTypes.array,
   getArrayCustomer: PropTypes.func,
   dataInfo: PropTypes.any,
 }
-export default AuctionTransportDocumentsCreateInvoice
+export default memo(AuctionTransportDocumentsCreateInvoice)

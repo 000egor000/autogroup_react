@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Link } from 'react-router-dom'
 import { Modal, Toggle } from 'rsuite'
@@ -96,7 +95,8 @@ const DealersEdit = () => {
       setShowIcon(true)
       setFileGive(e.target.files[0])
       setFileName(e.target.files[0].name)
-      toast.success('Файл прикреплен!')
+
+      state.createNotification('Файл прикреплен!', 'success')
     }
   }
 
@@ -260,12 +260,13 @@ const DealersEdit = () => {
       .then((res) => {
         close()
         getDealer()
-        toast.success('Успешно удалено!')
+
+        state.createNotification('Успешно удалено!', 'success')
         dispatch(showLoder({ dealersFile: 0 }))
       })
       .catch(() => {
         close()
-        toast.error('Что-то пошло не так')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ dealersFile: 0 }))
       })
   }
@@ -300,13 +301,13 @@ const DealersEdit = () => {
     putRequest(`/api/v1/dealers/${id}`, params)
       .then((res) => {
         if (res.status === 'success') {
-          toast.success('Пользователь обновлен!')
+          state.createNotification('Пользователь успешно обновлен!', 'success')
           history(-1)
           dispatch(showLoder({ masterCreateForm: 0 }))
         }
       })
       .catch((err) => {
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
         dispatch(showLoder({ masterCreateForm: 0 }))
       })
   }
@@ -323,7 +324,10 @@ const DealersEdit = () => {
         dispatch(showLoder({ verificationEmail: 0 }))
       })
       .catch((err) => {
-        toast.error('Пользователь с таким email уже создан!')
+        state.createNotification(
+          'Пользователь с таким email уже создан!',
+          'error'
+        )
         refFocus.current.style.outline = 'none'
         refFocus.current.style.border = 'solid'
         refFocus.current.style.borderWidth = '1px'
@@ -371,13 +375,13 @@ const DealersEdit = () => {
   //   postRequest('/api/v1/user/password/update', paramsUpdatePassword)
   //     .then((res) => {
   //       if (res.status === 'success') {
-  //         toast.success('Пароль успешно обновлен!')
+  //
 
   //         dispatch(hide())
   //       }
   //     })
   //     .catch((err) => {
-  //       toast.error('Что-то пошло не так!')
+  //     state.createNotification('Что-то пошло не так!', 'error')
   //       dispatch(hide())
   //     })
   // }
@@ -388,21 +392,23 @@ const DealersEdit = () => {
         postRequest('/api/v1/user/password/update', paramsUpdatePassword)
           .then((res) => {
             if (res.status === 'success') {
-              toast.success('Пароль успешно обновлен!')
+              state.createNotification('Пароль успешно обновлен!', 'success')
               setPassword('')
               setPassword_confirmation('')
               dispatch(showLoder({ password: 0 }))
             }
           })
           .catch((err) => {
-            toast.error('Что-то пошло не так!')
+            state.createNotification('Что-то пошло не так!', 'error')
             dispatch(showLoder({ password: 0 }))
           })
       } else {
-        toast.error('Пароль должен содержать не менее 8 символов!')
       }
     } else {
-      toast.error('Проверьте введенные данные, пароли не совпадают!')
+      state.createNotification(
+        'Проверьте введенные данные, пароли не совпадают',
+        'error'
+      )
     }
   }
 
@@ -445,7 +451,7 @@ const DealersEdit = () => {
       dispatch(showLoder({ dealersFile: 1 }))
       postRequestFile(`/api/v1/dealers/file/${id}`, formData)
         .then((res) => {
-          toast.success('Успешно создано!')
+          state.createNotification('Успешно создано!', 'success')
 
           setFileName('')
           setShowIcon(false)
@@ -453,11 +459,11 @@ const DealersEdit = () => {
           dispatch(showLoder({ dealersFile: 0 }))
         })
         .catch(() => {
-          toast.error('Что-то пошло не так!')
+          state.createNotification('Что-то пошло не так!', 'error')
           dispatch(showLoder({ dealersFile: 0 }))
         })
     } else {
-      toast.error('Прикрепите файл!')
+      state.createNotification('Прикрепите файл!', 'error')
     }
   }
 
@@ -493,7 +499,7 @@ const DealersEdit = () => {
     }
 
     if (controlUsers.length > 0) {
-      toast.error('Доступ уже был добавлен!')
+      state.createNotification('Доступ уже был добавлен!', 'error')
     } else {
       dispatch(showLoder({ credentialsId: 1 }))
       putRequest(
@@ -501,13 +507,13 @@ const DealersEdit = () => {
         paramsAccess
       )
         .then((res) => {
-          toast.success('Доступ успешно назначен!')
+          state.createNotification('Доступ успешно назначен!', 'success')
           getValueAccess()
           setAssingAccessToggle(!assingAccessToggle)
           dispatch(showLoder({ credentialsId: 0 }))
         })
         .catch((err) => {
-          toast.error('Проверьте веденные данные!')
+          state.createNotification('Проверьте веденные данные!', 'error')
           dispatch(showLoder({ credentialsId: 0 }))
         })
     }
@@ -550,9 +556,6 @@ const DealersEdit = () => {
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
-
-      <ToastContainer />
       <div className="modal-container">
         <Modal
           backdrop={'static'}
@@ -886,7 +889,7 @@ const DealersEdit = () => {
                       value="Обновить пароль системы"
                     />
                     {/* {title !== 'Офис' && title !== 'Дилер' && (
-                      <Link className="btn-blue" to="/credentials/copart/open">
+                      <Link className="btn-blue" to="/credentials">
                         <span>Доступы к аукционам</span>
                       </Link>
                     )} */}

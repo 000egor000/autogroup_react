@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect, memo } from 'react'
 import { useParams } from 'react-router-dom'
 import { getRequest } from '../base/api-request'
 
@@ -30,7 +30,7 @@ const AuctionTransportPay = ({
   const [dataArrayProp, setDataArrayProp] = useState([])
   const [priceСarrier, setPriceСarrier] = useState(0)
 
-  const { dispatch } = useContext(ContextApp)
+  const { state, dispatch } = useContext(ContextApp)
   const pathCurrent = window.location.pathname
   const [btnShowBlock, setBtnShowBlock] = useState(
     btnShowPay.filter((el) =>
@@ -249,4 +249,4 @@ const AuctionTransportPay = ({
 AuctionTransportPay.propTypes = {
   viewBlock: PropTypes.func,
 }
-export default AuctionTransportPay
+export default memo(AuctionTransportPay)

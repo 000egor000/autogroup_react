@@ -8,7 +8,7 @@ import {
   CheckOutline,
 } from '@rsuite/icons'
 import { useNavigate } from 'react-router-dom'
-import { ToastContainer, toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
 import { Toggle } from 'rsuite'
 
@@ -259,13 +259,13 @@ const DealersCreate = () => {
     postRequestFile('/api/v1/dealers', formData)
       .then((res) => {
         if (res.status === 'success') {
-          toast.success('Пользователь создан!')
+          state.createNotification('Пользователь создан!', 'success')
           history(-1)
           dispatch(showLoder({ dealers: 0 }))
         }
       })
       .catch((err) => {
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
         dispatch(showLoder({ dealers: 0 }))
       })
   }
@@ -282,7 +282,10 @@ const DealersCreate = () => {
         dispatch(showLoder({ verification: 0 }))
       })
       .catch((err) => {
-        toast.error('Пользователь с таким email уже создан!')
+        state.createNotification(
+          'Пользователь с таким email уже создан!',
+          'error'
+        )
         refFocus.current.style.outline = 'none'
         refFocus.current.style.border = 'solid'
         refFocus.current.style.borderWidth = '1px'
@@ -378,13 +381,13 @@ const DealersCreate = () => {
       setShowIcon(true)
       setFileGive(e.target.files[0])
       setFileName(e.target.files[0].name)
-      toast.success('Файл прикреплен!')
+
+      state.createNotification('Файл прикреплен!', 'success')
     }
   }
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
       <div className="itemContainer-inner">
         <div className="top-item " style={{ paddingLeft: state.width }}>
           <div className="btnTransport" style={{ justifyContent: 'left' }}>

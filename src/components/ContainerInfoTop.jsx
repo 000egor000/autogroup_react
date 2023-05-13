@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, memo } from 'react'
 import { Toggle } from 'rsuite'
 import { putRequest } from '../base/api-request'
 import { showLoder } from '../reducers/actions'
@@ -6,7 +6,7 @@ import { Check, Close } from '@rsuite/icons'
 
 import ContextApp from '../context/contextApp'
 import { useParams } from 'react-router-dom'
-import { ToastContainer, toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
 import PropTypes from 'prop-types'
 
@@ -27,12 +27,13 @@ const ContainerInfoTop = ({ dataAray }) => {
 
     putRequest(`/api/v1/containers/${id}`, params)
       .then((res) => {
-        toast.success('Контейнер консолидацирован ')
+        state.createNotification('Контейнер консолидацирован!', 'success')
 
         dispatch(showLoder({ downContainer: 0 }))
       })
       .catch((err) => {
-        toast.console.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
+
         dispatch(showLoder({ downContainer: 0 }))
       })
   }
@@ -71,7 +72,6 @@ const ContainerInfoTop = ({ dataAray }) => {
 
   return dataAray ? (
     <ul className="customList">
-      <ToastContainer />
       {generationLi(dataAray)}
 
       <li
@@ -106,4 +106,4 @@ ContainerInfoTop.propTypes = {
   dataAray: PropTypes.object,
 }
 
-export default ContainerInfoTop
+export default memo(ContainerInfoTop)

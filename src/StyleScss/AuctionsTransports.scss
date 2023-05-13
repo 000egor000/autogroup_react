@@ -883,6 +883,13 @@
                   cursor: pointer;
                 }
               }
+              label span {
+                display: flex;
+                .rs-dropdown,
+                input {
+                  width: 50%;
+                }
+              }
             }
             .payTitleTop {
               display: flex;
@@ -1099,6 +1106,20 @@
         }
       }
     }
+
+    .groupSearch {
+      margin-bottom: 30px;
+      display: flex;
+      align-items: baseline;
+      .customCheckPicker {
+        .rs-picker {
+          width: 150px !important;
+          &:first-child {
+            margin-right: 5px;
+          }
+        }
+      }
+    }
   }
 
   &--auctionsTransports {
@@ -1279,6 +1300,9 @@
     label {
       input {
         margin-right: 5px !important;
+      }
+      span {
+        display: flex;
       }
     }
   }

@@ -4,7 +4,7 @@ import { Reload, Trash } from '@rsuite/icons'
 import { Table, Column, HeaderCell, Cell } from 'rsuite-table'
 
 import 'rsuite-table/dist/css/rsuite-table.css'
-import { ToastContainer, toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
 import { Modal } from 'rsuite'
 
@@ -29,13 +29,14 @@ const Archive = () => {
     postRequest(`/api/v1/${user}s/${id}`)
       .then((res) => {
         if (res.status === 'success') {
-          toast.success('Пользователь успешно возвращен!')
+          state.createNotification('Пользователь успешно возвращен!', 'success')
+
           getArray(user)
           dispatch(showLoder({ reloadUser: 0 }))
         }
       })
       .catch((err) => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ reloadUser: 0 }))
       })
   }
@@ -51,9 +52,7 @@ const Archive = () => {
     })
       .then((res) => {
         setDataMaster(res.users)
-        // setPaginationValue(res.pagination)
 
-        // Object.entries(res.users).filter((elem) => console.log(elem[0]))
         if (user) {
           let resultFist = Object.entries(res.users).filter(
             (elem) => elem[0] === user
@@ -123,7 +122,6 @@ const Archive = () => {
   }
   return (
     <div className="itemContainer">
-      <ToastContainer />
       <div className="modal-container">
         <Modal
           backdrop={'static'}

@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect, useRef } from 'react'
 import { PagePrevious, Check, Close, Send } from '@rsuite/icons'
 import { useNavigate } from 'react-router-dom'
-import { ToastContainer, toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
 import { Toggle, CheckPicker } from 'rsuite'
 
@@ -74,7 +74,7 @@ const SubUserCreate = (props) => {
         dispatch(showLoder({ rights: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ rights: 0 }))
       })
   }, [])
@@ -96,7 +96,7 @@ const SubUserCreate = (props) => {
         dispatch(showLoder({ role: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ role: 0 }))
       })
   }, [])
@@ -113,7 +113,7 @@ const SubUserCreate = (props) => {
         dispatch(showLoder({ offices: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ offices: 0 }))
       })
   }, [])
@@ -145,7 +145,7 @@ const SubUserCreate = (props) => {
           dispatch(showLoder({ countriesId: 0 }))
         })
         .catch((err) => {
-          // toast.error('Что-то пошло не так!')
+          //state.createNotification('Успешно обновлено!', 'error')
           dispatch(showLoder({ countriesId: 0 }))
         })
     }
@@ -161,7 +161,7 @@ const SubUserCreate = (props) => {
         dispatch(showLoder({ countries: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ countries: 0 }))
       })
   }, [])
@@ -175,7 +175,7 @@ const SubUserCreate = (props) => {
         dispatch(showLoder({ levels: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ levels: 0 }))
       })
   }, [])
@@ -268,12 +268,12 @@ const SubUserCreate = (props) => {
 
     postRequest('/api/v1/sub-users', params)
       .then((res) => {
-        toast.success('Пользователь создан!')
+        state.createNotification('Пользователь создан!', 'success')
         history(-1)
         dispatch(showLoder({ masterCreateForm: 0 }))
       })
       .catch((err) => {
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
         dispatch(showLoder({ masterCreateForm: 0 }))
       })
   }
@@ -290,7 +290,10 @@ const SubUserCreate = (props) => {
         dispatch(showLoder({ verificationEmail: 0 }))
       })
       .catch((err) => {
-        toast.error('Пользователь с таким email уже создан!')
+        state.createNotification(
+          'Пользователь с таким email уже создан!',
+          'error'
+        )
         refFocus.current.style.outline = 'none'
         refFocus.current.style.border = 'solid'
         refFocus.current.style.borderWidth = '1px'
@@ -362,7 +365,6 @@ const SubUserCreate = (props) => {
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
       <div className="itemContainer-inner">
         <div className="top-item " style={{ paddingLeft: state.width }}>
           <div className="btnTransport" style={{ justifyContent: 'left' }}>

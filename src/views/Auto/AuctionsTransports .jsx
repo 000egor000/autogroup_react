@@ -1,11 +1,11 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Table, Column, HeaderCell, Cell } from 'rsuite-table'
-import { ToastContainer, toast } from 'react-toastify'
+
 import 'rsuite-table/dist/css/rsuite-table.css'
 import 'react-toastify/dist/ReactToastify.css'
 import { Edit, Trash, MoveUp, Dragable, Menu } from '@rsuite/icons'
-
+import NoData from '../../components/NoData'
 import {
   CheckPicker,
   Modal,
@@ -40,7 +40,7 @@ import {
   dataResultPriseLot,
 } from '../../helper'
 
-const AuctionsTransports = (props) => {
+const AuctionsTransports = () => {
   //paramsSearch
   const [vin, setVin] = useState('')
   const [secondName, setSecondName] = useState('')
@@ -139,7 +139,7 @@ const AuctionsTransports = (props) => {
         dispatch(showLoder({ ports: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ ports: 0 }))
       })
   }, [])
@@ -157,7 +157,7 @@ const AuctionsTransports = (props) => {
         dispatch(showLoder({ destinations: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ destinations: 0 }))
       })
   }, [])
@@ -181,7 +181,7 @@ const AuctionsTransports = (props) => {
         dispatch(showLoder({ auctions: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ auctions: 0 }))
       })
   }, [])
@@ -199,7 +199,7 @@ const AuctionsTransports = (props) => {
         dispatch(showLoder({ cities: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ cities: 0 }))
       })
   }, [])
@@ -213,7 +213,7 @@ const AuctionsTransports = (props) => {
         dispatch(showLoder({ dismantled: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ dismantled: 0 }))
       })
   }, [])
@@ -230,7 +230,7 @@ const AuctionsTransports = (props) => {
         dispatch(showLoder({ getDelete: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ getDelete: 0 }))
       })
   }, [])
@@ -278,7 +278,7 @@ const AuctionsTransports = (props) => {
         dispatch(showLoder({ getArray: 0 }))
       })
       .catch(() => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ getArray: 0 }))
         setTransportArray([])
         setPaginationValue([])
@@ -326,7 +326,7 @@ const AuctionsTransports = (props) => {
       .catch(() => {
         dispatch(showLoder({ searchRequest: 0 }))
         setTransportArray([])
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
       })
   }
 
@@ -468,7 +468,7 @@ const AuctionsTransports = (props) => {
     postRequest(`/api/v1/order/transport-auto/restore/${id}`)
       .then((res) => {
         if (res.status === 'success') {
-          toast.success('Авто успешно возвращено!')
+          state.createNotification('Успешно возвращено!', 'success')
 
           getArray()
           close()
@@ -476,7 +476,7 @@ const AuctionsTransports = (props) => {
         }
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ restoreTransport: 0 }))
       })
   }
@@ -489,15 +489,14 @@ const AuctionsTransports = (props) => {
     putRequest(`/api/v1/order/transport-auto/updateDismantled/${id}`)
       .then((res) => {
         if (res.status === 'success') {
-          toast.success('Авто успешно возвращено!')
-
+          state.createNotification('Успешно возвращено!', 'success')
           getArray()
           close()
           dispatch(showLoder({ reloadTransport: 0 }))
         }
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ reloadTransport: 0 }))
       })
   }
@@ -511,12 +510,12 @@ const AuctionsTransports = (props) => {
       `/api/v1/order/transport-auto/${id}?status_order_id=${status}`
     )
       .then((res) => {
-        toast.success('Авто успешно удален!')
+        state.createNotification('Успешно удалено!', 'success')
         getArray()
         dispatch(showLoder({ removeStatus: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ removeStatus: 0 }))
       })
   }
@@ -670,8 +669,6 @@ const AuctionsTransports = (props) => {
   return (
     <div className="itemContainer itemContainer--auctionsTransports">
       <div className="itemContainer-inner">
-        <ToastContainer />
-
         <Animation.Slide
           unmountOnExit
           transitionAppear
@@ -914,7 +911,7 @@ const AuctionsTransports = (props) => {
                 marginRight: pathCurrent === '/' ? '20px' : '120px',
               }}
             >
-              {!controlDisabled() && (
+              {!controlDisabled() && transportArray.length > 0 && (
                 <Whisper
                   followCursor
                   placement="left"
@@ -1407,7 +1404,7 @@ const AuctionsTransports = (props) => {
               </div>
             </React.Fragment>
           ) : (
-            'Нет данных!'
+            <NoData />
           )}
         </div>
       </div>

@@ -13,7 +13,7 @@ import { toast, ToastContainer } from 'react-toastify'
 import { Modal } from 'rsuite'
 import { Edit, Trash } from '@rsuite/icons'
 
-const AgCalculatorSetting = (props) => {
+const AgCalculatorSetting = () => {
   const { state, dispatch } = useContext(ContextApp)
   const [settingArray, setSettingArray] = useState([])
   const [newSettingTitle, setNewSettingTitle] = useState('')
@@ -32,13 +32,13 @@ const AgCalculatorSetting = (props) => {
     deleteRequest(`/api/v1/server-setting/${id}`)
       .then((res) => {
         if (res.status === 'success') {
-          toast.success('Настройка успешно удален!')
+          state.createNotification('Настройка удалена!', 'success')
           getInfo()
           dispatch(showLoder({ remove: 0 }))
         }
       })
       .catch((err) => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ remove: 0 }))
       })
   }
@@ -75,11 +75,12 @@ const AgCalculatorSetting = (props) => {
     putRequest(`/api/v1/server-setting/${settingIdCustom}`, paramsEdit)
       .then((res) => {
         getInfo()
-        toast.success('Успешно обновлено!')
+
+        state.createNotification('Успешно обновлено!', 'success')
         dispatch(showLoder({ setSettingValue: 0 }))
       })
       .catch((err) => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ setSettingValue: 0 }))
       })
   }
@@ -95,12 +96,12 @@ const AgCalculatorSetting = (props) => {
     setIsModalShow(false)
     postRequest(`/api/v1/server-setting`, params)
       .then(() => {
-        toast.success('Успешно добавлено!')
+        state.createNotification('Успешно добавлено!', 'success')
         getInfo()
         dispatch(showLoder({ createSettingValue: 0 }))
       })
       .catch((err) => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ createSettingValue: 0 }))
       })
   }
@@ -119,7 +120,6 @@ const AgCalculatorSetting = (props) => {
   }
   return (
     <div className="itemContainer">
-      <ToastContainer />
       <div className="modal-container">
         <Modal
           backdrop={'static'}

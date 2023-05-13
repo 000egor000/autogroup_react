@@ -54,8 +54,10 @@ const namePath = {
   AEC_NAMERATES: '/aec/:nameRates',
   AUTO_UNIVERSE_NAMERATES: '/auto_universe/:nameRates',
   AGLOGISTIC_NAMERATES: '/aglogistic/:nameRatesLink',
+  AGLOGISTIC_INLANDRATES: '/aglogistic/inlandRates',
+  AGLOGISTIC_DESTINATION: '/aglogistic/destination',
   SETTING: '/setting',
-  LISTAUCTIONS: '/listAutions',
+  LISTOFAUCTIONS: '/listofAutions',
   PAYMENTMETHOD: '/paymentMethod',
 
   AGLOGISTIC_SEARATES: '/aglogistic/searates',
@@ -97,8 +99,12 @@ const namePath = {
   DESTINATIONS: '/destinations',
   PLACE_DESTINATIONS: '/place-destinations',
   SERVICES_BRANDS_MODELS: '/services/brands-models',
-  CREDENTIALS_COPART_OPEN: '/credentials/copart/open',
+  CREDENTIALS: '/credentials',
   PLACE_VARIANT: '/:name/variant/',
+  PORTOFLOADING: '/portOfLoading',
+  LISTOFCOUNTRIES: '/listOfCountries',
+  LISTOFPORTS: '/ports',
+  COUNTERPARTY: '/counterparty',
 }
 
 export default namePath

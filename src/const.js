@@ -611,7 +611,12 @@ const staticData = [
         link: '/aglogistic/searatesconsolidation',
         role: { keyTitle: 'fee_rates', id: 84 },
       },
-      { id: '6-3', title: 'Inland rate (destination)', link: null, role: null },
+      {
+        id: '6-3',
+        title: 'Inland rate (destination)',
+        link: '/aglogistic/destination',
+        role: { keyTitle: 'fee_rates', id: 84 },
+      },
       {
         id: '6-4',
         title: 'Service fee (AG Logisctis fee)',
@@ -629,7 +634,7 @@ const staticData = [
     children: [
       {
         id: '7-1',
-        title: 'Кошельки (балансы)',
+        title: 'Кошельки',
         role: [
           { keyTitle: 'cash_account', id: 93 },
           { keyTitle: 'cash_account', id: 94 },
@@ -637,30 +642,42 @@ const staticData = [
         children: [
           {
             id: '7-1-1',
-            title: 'Auction',
+            title: 'Площадка(auction)',
             link: '/wallets/auctions',
             role: { keyTitle: 'cash_account', id: 93 },
           },
           {
             id: '7-1-2',
-            title: 'Контрагент ',
+            title: 'Контрагент',
             link: '/wallets/shipping',
+            role: { keyTitle: 'cash_account', id: 94 },
+          },
+          {
+            id: '7-1-3',
+            title: 'Крипта',
+            link: null,
+            role: { keyTitle: 'cash_account', id: 94 },
+          },
+          {
+            id: '7-1-4',
+            title: 'Иная форма',
+            link: null,
             role: { keyTitle: 'cash_account', id: 94 },
           },
         ],
       },
-      {
-        id: '7-2',
-        title: 'Rates / fees',
-        link: null,
-        role: null,
-      },
-      {
-        id: '7-3',
-        title: 'Внутренний платеж',
-        link: '/wallets/cashAll',
-        role: { keyTitle: 'cash_account', id: 95 },
-      },
+      // {
+      //   id: '7-2',
+      //   title: 'Rates / fees',
+      //   link: null,
+      //   role: null,
+      // },
+      // {
+      //   id: '7-3',
+      //   title: 'Внутренний платеж',
+      //   link: '/wallets/cashAll',
+      //   role: { keyTitle: 'cash_account', id: 95 },
+      // },
     ],
   },
 
@@ -682,110 +699,171 @@ const staticData = [
         children: [
           {
             id: '8-1-1',
-            title: 'Порт назначения',
-            link: '/destinations',
-            role: { keyTitle: 'location', id: 108 },
-          },
-          {
-            id: '8-1-2',
-            title: 'Место назначения',
-            link: '/place-destinations',
-            role: { keyTitle: 'location', id: 108 },
-          },
-          {
-            id: '8-1-3',
-            title: 'Место покупки',
-            link: '/place-destinations',
+            title: 'Место покупки (place of origin) (POOr)',
+            // link: '/place-destinations',
             role: { keyTitle: 'location', id: 108 },
             children: [
+              // {
+              //   id: '8-1-1-1',
+              //   title: 'Аукционы',
+              //   link: '/listofAutions',
+              //   role: { keyTitle: 'location', id: 108 },
+              // },
+              // {
+              //   id: '8-1-1-2',
+              //   title: 'Локации',
+              //   link: '/location',
+              //   role: { keyTitle: 'location', id: 108 },
+              // },
               {
-                id: '8-1-3-1',
-                title: 'Аукционы',
-                link: '/listAutions',
-                role: { keyTitle: 'location', id: 108 },
-              },
-              {
-                id: '8-1-3-2',
-                title: 'Локации',
-                link: '/location',
-                role: { keyTitle: 'location', id: 108 },
-              },
-              {
-                id: '8-1-3-3',
+                id: '8-1-1-2',
                 title: 'Затраты места покупок',
                 link: '/costs/purchase-point',
                 role: { keyTitle: 'location', id: 108 },
               },
             ],
           },
+          {
+            id: '8-1-2',
+            title: 'Порт погрузки (port of loading)  (POL)',
+            link: null,
+            role: false,
+            children: [
+              {
+                id: '8-1-2-1',
+                title: 'Порт погрузки',
+                link: '/portOfLoading',
+                role: true,
+              },
+              {
+                id: '8-1-2-2',
+                title: 'Затраты порта погрузки',
+                link: '/costs/loading-port',
+                role: true,
+              },
+            ],
+          },
+          {
+            id: '8-1-3',
+            title: 'Порт назначения (port of destination) (POD)',
+            // link: '/destinations',
+            role: { keyTitle: 'location', id: 108 },
+            children: [
+              {
+                id: '8-1-3-1',
+                title: 'Порт назначения',
+                link: '/destinations',
+                role: true,
+              },
+              {
+                id: '8-1-3-2',
+                title: 'Затраты порта назначения',
+                link: '/costs/destination-port',
+                role: true,
+              },
+            ],
+          },
+
+          {
+            id: '8-1-4',
+            title: 'Место назначения (place of destination) (PlOD)',
+            // link: '/place-destinations',
+            children: [
+              {
+                id: '8-1-4-1',
+                title: 'Место назначения',
+                link: '/place-destinations',
+                role: true,
+              },
+              {
+                id: '8-1-4-2',
+                title: 'Затраты места назначения',
+                link: '/costs/destination',
+                role: true,
+              },
+            ],
+            // role: { keyTitle: 'location', id: 108 },
+          },
         ],
       },
 
       {
         id: '8-2',
-        title: 'Дополнительно',
-
+        title: 'Списки',
         role: true,
         children: [
           {
             id: '8-2-1',
+            title: 'Страны',
+            link: '/listOfCountries',
+            role: true,
+          },
+          {
+            id: '8-2-2',
+            title: 'Порты',
+            link: '/ports',
+            role: true,
+          },
+          {
+            id: '8-2-3',
+            title: 'Площадки / аукционы',
+            link: '/listofAutions',
+            role: { keyTitle: 'location', id: 108 },
+          },
+          {
+            id: '8-2-4',
+            title: 'Локации',
+            link: '/location',
+            role: { keyTitle: 'location', id: 108 },
+          },
+          {
+            id: '8-2-5',
+            title: 'Контрагенты',
+            link: '/counterparty',
+            role: true,
+          },
+        ],
+      },
+      {
+        id: '8-3',
+        title: 'Общие настройки',
+        role: true,
+        children: [
+          {
+            id: '8-3-1',
             title: 'Калькулятор',
             link: '/setting',
             role: true,
           },
           {
-            id: '8-2-2',
+            id: '8-3-2',
             title: 'Марки',
             link: '/services/brands-models',
             role: { keyTitle: 'assign_permissions', id: 105 },
           },
-          {
-            id: '8-2-3',
-            title: 'Локации',
-            link: '/location',
-            role: { keyTitle: 'location', id: 108 },
-          },
 
           {
-            id: '8-2-4',
+            id: '8-3-3',
             title: 'Способы оплаты',
             link: '/paymentMethod',
             role: true,
           },
           {
-            id: '8-2-5',
+            id: '8-3-4',
             title: 'Роли',
             link: '/assign-permissions-to-roles',
             role: { keyTitle: 'assign_permissions', id: 61 },
           },
           {
-            id: '8-2-6',
-            title: 'Аукционы',
-            link: '/listAutions',
+            id: '8-3-5',
+            title: 'Доступы',
+            link: '/credentials',
             role: true,
           },
           {
-            id: '8-2-7',
+            id: '8-3-6',
             title: 'Импорт контейнеров',
             link: '/containers/import',
-            role: true,
-          },
-          {
-            id: '8-2-9',
-            title: 'Затраты порта погрузки',
-            link: '/costs/loading-port',
-            role: true,
-          },
-          {
-            id: '8-2-10',
-            title: 'Затраты порта назначения',
-            link: '/costs/destination-port',
-            role: true,
-          },
-          {
-            id: '8-2-11',
-            title: 'Затраты места назначения',
-            link: '/costs/destination',
             role: true,
           },
         ],
@@ -822,12 +900,14 @@ const staticData = [
 ]
 
 const arrayPort = [
-  { id: 3, label: 'UAB AEC', value: 3, linkName: 'ports', nameCash: 'ports' },
+  { id: 3, name: 'UAB AEC', value: 3, linkName: 'ports', nameCash: 'ports' },
 ]
 
 const dataAdd = [
   { id: 1, title: 'место покупки / отправления (place of origin)' },
   { id: 2, title: 'место назначения (final destination)' },
+  { id: 3, title: 'порт назначения (port of destination)' },
+  { id: 4, title: 'порт погрузки (port of loading)  (POL)' },
 ]
 
 export {

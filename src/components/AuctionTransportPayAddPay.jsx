@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect, useRef } from 'react'
-import { ToastContainer, toast } from 'react-toastify'
+import React, { useState, useContext, useEffect, useRef, memo } from 'react'
+
 import 'react-toastify/dist/ReactToastify.css'
 
 import { Attachment, CheckOutline } from '@rsuite/icons/'
@@ -77,7 +77,7 @@ const AuctionTransportPayAddPay = ({
   const [fileName, setFileName] = useState('')
   const [showIcon, setShowIcon] = useState(false)
 
-  const { dispatch } = useContext(ContextApp)
+  const { state, dispatch } = useContext(ContextApp)
   const refFocus = useRef()
   let { title } = JSON.parse(window.sessionStorage.getItem('role'))
   const [comment, setComment] = useState('')
@@ -254,7 +254,8 @@ const AuctionTransportPayAddPay = ({
       setShowIcon(true)
       setFileGive(e.target.files[0])
       setFileName(e.target.files[0].name)
-      toast.success('Файл прикреплен!')
+
+      state.createNotification('Файл прикреплен!', 'success')
     }
   }
 
@@ -410,18 +411,18 @@ const AuctionTransportPayAddPay = ({
     // if (+dataUserSelect !== 0) {
     postRequestFile('/api/v1/order/payment', formData)
       .then((res) => {
-        toast.success('Успешно создано!')
+        state.createNotification('Успешно создано!', 'success')
         // closefield()
         getPaymentArray()
         dispatch(showLoder({ createPay: 0 }))
       })
       .catch(() => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ createPay: 0 }))
       })
     // }
     //  else {
-    //   toast.error('Данные получателя/плательщика не выбраны!')
+
     //   // refFocus.current.focus()
     //   // refFocus.current.style.outline = 'none'
     //   // refFocus.current.style.border = 'solid'
@@ -431,7 +432,7 @@ const AuctionTransportPayAddPay = ({
     // }
     // }
     // else {
-    //   toast.error('Прикрепите файл!')
+
     //   dispatch(hide())
     // }
   }
@@ -883,7 +884,6 @@ const AuctionTransportPayAddPay = ({
         display: itemStatus ? 'block' : 'none',
       }}
     >
-      <ToastContainer />
       <div className="contentBlockTop">
         <div className="dropBlockContent dropBlockContent--doc">
           <form onSubmit={createPay}>
@@ -1025,4 +1025,4 @@ AuctionTransportPayAddPay.propTypes = {
   dataInfo: PropTypes.object,
   viewBlockProp: PropTypes.func,
 }
-export default AuctionTransportPayAddPay
+export default memo(AuctionTransportPayAddPay)

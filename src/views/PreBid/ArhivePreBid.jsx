@@ -8,8 +8,6 @@ import { ArrowRightLine, ArrowDownLine } from '@rsuite/icons'
 
 import 'rsuite/dist/rsuite.min.css'
 
-import { ToastContainer, toast } from 'react-toastify'
-
 import ContextApp from './../../context/contextApp'
 import { showLoder } from '../../reducers/actions'
 import PreBidNav from '../../components/PreBidNav'
@@ -60,8 +58,8 @@ const ArhivePreBid = () => {
     const messageFail = 'fail' || 'lose'
     messageSuccess ?? messageFail
       ? messageSuccess
-        ? toast.success(message.message)
-        : toast.error(message.message)
+        ? state.createNotification(message.message, 'success')
+        : state.createNotification(message.message, 'error')
       : console.log('invalid request')
 
     getDataTable()
@@ -171,7 +169,7 @@ const ArhivePreBid = () => {
         })
         .catch(() => {
           dispatch(showLoder({ searchFunction: 0 }))
-          toast.error('Что-то пошло не так!')
+          state.createNotification('Что-то пошло не так!', 'error')
         })
     } else {
       return null
@@ -213,8 +211,6 @@ const ArhivePreBid = () => {
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
-
       <div className="modal-container">
         <Modal
           backdrop={'static'}

@@ -9,7 +9,8 @@ import { Table, Column, HeaderCell, Cell } from 'rsuite-table'
 import { Pagination } from 'rsuite'
 import { getRequest } from '../base/api-request'
 import { PieChart } from '@rsuite/charts'
-import { object } from 'prop-types'
+
+import NoData from '../components/NoData'
 
 const ProfileUser = () => {
   const [btnShowBlock, setBtnShowBlock] = useState(btnShowBlockProfile)
@@ -247,7 +248,7 @@ const ProfileUser = () => {
             </Table>
           </div>
         ) : (
-          <span>Нет данных!</span>
+          <NoData />
         )
 
       case 'Перевозка':
@@ -286,11 +287,11 @@ const ProfileUser = () => {
             </Table>
           </div>
         ) : (
-          <span>Нет данных!</span>
+          <NoData />
         )
 
       default:
-        return <span>Нет данных!</span>
+        return <NoData />
     }
   }
 
@@ -442,7 +443,7 @@ const ProfileUser = () => {
                 </div>
               </React.Fragment>
             ) : (
-              <span> Нет данных!</span>
+              <NoData />
             )}
           </div>
         )

@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { PagePrevious, Check, Close, Send } from '@rsuite/icons'
-import { ToastContainer, toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
 import { Link } from 'react-router-dom'
 import { Toggle } from 'rsuite'
@@ -69,7 +69,7 @@ const SubUserEdit = (props) => {
         dispatch(showLoder({ rights: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ rights: 0 }))
       })
   }, [])
@@ -94,7 +94,7 @@ const SubUserEdit = (props) => {
         dispatch(showLoder({ users: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ users: 0 }))
       })
   }, [])
@@ -112,7 +112,7 @@ const SubUserEdit = (props) => {
           dispatch(showLoder({ countriesId: 0 }))
         })
         .catch((err) => {
-          // toast.error('Что-то пошло не так!')
+          //state.createNotification('Успешно обновлено!', 'error')
           dispatch(showLoder({ countriesId: 0 }))
         })
     }
@@ -128,7 +128,7 @@ const SubUserEdit = (props) => {
         dispatch(showLoder({ levels: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ levels: 0 }))
       })
   }, [])
@@ -143,7 +143,7 @@ const SubUserEdit = (props) => {
         dispatch(showLoder({ countries: 0 }))
       })
       .catch((err) => {
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
         dispatch(showLoder({ countries: 0 }))
       })
   }, [])
@@ -253,12 +253,12 @@ const SubUserEdit = (props) => {
 
     putRequest(`/api/v1/sub-users/${id}`, params)
       .then((res) => {
-        toast.success('Пользователь обновлен!')
+        state.createNotification('Пользователь обновлен!', 'success')
         history(-1)
         dispatch(showLoder({ masterCreateForm: 0 }))
       })
       .catch((err) => {
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
         dispatch(showLoder({ masterCreateForm: 0 }))
       })
   }
@@ -275,7 +275,10 @@ const SubUserEdit = (props) => {
         dispatch(showLoder({ verificationEmail: 0 }))
       })
       .catch((err) => {
-        toast.error('Пользователь с таким email уже создан!')
+        state.createNotification(
+          'Пользователь с таким email уже создан!',
+          'error'
+        )
         refFocus.current.style.outline = 'none'
         refFocus.current.style.border = 'solid'
         refFocus.current.style.borderWidth = '1px'
@@ -323,13 +326,13 @@ const SubUserEdit = (props) => {
   //   postRequest('/api/v1/user/password/update', paramsUpdatePassword)
   //     .then((res) => {
   //       if (res.status === 'success') {
-  //         toast.success('Пароль успешно обновлен!')
+  //
 
   //         dispatch(hide())
   //       }
   //     })
   //     .catch((err) => {
-  //       toast.error('Что-то пошло не так!')
+  //     state.createNotification('Что-то пошло не так!', 'error')
   //       dispatch(hide())
   //     })
   // }
@@ -339,20 +342,22 @@ const SubUserEdit = (props) => {
         dispatch(showLoder({ newPassowrd: 1 }))
         postRequest('/api/v1/user/password/update', paramsUpdatePassword)
           .then((res) => {
-            toast.success('Пароль успешно обновлен!')
+            state.createNotification('Пароль успешно обновлен!', 'success')
             setPassword('')
             setPassword_confirmation('')
             dispatch(showLoder({ newPassowrd: 0 }))
           })
           .catch((err) => {
-            toast.error('Что-то пошло не так!')
+            state.createNotification('Что-то пошло не так!', 'error')
             dispatch(showLoder({ newPassowrd: 0 }))
           })
       } else {
-        toast.error('Пароль должен содержать не менее 8 символов!')
       }
     } else {
-      toast.error('Проверьте введенные данные, пароли не совпадают!')
+      state.createNotification(
+        'Проверьте введенные данные, пароли не совпадают',
+        'error'
+      )
     }
   }
 
@@ -388,7 +393,6 @@ const SubUserEdit = (props) => {
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
       <div className="itemContainer-inner">
         <div className="top-item " style={{ paddingLeft: state.width }}>
           <div className="btnTransport" style={{ justifyContent: 'left' }}>
@@ -636,7 +640,7 @@ const SubUserEdit = (props) => {
                       value="Обновить пароль системы"
                     />
                     {title !== 'Офис' && title !== 'Дилер' && (
-                      <Link className="btn-blue" to="/credentials/copart/open">
+                      <Link className="btn-blue" to="/credentials">
                         <span>Доступы к аукционам</span>
                       </Link>
                     )}

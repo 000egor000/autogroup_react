@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, memo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ToastContainer, toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
 
 import { postRequest, getRequest } from '../base/api-request'
@@ -99,7 +99,7 @@ const AuctionTransportCreate = ({
         dispatch(showLoder({ seaLines: 0 }))
       })
       .catch((err) => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ seaLines: 0 }))
       })
   }, [])
@@ -305,7 +305,7 @@ const AuctionTransportCreate = ({
       dispatch(showLoder({ shippingCreate: 1 }))
       postRequest('/api/v1/order/shipping', paramsCreate)
         .then((res) => {
-          toast.success('Успешно создано!')
+          state.createNotification('Успешно создано!', 'success')
           navigate(
             `/auction-transport/edit/${id}/editTransport/${res.shipping_information_id}`
           )
@@ -314,18 +314,17 @@ const AuctionTransportCreate = ({
           dispatch(showLoder({ shippingCreate: 0 }))
         })
         .catch((err) => {
-          toast.error('Что-то пошло не так!')
+          state.createNotification('Что-то пошло не так!', 'error')
           dispatch(showLoder({ shippingCreate: 0 }))
         })
     } else {
-      toast.info('Выберете морскую линию!')
+      state.createNotification('Выберете морскую линию!', 'info')
     }
   }
 
   return (
     <div className="itemShipping">
       <form onSubmit={createAuctionAuto}>
-        <ToastContainer />
         <h2>Транспорт</h2>
 
         <label>
@@ -540,4 +539,4 @@ AuctionTransportCreate.propTypes = {
   getShortInfo: PropTypes.func,
 }
 
-export default AuctionTransportCreate
+export default memo(AuctionTransportCreate)

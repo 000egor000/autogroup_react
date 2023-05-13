@@ -5,7 +5,7 @@ import HeaderImg from '../assets/header-img.png'
 import { postRequest, getRequest } from '../base/api-request'
 import ContextApp from '../context/contextApp'
 import { showLoder } from '../reducers/actions'
-import { ToastContainer, toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
 import { Modal } from 'rsuite'
 import { Visible, Unvisible } from '@rsuite/icons'
@@ -15,7 +15,7 @@ const Authorization = (props) => {
   let [password, setPassword] = useState('')
   const [visible, setVisible] = React.useState(false)
   const [showUserOn, setShowUserOn] = React.useState(false)
-  const { dispatch } = useContext(ContextApp)
+  const { state, dispatch } = useContext(ContextApp)
 
   let params = {
     username,
@@ -32,7 +32,6 @@ const Authorization = (props) => {
     )
     window.location.reload()
   }
-  console.log(window.sessionStorage.getItem('user'))
 
   const logInTokens = ({
     token_type,
@@ -70,14 +69,16 @@ const Authorization = (props) => {
         logInTokens(res)
       })
       .catch((err) => {
-        toast.error('Ошибка доступа, проверьте ввод данных!')
+        state.createNotification(
+          'Ошибка доступа, проверьте ввод данных!',
+          'error'
+        )
         dispatch(showLoder({ authorizationForm: 0 }))
       })
   }
 
   return (
     <div className="authorization">
-      <ToastContainer />
       <div className="modal-container ">
         <Modal
           backdrop={'static'}

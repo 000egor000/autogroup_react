@@ -3,7 +3,6 @@ import ContextApp from '../context/contextApp'
 
 import { showLoder } from '../reducers/actions'
 
-import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 import { Modal } from 'rsuite'
@@ -30,11 +29,11 @@ const FreeRates = () => {
     putRequest(`/api/v1/rates-fees/ag-fees/${id}`, { sum: sum })
       .then((res) => {
         getPicturesFunc()
-        // toast.success('Цена изменена! ')
+
         dispatch(showLoder({ editPrace: 0 }))
       })
       .catch((err) => {
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
         dispatch(showLoder({ editPrace: 0 }))
       })
   }
@@ -47,12 +46,13 @@ const FreeRates = () => {
       .then((res) => {
         getPicturesFunc()
         close()
-        toast.success('Успешно создано!')
+
+        state.createNotification('Успешно создано!', 'success')
         dispatch(showLoder({ createRatesFree: 0 }))
       })
       .catch((err) => {
         dispatch(showLoder({ createRatesFree: 0 }))
-        toast.error('Что-то пошло не так!')
+        state.createNotification('Что-то пошло не так!', 'error')
       })
   }
 
@@ -153,7 +153,6 @@ const FreeRates = () => {
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
       <div className="modal-container">
         <Modal
           backdrop={'static'}

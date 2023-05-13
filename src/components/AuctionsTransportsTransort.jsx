@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, memo } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { getRequest } from '../base/api-request'
@@ -44,7 +44,7 @@ const AuctionsTransportsTransort = ({
       })
       .catch((err) => {
         dispatch(showLoder({ shippingInfo: 0 }))
-        // toast.error('Что-то пошло не так!')
+        //state.createNotification('Успешно обновлено!', 'error')
       })
   }
 
@@ -123,4 +123,4 @@ AuctionsTransportsTransort.propTypes = {
   viewBlock: PropTypes.func,
   getShortInfo: PropTypes.func,
 }
-export default AuctionsTransportsTransort
+export default memo(AuctionsTransportsTransort)

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, memo } from 'react'
 import 'rsuite/dist/rsuite.min.css'
 
 import { Close } from '@rsuite/icons'
@@ -8,6 +8,7 @@ import {
   dataTypeEngine,
   customsDutyRatesYearOld,
 } from '../const.js'
+
 const ModalCustomsPayments = ({
   isVisible = false,
   onClose,
@@ -433,4 +434,4 @@ ModalCustomsPayments.propTypes = {
   customsPayProps: PropTypes.func,
 }
 
-export default ModalCustomsPayments
+export default memo(ModalCustomsPayments)

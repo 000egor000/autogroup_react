@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Link } from 'react-router-dom'
 import { Toggle } from 'rsuite'
@@ -193,7 +192,10 @@ const LogistEdit = () => {
         dispatch(showLoder({ verificationEmail: 0 }))
       })
       .catch((err) => {
-        toast.error('Пользователь с таким email уже создан!')
+        state.createNotification(
+          'Пользователь с таким email уже создан!',
+          'error'
+        )
         refFocus.current.style.outline = 'none'
         refFocus.current.style.border = 'solid'
         refFocus.current.style.borderWidth = '1px'
@@ -210,13 +212,13 @@ const LogistEdit = () => {
     putRequest(`/api/v1/logists/${id}`, params)
       .then((res) => {
         if (res.status === 'success') {
-          toast.success('Пользователь создан!')
+          state.createNotification('Пользователь создан!', 'success')
           history(-1)
           dispatch(showLoder({ masterCreateForm: 0 }))
         }
       })
       .catch((err) => {
-        toast.error('Проверьте веденные данные!')
+        state.createNotification('Проверьте веденные данные!', 'error')
         dispatch(showLoder({ masterCreateForm: 0 }))
       })
   }
@@ -259,7 +261,7 @@ const LogistEdit = () => {
   //   postRequest('/api/v1/user/password/update', paramsUpdatePassword)
   //     .then((res) => {
   //       if (res.status === 'success') {
-  //         toast.success('Пароль успешно обновлен!')
+  //
   //         setPassword('')
   //         setPassword_confirmation('')
 
@@ -267,7 +269,7 @@ const LogistEdit = () => {
   //       }
   //     })
   //     .catch((err) => {
-  //       toast.error('Что-то пошло не так!')
+  //     state.createNotification('Что-то пошло не так!', 'error')
   //       dispatch(hide())
   //     })
   // }
@@ -277,20 +279,22 @@ const LogistEdit = () => {
         dispatch(showLoder({ newPassowrd: 1 }))
         postRequest('/api/v1/user/password/update', paramsUpdatePassword)
           .then((res) => {
-            toast.success('Пароль успешно обновлен!')
+            state.createNotification('Пароль успешно обновлен!', 'success')
             setPassword('')
             setPassword_confirmation('')
             dispatch(showLoder({ newPassowrd: 0 }))
           })
           .catch((err) => {
-            toast.error('Что-то пошло не так!')
+            state.createNotification('Что-то пошло не так!', 'error')
             dispatch(showLoder({ newPassowrd: 0 }))
           })
       } else {
-        toast.error('Пароль должен содержать не менее 8 символов!')
       }
     } else {
-      toast.error('Проверьте введенные данные, пароли не совпадают!')
+      state.createNotification(
+        'Проверьте введенные данные, пароли не совпадают',
+        'error'
+      )
     }
   }
 
@@ -326,7 +330,6 @@ const LogistEdit = () => {
 
   return (
     <div className="itemContainer">
-      <ToastContainer />
       <div className="itemContainer-inner">
         <div className="top-item " style={{ paddingLeft: state.width }}>
           <div className="btnTransport" style={{ justifyContent: 'left' }}>
@@ -527,7 +530,7 @@ const LogistEdit = () => {
                       value="Обновить пароль системы"
                     />
                     {title !== 'Офис' && title !== 'Дилер' && (
-                      <Link className="btn-blue" to="/credentials/copart/open">
+                      <Link className="btn-blue" to="/credentials">
                         <span>Доступы к аукционам</span>
                       </Link>
                     )}

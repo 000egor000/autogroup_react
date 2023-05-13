@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext, memo } from 'react'
 
 import nextId, { setPrefix } from 'react-id-generator'
 
@@ -6,10 +6,9 @@ import { Modal } from 'rsuite'
 import PropTypes from 'prop-types'
 import { variantPayFinance } from '../const.js'
 import { controlNumber } from '../helper.js'
+import ContextApp from '../context/contextApp'
 
 const AuctionTransportFinanceTop = ({
-  getToastSucces,
-  getToastError,
   getFlagSendReq,
   financeDateArray,
   setPay_info,
@@ -35,6 +34,8 @@ const AuctionTransportFinanceTop = ({
   const [statusClosePayFinance, setStatusClosePayFinance] = useState(false)
   const role = ['office', 'dealer', 'logist', 'finance', 'admin']
   const roleParams = JSON.parse(window.sessionStorage.getItem('role')).code
+
+  const { state, dispatch } = useContext(ContextApp)
   // console.log(roleParams==role[0])
 
   useEffect(() => {
@@ -453,7 +454,8 @@ const AuctionTransportFinanceTop = ({
       clickSave: true,
       controlBlockTop: true,
     })
-    getToastSucces('Информация сохранена')
+
+    state.createNotification('Информация сохранена!', 'success')
   }
 
   const styleVisible = {
@@ -566,4 +568,4 @@ AuctionTransportFinanceTop.propTypes = {
   shortInfoArray: PropTypes.object,
 }
 
-export default AuctionTransportFinanceTop
+export default memo(AuctionTransportFinanceTop)

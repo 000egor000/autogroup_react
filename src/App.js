@@ -11,10 +11,15 @@ import { useNavigate } from 'react-router-dom'
 import { show, hide, showLoder } from './reducers/actions'
 
 import './App.scss'
-import { toast, ToastContainer } from 'react-toastify'
-
+import { ToastContainer } from 'react-toastify'
+import { createNotification } from './helper'
 function App() {
-  const firstData = { loading: [], loader: 0, width: '60px' }
+  const firstData = {
+    loading: [],
+    loader: 0,
+    width: '60px',
+    createNotification,
+  }
   const [state, dispatch] = useReducer(reducer, firstData)
   let navigate = useNavigate()
   const value = { state, dispatch }
@@ -36,21 +41,6 @@ function App() {
     }
   }
 
-  // const userInfo = ({ role, user, client, access_rights }) => {
-  //   window.sessionStorage.setItem('role', JSON.stringify(role))
-  //   window.sessionStorage.setItem('user', JSON.stringify(user))
-  //   window.sessionStorage.setItem('client', JSON.stringify(client))
-  //   window.sessionStorage.setItem(
-  //     'access_rights',
-  //     JSON.stringify(access_rights)
-  //   )
-  //   window.location.reload()
-  // }
-  // console.log(
-  //   window.sessionStorage.getItem('user') &&
-  //     JSON.parse(window.sessionStorage.getItem('user'))
-  // )
-  console.log()
   useEffect(() => {
     if (state.loading.length > 0) {
       let container = []
@@ -72,8 +62,9 @@ function App() {
   const controlLoading = (val) => {
     if (val) {
       dispatch(hide())
-      toast.info(
-        'Много времени на загрузку, загрузчик отменен, продолжайте работу!'
+      createNotification(
+        'Много времени на загрузку, загрузчик отменен, продолжайте работу!',
+        'info'
       )
     }
   }
@@ -110,19 +101,15 @@ function App() {
     if (url.split('/')[1] === 'auth_data') logInTokens(url.split('/')[2])
   }, [url])
 
-  const constrolView = () => {
-    return (
-      <ContextApp.Provider value={value}>
-        <div className="App">
-          <ToastContainer />
-          {state.loader ? <Loader /> : null}
-          {controlPath()}
-        </div>
-      </ContextApp.Provider>
-    )
-  }
-
-  return constrolView()
+  return (
+    <ContextApp.Provider value={value}>
+      <div className="App">
+        <ToastContainer />
+        {state.loader ? <Loader /> : null}
+        {controlPath()}
+      </div>
+    </ContextApp.Provider>
+  )
 }
 
 export default App

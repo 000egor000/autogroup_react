@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { ToastContainer, toast } from 'react-toastify'
+import React, { useState, useEffect, useContext, memo } from 'react'
+
 import 'react-toastify/dist/ReactToastify.css'
 import ContextApp from '../context/contextApp'
 // import NoticeTransport from '../components/NoticeTransport'
@@ -26,7 +26,7 @@ const Header = ({ showDrop, setShowDrop }) => {
   )
 
   const [message, setMessage] = useState('')
-  const { dispatch } = useContext(ContextApp)
+  const { state, dispatch } = useContext(ContextApp)
 
   const [placement, setPlacement] = useState('right')
   const pathname = window.location.pathname
@@ -42,9 +42,11 @@ const Header = ({ showDrop, setShowDrop }) => {
 
   useEffect(() => {
     if (message.status === 'success' || message.status === 'process')
-      toast.success(message.message)
-    else if (message.status === 'fail') toast.error(message.message)
-    else if (message.status === 'info') toast.info(message.message)
+      state.createNotification(message.message, 'success')
+    else if (message.status === 'fail')
+      state.createNotification(message.message, 'error')
+    else if (message.status === 'info')
+      state.createNotification(message.message, 'info')
   }, [message])
 
   useEffect(() => setShowDrop(false), [pathname])
@@ -142,8 +144,6 @@ const Header = ({ showDrop, setShowDrop }) => {
     <div className="headerItem">
       <div className="header-inner">
         <div className="itemLeft">
-          <ToastContainer />
-
           <Link to="/">
             <img src={Logo} alt="Logo" />
           </Link>
@@ -152,41 +152,39 @@ const Header = ({ showDrop, setShowDrop }) => {
           <h4>{titleCurrentLink(pathname)}</h4>
         </div>
         <div className="itemRight">
-          <div className="row">
-            <div className="topItem">
-              <div
-                className={
-                  notificationCount > 0
-                    ? 'notificationUser--note'
-                    : 'notificationUser'
-                }
-                onClick={clickNotice}
-              >
-                <Badge content={notificationCount}>
-                  <Notice />
-                </Badge>
-              </div>
-              <p>{ViewInfo()}</p>
+          <div className="topItem">
+            <div
+              className={
+                notificationCount > 0
+                  ? 'notificationUser--note'
+                  : 'notificationUser'
+              }
+              onClick={clickNotice}
+            >
+              <Badge content={notificationCount}>
+                <Notice />
+              </Badge>
+            </div>
+            <p>{ViewInfo()}</p>
 
-              <div className="LogoUser" onClick={handleToggle('top')}>
-                <img src={logoUsers} alt="LogoUser" />
-              </div>
+            <div className="LogoUser" onClick={handleToggle('top')}>
+              <img src={logoUsers} alt="LogoUser" />
             </div>
-            <div onMouseLeave={clickReset}>
-              <Animation.Slide
-                unmountOnExit
-                transitionAppear
-                timeout={300}
-                in={showDrop}
-                placement={placement}
-              >
-                {(props, ref) => <Panel {...props} ref={ref} />}
-              </Animation.Slide>
-            </div>
+          </div>
+          <div onMouseLeave={clickReset}>
+            <Animation.Slide
+              unmountOnExit
+              transitionAppear
+              timeout={300}
+              in={showDrop}
+              placement={placement}
+            >
+              {(props, ref) => <Panel {...props} ref={ref} />}
+            </Animation.Slide>
           </div>
         </div>
       </div>
     </div>
   )
 }
-export default Header
+export default memo(Header)
