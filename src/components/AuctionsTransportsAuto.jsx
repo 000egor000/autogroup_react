@@ -40,7 +40,7 @@ const AuctionsTransportsAuto = ({
       })
 
       .catch((err) => {
-        dispatch(showLoder({ getDataInfo: 0 }))
+        dispatch(showLoder({ getDataInfo: 0, status: err.status }))
         state.createNotification('Что-то пошло не так!', 'error')
       })
   }

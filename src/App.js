@@ -19,8 +19,11 @@ function App() {
     loader: 0,
     width: '60px',
     createNotification,
+    status: '',
   }
+
   const [state, dispatch] = useReducer(reducer, firstData)
+
   let navigate = useNavigate()
   const value = { state, dispatch }
   const url = document.location.pathname
@@ -59,6 +62,10 @@ function App() {
     return () => clearTimeout(time)
   }, [state.loader])
 
+  useEffect(() => {
+    if (+state.status) window.sessionStorage.clear() // Проверка на актуальность токена
+  }, [state.status])
+
   const controlLoading = (val) => {
     if (val) {
       dispatch(hide())
@@ -92,7 +99,7 @@ function App() {
         dispatch(showLoder({ logInTokens: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ logInTokens: 0 }))
+        dispatch(showLoder({ logInTokens: 0, status: err.status }))
         navigate('/')
       })
   }

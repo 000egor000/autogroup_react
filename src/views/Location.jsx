@@ -22,8 +22,8 @@ import { showLoder } from '../reducers/actions'
 import ContextApp from '../context/contextApp.js'
 
 const Location = (props) => {
-  const [dataMaster, setDataMaster] = useState([])
-  const [dataMasterInitial, setDataMasterInitial] = useState([])
+  // const [dataMaster, setDataMaster] = useState([])
+  // const [dataMasterInitial, setDataMasterInitial] = useState([])
   const [dataPorts, setDataPorts] = useState([])
   const [dataAuctions, setDataAuctions] = useState([])
   const partsLimit = [20, 50, 100]
@@ -47,6 +47,7 @@ const Location = (props) => {
   const [locationsSelect, setLocationsSelect] = useState('')
   const [portSearch, setPortSearch] = useState('')
   const [locationsArray, setLocationsArray] = useState([])
+  const [allLocationsArray, setAllLocationsArray] = useState([])
 
   const [viewControler, setViewControler] = useState([])
 
@@ -54,6 +55,9 @@ const Location = (props) => {
   const [page, setPage] = useState(1)
   const [itemIsRemove, setItemIsRemove] = useState('')
   // const [flag, setflag] = useState(false)
+
+  const [auctionArray, setAuctionArray] = useState([])
+  const [auctionsSelect, setAuctionsSelect] = useState(0)
 
   const { state, dispatch } = useContext(ContextApp)
 
@@ -73,7 +77,7 @@ const Location = (props) => {
       })
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ removeLocations: 0 }))
+        dispatch(showLoder({ removeLocations: 0, status: err.status }))
       })
   }
 
@@ -88,9 +92,24 @@ const Location = (props) => {
         dispatch(showLoder({ getPorts: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ getPorts: 0 }))
+        dispatch(showLoder({ getPorts: 0, status: err.status }))
       })
   }
+
+  // const getArrayAuctions = () => {
+  //   dispatch(showLoder({ auctions: 1 }))
+  //   getRequest('/api/v1/auctions', {
+  //     Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+  //   })
+  //     .then((res) => {
+  //       setAuctionArray(res.auction.filter((el) => +el.id !== 3))
+
+  //       dispatch(showLoder({ auctions: 0 }))
+  //     })
+  //     .catch((err) => {
+  //       dispatch(showLoder({ auctions: 0 }))
+  //     })
+  // }
 
   const getAuctions = () => {
     dispatch(showLoder({ getAuctions: 1 }))
@@ -98,30 +117,38 @@ const Location = (props) => {
       Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
     })
       .then((res) => {
-        setDataAuctions(res.auction)
-        setSelectValueAuctions(res.auction[0].id)
+        setAuctionArray(res.auction)
+
         dispatch(showLoder({ getAuctions: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ getAuctions: 0 }))
+        setAuctionArray([])
+        dispatch(showLoder({ getAuctions: 0, status: err.status }))
       })
   }
 
   const getArray = () => {
     dispatch(showLoder({ getArray: 1 }))
-    getRequest(`/api/v1/locations?page=${page}&limit=${limit}`, {
+    let url
+    url = `/api/v1/locations?page=${page}&limit=${limit}`
+    if (locationsSelect || portSearch || auctionsSelect) {
+      url += `${locationsSelect ? '&location_id=' + locationsSelect : ''}${
+        portSearch ? '&port_id=' + portSearch : ''
+      }${auctionsSelect ? '&auction_id=' + auctionsSelect : ''}`
+    }
+    getRequest(url, {
       Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
     })
       .then((res) => {
-        setDataMaster(res.locations)
-        setDataMasterInitial(res.locations)
+        setLocationsArray(res.locations)
+        // setDataMasterInitial(res.locations)
         setPaginationValue(res.pagination)
         setLoadingShow(false)
         dispatch(showLoder({ getArray: 0 }))
       })
       .catch((err) => {
-        setDataMaster([])
-        dispatch(showLoder({ getArray: 0 }))
+        setLocationsArray([])
+        dispatch(showLoder({ getArray: 0, status: err.status }))
       })
   }
   const getAllArray = () => {
@@ -130,12 +157,12 @@ const Location = (props) => {
       Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
     })
       .then((res) => {
-        setLocationsArray(res.locations)
+        setAllLocationsArray(res.locations)
         dispatch(showLoder({ getAllArray: 0 }))
       })
       .catch((err) => {
         setLocationsArray([])
-        dispatch(showLoder({ getAllArray: 0 }))
+        dispatch(showLoder({ getAllArray: 0, status: err.status }))
       })
   }
 
@@ -143,25 +170,25 @@ const Location = (props) => {
   //   getSearchlocations()
   // }, [locationsSelect, portSearch, page])
 
-  const getSearchlocations = () => {
-    dispatch(showLoder({ locationsSearch: 1 }))
-    let nameLocation = locationsArray.find((el) => el.id === locationsSelect)
+  // const getSearchlocations = () => {
+  //   dispatch(showLoder({ locationsSearch: 1 }))
+  //   let nameLocation = locationsArray.find((el) => el.id === locationsSelect)
 
-    postRequest(`/api/v1/locations/search?page=${page}`, {
-      location_id: nameLocation ? nameLocation.id : null,
-      port_id: portSearch,
-    })
-      .then((res) => {
-        setDataMaster(res.locations)
-        setDataMasterInitial(res.locations)
-        setPaginationValue(res.pagination)
-        dispatch(showLoder({ locationsSearch: 0 }))
-      })
-      .catch((err) => {
-        setDataMaster([])
-        dispatch(showLoder({ locationsSearch: 0 }))
-      })
-  }
+  //   postRequest(`/api/v1/locations/search?page=${page}`, {
+  //     location_id: nameLocation ? nameLocation.id : null,
+  //     port_id: portSearch,
+  //   })
+  //     .then((res) => {
+  //       setDataMaster(res.locations)
+  //       setDataMasterInitial(res.locations)
+  //       setPaginationValue(res.pagination)
+  //       dispatch(showLoder({ locationsSearch: 0 }))
+  //     })
+  //     .catch((err) => {
+  //       setDataMaster([])
+  //       dispatch(showLoder({ locationsSearch: 0 }))
+  //     })
+  // }
   // Фильтр на странице (фронт)
   // useEffect(() => {
   //   if (portSearch) {
@@ -175,23 +202,19 @@ const Location = (props) => {
   // }, [portSearch])
 
   useEffect(() => {
-    getAllArray()
+    getArray()
     getPorts()
     getAuctions()
-    getArray()
+    getAllArray()
   }, [])
 
   useEffect(() => {
-    if (locationsSelect || portSearch) {
-      getSearchlocations()
-    } else {
-      getArray()
-    }
-  }, [locationsSelect, portSearch, page, limit])
+    getArray()
+  }, [locationsSelect, portSearch, auctionsSelect, page, limit])
 
   useEffect(() => {
     setPage(1)
-  }, [locationsSelect, portSearch])
+  }, [locationsSelect, portSearch, auctionsSelect])
 
   const showIdLocation = ({ name, ports, auction, id, copart_name }) => {
     let resIdPorts = []
@@ -234,7 +257,7 @@ const Location = (props) => {
       })
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ createLocation: 0 }))
+        dispatch(showLoder({ createLocation: 0, status: err.status }))
       })
   }
   const editLocation = (e) => {
@@ -252,7 +275,7 @@ const Location = (props) => {
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
 
-        dispatch(showLoder({ editLocation: 0 }))
+        dispatch(showLoder({ editLocation: 0, status: err.status }))
       })
   }
   const handleChangeLimit = (dataKey) => {
@@ -509,14 +532,13 @@ const Location = (props) => {
             <div className="customCheckPicker">
               {/* <label htmlFor="selectCustomId">Название площадки</label> */}
               <SelectPicker
-                id="selectCustomId"
-                data={locationsArray}
+                data={allLocationsArray}
                 valueKey="id"
                 labelKey="name"
                 value={locationsSelect}
                 onChange={setLocationsSelect}
                 placeholder="Выберите площадку"
-                loading={!locationsArray.length}
+                loading={!allLocationsArray.length}
               />
             </div>
             <div className="customCheckPicker">
@@ -533,6 +555,17 @@ const Location = (props) => {
                 loading={!dataPorts.length}
               />
             </div>
+            <div className="customCheckPicker">
+              <SelectPicker
+                data={auctionArray}
+                valueKey="id"
+                labelKey="name"
+                value={auctionsSelect}
+                onChange={setAuctionsSelect}
+                placeholder="Выберите аукцион"
+                loading={!auctionArray.length}
+              />
+            </div>
           </div>
           <div className="btnTransport">
             <button
@@ -544,14 +577,14 @@ const Location = (props) => {
           </div>
         </div>
         <div className="bottom-itemFooter" style={styleBottomItemFooter}>
-          {dataMaster.length > 0 ? (
+          {locationsArray.length > 0 ? (
             <div className="Table">
               <Table
                 autoHeight
                 cellBordered={true}
                 hover={true}
                 bordered={true}
-                data={dataMaster}
+                data={locationsArray}
                 loading={loadingShow}
               >
                 <Column align="center" fixed flexGrow={1}>
@@ -657,7 +690,7 @@ const Location = (props) => {
                   </Cell>
                 </Column>
               </Table>
-              {dataMaster.length > 0 && (
+              {locationsArray.length > 0 && (
                 <div className="paginationBlock">
                   <Pagination
                     prev

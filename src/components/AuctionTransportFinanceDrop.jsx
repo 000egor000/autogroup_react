@@ -251,12 +251,12 @@ const AuctionTransportFinanceDrop = ({
         getFinanceArray()
         dispatch(showLoder({ closeInvoceAll: 0 }))
       })
-      .catch(() => {
+      .catch((err) => {
         close()
 
         state.createNotification('Что-то пошло не так!', 'error')
 
-        dispatch(showLoder({ closeInvoceAll: 0 }))
+        dispatch(showLoder({ closeInvoceAll: 0, status: err.status }))
       })
   }
   const controlField = (resStatusArrayRight, ag, resStatusArrayLeft, usa) => {
@@ -436,12 +436,12 @@ const AuctionTransportFinanceDrop = ({
         setContainerCurrent('')
         dispatch(showLoder({ updateAuctionAuto: 0 }))
       })
-      .catch(() => {
+      .catch((err) => {
         close()
 
         state.createNotification('Что-то пошло не так!', 'error')
         setContainerCurrent('')
-        dispatch(showLoder({ updateAuctionAuto: 0 }))
+        dispatch(showLoder({ updateAuctionAuto: 0, status: err.status }))
       })
   }
   useEffect(() => {
@@ -502,9 +502,9 @@ const AuctionTransportFinanceDrop = ({
         getFinanceArray()
         dispatch(showLoder({ clearFieldRequst: 0 }))
       })
-      .catch(() => {
+      .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ clearFieldRequst: 0 }))
+        dispatch(showLoder({ clearFieldRequst: 0, status: err.status }))
       })
   }
 

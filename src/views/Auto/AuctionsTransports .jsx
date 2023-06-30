@@ -140,7 +140,7 @@ const AuctionsTransports = () => {
       })
       .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
-        dispatch(showLoder({ ports: 0 }))
+        dispatch(showLoder({ ports: 0, status: err.status }))
       })
   }, [])
 
@@ -158,7 +158,7 @@ const AuctionsTransports = () => {
       })
       .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
-        dispatch(showLoder({ destinations: 0 }))
+        dispatch(showLoder({ destinations: 0, status: err.status }))
       })
   }, [])
 
@@ -182,7 +182,7 @@ const AuctionsTransports = () => {
       })
       .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
-        dispatch(showLoder({ auctions: 0 }))
+        dispatch(showLoder({ auctions: 0, status: err.status }))
       })
   }, [])
 
@@ -200,7 +200,7 @@ const AuctionsTransports = () => {
       })
       .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
-        dispatch(showLoder({ cities: 0 }))
+        dispatch(showLoder({ cities: 0, status: err.status }))
       })
   }, [])
   useEffect(() => {
@@ -214,7 +214,7 @@ const AuctionsTransports = () => {
       })
       .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
-        dispatch(showLoder({ dismantled: 0 }))
+        dispatch(showLoder({ dismantled: 0, status: err.status }))
       })
   }, [])
 
@@ -231,7 +231,7 @@ const AuctionsTransports = () => {
       })
       .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
-        dispatch(showLoder({ getDelete: 0 }))
+        dispatch(showLoder({ getDelete: 0, status: err.status }))
       })
   }, [])
 
@@ -277,9 +277,9 @@ const AuctionsTransports = () => {
         // setTotalResults(res.pagination.total_results)
         dispatch(showLoder({ getArray: 0 }))
       })
-      .catch(() => {
+      .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
-        dispatch(showLoder({ getArray: 0 }))
+        dispatch(showLoder({ getArray: 0, status: err.status }))
         setTransportArray([])
         setPaginationValue([])
       })
@@ -323,8 +323,8 @@ const AuctionsTransports = () => {
         setTransportArray(res.general_information)
         dispatch(showLoder({ searchRequest: 0 }))
       })
-      .catch(() => {
-        dispatch(showLoder({ searchRequest: 0 }))
+      .catch((err) => {
+        dispatch(showLoder({ searchRequest: 0, status: err.status }))
         setTransportArray([])
         //state.createNotification('Успешно обновлено!', 'error')
       })
@@ -477,7 +477,7 @@ const AuctionsTransports = () => {
       })
       .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
-        dispatch(showLoder({ restoreTransport: 0 }))
+        dispatch(showLoder({ restoreTransport: 0, status: err.status }))
       })
   }
 
@@ -497,7 +497,7 @@ const AuctionsTransports = () => {
       })
       .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
-        dispatch(showLoder({ reloadTransport: 0 }))
+        dispatch(showLoder({ reloadTransport: 0, status: err.status }))
       })
   }
 
@@ -516,7 +516,7 @@ const AuctionsTransports = () => {
       })
       .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
-        dispatch(showLoder({ removeStatus: 0 }))
+        dispatch(showLoder({ removeStatus: 0, status: err.status }))
       })
   }
 
@@ -939,6 +939,7 @@ const AuctionsTransports = () => {
                     data={checkControlData.map((item) => {
                       return { label: item.name, value: item.id }
                     })}
+                    cleanable={false}
                   />
                 </div>
               )}
@@ -1114,7 +1115,9 @@ const AuctionsTransports = () => {
                             {(rowData, rowIndex) => {
                               return controlToolTip({
                                 data: rowData,
-                                title: rowData.destination.title,
+                                title: rowData.destination
+                                  ? rowData.destination.title
+                                  : '',
                                 limit: 15,
                               })
                             }}

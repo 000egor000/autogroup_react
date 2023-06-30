@@ -190,7 +190,7 @@ const TransactionsCustom = (props) => {
         dispatch(showLoder({ arrayCashAuction: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ arrayCashAuction: 0 }))
+        dispatch(showLoder({ arrayCashAuction: 0, status: err.status }))
         setCashArray([])
         setPaginationValue(0)
       })
@@ -210,7 +210,7 @@ const TransactionsCustom = (props) => {
       .catch((err) => {
         setCashArray([])
         setPaginationValue(0)
-        dispatch(showLoder({ carrier: 0 }))
+        dispatch(showLoder({ carrier: 0, status: err.status }))
       })
   }
 
@@ -229,7 +229,7 @@ const TransactionsCustom = (props) => {
       .catch((err) => {
         setPartnerArray([])
         setPaginationValuePar(0)
-        dispatch(showLoder({ partner: 0 }))
+        dispatch(showLoder({ partner: 0, status: err.status }))
       })
   }
 
@@ -268,7 +268,7 @@ const TransactionsCustom = (props) => {
       .catch((err) => {
         setPartnerArray([])
         setPaginationValuePar(0)
-        dispatch(showLoder({ money: 0 }))
+        dispatch(showLoder({ money: 0, status: err.status }))
       })
   }
 
@@ -302,7 +302,7 @@ const TransactionsCustom = (props) => {
       .catch((err) => {
         setPartnerArray([])
         setPaginationValuePar(0)
-        dispatch(showLoder({ money: 0 }))
+        dispatch(showLoder({ money: 0, status: err.status }))
       })
   }
 
@@ -364,7 +364,7 @@ const TransactionsCustom = (props) => {
           setPaginationValue(0)
           setCashArray([])
 
-          dispatch(showLoder({ searchRequest: 0 }))
+          dispatch(showLoder({ searchRequest: 0, status: err.status }))
         })
     }
 
@@ -409,7 +409,7 @@ const TransactionsCustom = (props) => {
         dispatch(showLoder({ auctions: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ auctions: 0 }))
+        dispatch(showLoder({ auctions: 0, status: err.status }))
       })
   }, [])
 
@@ -423,7 +423,7 @@ const TransactionsCustom = (props) => {
         dispatch(showLoder({ carriers: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ carriers: 0 }))
+        dispatch(showLoder({ carriers: 0, status: err.status }))
       })
   }, [])
   useEffect(() => {
@@ -442,7 +442,7 @@ const TransactionsCustom = (props) => {
       })
       .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
-        dispatch(showLoder({ credentials: 0 }))
+        dispatch(showLoder({ credentials: 0, status: err.status }))
       })
   }, [])
 

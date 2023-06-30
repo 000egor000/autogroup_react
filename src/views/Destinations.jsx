@@ -7,7 +7,8 @@ import { Pagination, SelectPicker, CheckPicker, Modal } from 'rsuite'
 import 'rsuite-table/dist/css/rsuite-table.css'
 
 import 'react-toastify/dist/ReactToastify.css'
-import {viewDestinations} from './../helper'
+import { viewDestinations } from './../helper'
+import NoData from '../components/NoData'
 
 import {
   postRequest,
@@ -71,7 +72,7 @@ const Destinations = (props) => {
       })
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ removeDestinations: 0 }))
+        dispatch(showLoder({ removeDestinations: 0, status: err.status }))
       })
   }
 
@@ -80,14 +81,13 @@ const Destinations = (props) => {
     getRequest('/api/v1/countries', {
       Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
     })
-        .then((res) => {
+      .then((res) => {
+        setDataCountries(res.countries)
 
-          setDataCountries(res.countries)
-
-          setCountrySelect(JSON.stringify(res.countries[0]))
-          dispatch(showLoder({ offices: 0 }))
-        })
-        .catch(() => dispatch(showLoder({ offices: 0 })))
+        setCountrySelect(JSON.stringify(res.countries[0]))
+        dispatch(showLoder({ offices: 0 }))
+      })
+      .catch((err) => dispatch(showLoder({ offices: 0, status: err.status })))
   }
   const getPlaceDestinations = () => {
     dispatch(showLoder({ getPlaceDestinations: 1 }))
@@ -102,7 +102,7 @@ const Destinations = (props) => {
       .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
 
-        dispatch(showLoder({ getPlaceDestinations: 0 }))
+        dispatch(showLoder({ getPlaceDestinations: 0, status: err.status }))
       })
   }
 
@@ -119,7 +119,7 @@ const Destinations = (props) => {
       })
       .catch((err) => {
         setDataMaster([])
-        dispatch(showLoder({ getArray: 0 }))
+        dispatch(showLoder({ getArray: 0, status: err.status }))
       })
   }
   const getAllArray = () => {
@@ -133,7 +133,7 @@ const Destinations = (props) => {
       })
       .catch((err) => {
         setDestinationsArray([])
-        dispatch(showLoder({ getAllArray: 0 }))
+        dispatch(showLoder({ getAllArray: 0, status: err.status }))
         //state.createNotification('Успешно обновлено!', 'error')
       })
   }
@@ -154,7 +154,7 @@ const Destinations = (props) => {
         })
         .catch((err) => {
           setDataMaster([])
-          dispatch(showLoder({ destinationsSearch: 0 }))
+          dispatch(showLoder({ destinationsSearch: 0, status: err.status }))
           //state.createNotification('Успешно обновлено!', 'error')
         })
     } else {
@@ -214,7 +214,7 @@ const Destinations = (props) => {
       })
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ createLocation: 0 }))
+        dispatch(showLoder({ createLocation: 0, status: err.status }))
       })
   }
   const editLocation = (e) => {
@@ -233,7 +233,7 @@ const Destinations = (props) => {
       })
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ editLocation: 0 }))
+        dispatch(showLoder({ editLocation: 0, status: err.status }))
       })
   }
   const handleChangeLimit = (dataKey) => {
@@ -361,23 +361,23 @@ const Destinations = (props) => {
               <label>
                 <span>Страна</span>
                 {dataCountries.length > 0 ? (
-                    <select
-                        value={countrySelect}
-                        onChange={(event) => setCountrySelect(event.target.value)}
-                    >
-                      {dataCountries.map((elem) => {
-                        return (
-                            <option
-                                key={elem.id + elem.name_ru}
-                                value={JSON.stringify(elem)}
-                            >
-                              {elem.name_ru}
-                            </option>
-                        )
-                      })}
-                    </select>
+                  <select
+                    value={countrySelect}
+                    onChange={(event) => setCountrySelect(event.target.value)}
+                  >
+                    {dataCountries.map((elem) => {
+                      return (
+                        <option
+                          key={elem.id + elem.name_ru}
+                          value={JSON.stringify(elem)}
+                        >
+                          {elem.name_ru}
+                        </option>
+                      )
+                    })}
+                  </select>
                 ) : (
-                    <span>Нет данных!</span>
+                  <span>Нет данных!</span>
                 )}
               </label>
 
@@ -551,8 +551,7 @@ const Destinations = (props) => {
                   <HeaderCell>Страна</HeaderCell>
                   <Cell>
                     {(rowData, rowIndex) => {
-                      return (<span>{rowData.country.name_ru}</span>
-                      )
+                      return <span>{rowData.country.name_ru}</span>
                     }}
                   </Cell>
                 </Column>
@@ -624,7 +623,7 @@ const Destinations = (props) => {
               )}
             </div>
           ) : (
-            'Нет портов назначения!'
+            <NoData />
           )}
         </div>
       </div>

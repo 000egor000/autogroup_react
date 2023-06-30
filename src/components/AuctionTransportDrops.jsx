@@ -60,8 +60,8 @@ const AuctionTransportDrops = ({ viewBlock }) => {
 
         dispatch(showLoder({ getPaymentArray: 0 }))
       })
-      .catch(() => {
-        dispatch(showLoder({ getPaymentArray: 0 }))
+      .catch((err) => {
+        dispatch(showLoder({ getPaymentArray: 0, status: err.status }))
       })
   }
 

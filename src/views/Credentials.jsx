@@ -108,7 +108,7 @@ const Credentials = (props) => {
       })
       .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
-        dispatch(showLoder({ offices: 0 }))
+        dispatch(showLoder({ offices: 0, status: err.status }))
       })
   }, [])
 
@@ -160,7 +160,7 @@ const Credentials = (props) => {
       })
       .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
-        dispatch(showLoder({ auctions: 0 }))
+        dispatch(showLoder({ auctions: 0, status: err.status }))
       })
   }, [])
 
@@ -185,7 +185,7 @@ const Credentials = (props) => {
         dispatch(showLoder({ carriers: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ carriers: 0 }))
+        dispatch(showLoder({ carriers: 0, status: err.status }))
       })
   }, [])
 
@@ -276,7 +276,7 @@ const Credentials = (props) => {
       })
       .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
-        dispatch(showLoder({ getDataTable: 0 }))
+        dispatch(showLoder({ getDataTable: 0, status: err.status }))
       })
   }
 
@@ -311,7 +311,7 @@ const Credentials = (props) => {
       })
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ createAccessAdd: 0 }))
+        dispatch(showLoder({ createAccessAdd: 0, status: err.status }))
       })
   }
 
@@ -345,7 +345,7 @@ const Credentials = (props) => {
       })
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ editCredential: 0 }))
+        dispatch(showLoder({ editCredential: 0, status: err.status }))
       })
   }
 
@@ -361,7 +361,7 @@ const Credentials = (props) => {
 
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ remove: 0 }))
+        dispatch(showLoder({ remove: 0, status: err.status }))
       })
   }
 
@@ -437,7 +437,7 @@ const Credentials = (props) => {
         })
         .catch((err) => {
           state.createNotification('Проверьте веденные данные!', 'error')
-          dispatch(showLoder({ credentials: 0 }))
+          dispatch(showLoder({ credentials: 0, status: err.status }))
         })
     }
   }
@@ -484,7 +484,7 @@ const Credentials = (props) => {
       })
       .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
-        dispatch(showLoder({ countries: 0 }))
+        dispatch(showLoder({ countries: 0, status: err.status }))
       })
   }, [])
 
@@ -576,7 +576,7 @@ const Credentials = (props) => {
       .catch((err) => {
         state.createNotification('Не найдено!', 'error')
         setDataTableFilter([])
-        dispatch(showLoder({ searchRequest: 0 }))
+        dispatch(showLoder({ searchRequest: 0, status: err.status }))
       })
   }
 

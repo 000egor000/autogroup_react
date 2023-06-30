@@ -52,7 +52,7 @@ const AuctionTransportDocuments = ({
       })
 
       .catch((err) => {
-        dispatch(showLoder({ auto: 0 }))
+        dispatch(showLoder({ auto: 0, status: err.status }))
       })
   }, [])
   useState(() => {
@@ -84,7 +84,7 @@ const AuctionTransportDocuments = ({
         dispatch(showLoder({ info: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ info: 0 }))
+        dispatch(showLoder({ info: 0, status: err.status }))
       })
   }, [])
 
@@ -174,7 +174,7 @@ const AuctionTransportDocuments = ({
       })
       .catch((err) => {
         setDataUserArray([{ id: 0, name: 'Выбрать из списка' }])
-        dispatch(showLoder({ getArrayCustomer: 0 }))
+        dispatch(showLoder({ getArrayCustomer: 0, status: err.status }))
       })
   }
 

@@ -3,7 +3,7 @@ import React, { useState, useContext, useEffect } from 'react'
 import { Table, Column, HeaderCell, Cell } from 'rsuite-table'
 import { Edit, Trash } from '@rsuite/icons'
 
-import {Pagination, Modal, Checkbox, Whisper, Tooltip} from 'rsuite'
+import { Pagination, Modal, Checkbox, Whisper, Tooltip } from 'rsuite'
 import 'rsuite-table/dist/css/rsuite-table.css'
 
 import 'react-toastify/dist/ReactToastify.css'
@@ -19,8 +19,8 @@ import {
 
 import { showLoder } from '../reducers/actions'
 import ContextApp from '../context/contextApp.js'
-import {getDateFunc, viewDestinations, viewPorts} from "../helper";
-import {Link} from "react-router-dom";
+import { getDateFunc, viewDestinations, viewPorts } from '../helper'
+import { Link } from 'react-router-dom'
 
 const ListOfCountries = (props) => {
   // params
@@ -64,7 +64,7 @@ const ListOfCountries = (props) => {
       })
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ remove: 0 }))
+        dispatch(showLoder({ remove: 0, status: err.status }))
       })
   }
 
@@ -78,7 +78,9 @@ const ListOfCountries = (props) => {
         setPaginationValue(res.pagination)
         dispatch(showLoder({ getСountries: 0 }))
       })
-      .catch(() => dispatch(showLoder({ getСountries: 0 })))
+      .catch((err) =>
+        dispatch(showLoder({ getСountries: 0, status: err.status }))
+      )
   }
   const getAuctions = () => {
     dispatch(showLoder({ auctions: 1 }))
@@ -91,7 +93,7 @@ const ListOfCountries = (props) => {
         dispatch(showLoder({ auctions: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ auctions: 0 }))
+        dispatch(showLoder({ auctions: 0, status: err.status }))
       })
   }
   useEffect(() => {
@@ -137,9 +139,9 @@ const ListOfCountries = (props) => {
         close()
         dispatch(showLoder({ createCountry: 0 }))
       })
-      .catch((e) => {
+      .catch((err) => {
         state.createNotification('Проверьте данные!', 'error')
-        dispatch(showLoder({ createCountry: 0 }))
+        dispatch(showLoder({ createCountry: 0, status: err.status }))
       })
   }
 
@@ -164,7 +166,7 @@ const ListOfCountries = (props) => {
         .catch((err) => {
           state.createNotification('Проверьте веденные данные!', 'error')
 
-          dispatch(showLoder({ editCountry: 0 }))
+          dispatch(showLoder({ editCountry: 0, status: err.status }))
         })
     }
   }
@@ -183,33 +185,31 @@ const ListOfCountries = (props) => {
     setIs_destination(0)
   }
   const controlToolTip = ({ data, title, limit }) =>
-      String(title).length >= limit ? (
-          <Whisper
-              followCursor
-              placement="right"
-              speaker={<Tooltip>{title}</Tooltip>}
-          >
-
-          <span
-              onClick={() => {
-                // viewBlock(109) &&
-                showEditCountry(data)
-              }}
-          >
-              <span>
-          {String(title).slice(0, limit)}</span>
+    String(title).length >= limit ? (
+      <Whisper
+        followCursor
+        placement="right"
+        speaker={<Tooltip>{title}</Tooltip>}
+      >
+        <span
+          onClick={() => {
+            // viewBlock(109) &&
+            showEditCountry(data)
+          }}
+        >
+          <span>{String(title).slice(0, limit)}</span>
         </span>
-          </Whisper>
-      ) : (
-          <span
-              onClick={() => {
-                  // viewBlock(109) &&
-                  showEditCountry(data)
-              }}
-          >
-              <span>{title}</span>
-        </span>
-      )
+      </Whisper>
+    ) : (
+      <span
+        onClick={() => {
+          // viewBlock(109) &&
+          showEditCountry(data)
+        }}
+      >
+        <span>{title}</span>
+      </span>
+    )
   // useEffect(
   //   () =>
   //     window.sessionStorage.getItem('access_rights') !== 'null' &&
@@ -499,12 +499,12 @@ const ListOfCountries = (props) => {
                   <Cell>
                     {(rowData, rowIndex) => {
                       return (
-                          <span
-                              onClick={() => {
-                                // viewBlock(109) &&
-                                // showEditCountry(rowData)
-                              }}
-                          >
+                        <span
+                          onClick={() => {
+                            // viewBlock(109) &&
+                            // showEditCountry(rowData)
+                          }}
+                        >
                           <Checkbox checked={rowData.is_destination} disabled />
                         </span>
                       )
@@ -526,13 +526,13 @@ const ListOfCountries = (props) => {
                 <Column align="center" fixed flexGrow={1}>
                   <HeaderCell>Порты назначения</HeaderCell>
                   <Cell>
-                      {(rowData, rowIndex) => {
-                          return controlToolTip({
-                              data: rowData,
-                              title: viewDestinations(rowData.destinations),
-                              limit: 15,
-                          })
-                      }}
+                    {(rowData, rowIndex) => {
+                      return controlToolTip({
+                        data: rowData,
+                        title: viewDestinations(rowData.destinations),
+                        limit: 15,
+                      })
+                    }}
                   </Cell>
                 </Column>
 

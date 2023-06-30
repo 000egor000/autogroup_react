@@ -166,8 +166,8 @@ const AuctionTransportDocumentsCreateInvoice = ({
         setTransportArray(res.general_information)
         dispatch(showLoder({ auto: 0 }))
       })
-      .catch(() => {
-        dispatch(showLoder({ auto: 0 }))
+      .catch((err) => {
+        dispatch(showLoder({ auto: 0, status: err.status }))
       })
   }, [])
 
@@ -300,8 +300,10 @@ const AuctionTransportDocumentsCreateInvoice = ({
             state.createNotification('Успешно создано!', 'success')
             dispatch(showLoder({ createDocumentsInvoice: 0 }))
           })
-          .catch(() => {
-            dispatch(showLoder({ createDocumentsInvoice: 0 }))
+          .catch((err) => {
+            dispatch(
+              showLoder({ createDocumentsInvoice: 0, status: err.status })
+            )
             state.createNotification('Что-то пошло не так!', 'error')
           })
       } else {

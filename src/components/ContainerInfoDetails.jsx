@@ -35,7 +35,7 @@ const ContainerInfoDetails = () => {
       })
       .catch((err) => {
         setContainerArray([])
-        dispatch(showLoder({ getArray: 0 }))
+        dispatch(showLoder({ getArray: 0, status: err.status }))
         //state.createNotification('Успешно обновлено!', 'error')
       })
   }

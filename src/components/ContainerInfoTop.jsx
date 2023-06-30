@@ -34,7 +34,7 @@ const ContainerInfoTop = ({ dataAray }) => {
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
 
-        dispatch(showLoder({ downContainer: 0 }))
+        dispatch(showLoder({ downContainer: 0, status: err.status }))
       })
   }
 

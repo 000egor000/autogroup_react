@@ -98,7 +98,7 @@ const AuctionTransportAutoEdit = ({
 
         dispatch(showLoder({ countries: 0 }))
       })
-      .catch(() => dispatch(showLoder({ countries: 0 })))
+      .catch((err) => dispatch(showLoder({ countries: 0, status: err.status })))
   }, [])
 
   useEffect(() => {
@@ -121,7 +121,7 @@ const AuctionTransportAutoEdit = ({
         })
 
         .catch((err) => {
-          dispatch(showLoder({ docFees: 0 }))
+          dispatch(showLoder({ docFees: 0, status: err.status }))
           //state.createNotification('Успешно обновлено!', 'error')
         })
     }
@@ -141,7 +141,11 @@ const AuctionTransportAutoEdit = ({
       const { auctions } = JSON.parse(val)
 
       if (auctions && auctions.length > 0) {
-        setAuctionArray(auctions)
+        const is_notValueDefault = auctions.filter(
+          (el) => el.code !== 'Default'
+        )
+
+        setAuctionArray(is_notValueDefault)
         // setAuctionSelect(JSON.stringify(auctions[0]))
       }
     } else {
@@ -212,7 +216,7 @@ const AuctionTransportAutoEdit = ({
         })
         .catch((err) => {
           //state.createNotification('Успешно обновлено!', 'error')
-          dispatch(showLoder({ locations: 0 }))
+          dispatch(showLoder({ locations: 0, status: err.status }))
         })
     } else {
       setLocationsArray([])
@@ -290,7 +294,7 @@ const AuctionTransportAutoEdit = ({
       })
       .catch((err) => {
         setTransportTypeArray([])
-        dispatch(showLoder({ type: 0 }))
+        dispatch(showLoder({ type: 0, status: err.status }))
         //state.createNotification('Успешно обновлено!', 'error')
       })
   }, [])
@@ -472,7 +476,7 @@ const AuctionTransportAutoEdit = ({
       })
       .catch((err) => {
         state.createNotification('Не найдено!', 'error')
-        dispatch(showLoder({ parseFunction: 0 }))
+        dispatch(showLoder({ parseFunction: 0, status: err.status }))
       })
   }
   const setGetFieldParse = ({ location }) => {
@@ -499,7 +503,7 @@ const AuctionTransportAutoEdit = ({
       })
       .catch((err) => {
         state.createNotification('Не найдено!', 'error')
-        dispatch(showLoder({ getInfoByVin: 0 }))
+        dispatch(showLoder({ getInfoByVin: 0, status: err.status }))
       })
   }
 
@@ -574,7 +578,9 @@ const AuctionTransportAutoEdit = ({
             })
             .catch((err) => {
               state.createNotification('Что-то пошло не так!', 'error')
-              dispatch(showLoder({ editAuctionTransport: 0 }))
+              dispatch(
+                showLoder({ editAuctionTransport: 0, status: err.status })
+              )
             })
         } else {
           state.createNotification('Лот должен содержать 8 символов!', 'error')
@@ -633,7 +639,7 @@ const AuctionTransportAutoEdit = ({
         //   refFocus.current.style.borderWidth = '1px'
         //   refFocus.current.style.borderColor = 'red'
         // }
-        dispatch(showLoder({ verification: 0 }))
+        dispatch(showLoder({ verification: 0, status: err.status }))
         // setStatusSearchLot(false)
       })
   }
@@ -654,7 +660,7 @@ const AuctionTransportAutoEdit = ({
         })
         .catch((err) => {
           state.createNotification('Что-то пошло не так!', 'error')
-          dispatch(showLoder({ throughAuto: 0 }))
+          dispatch(showLoder({ throughAuto: 0, status: err.status }))
         })
     }
   }

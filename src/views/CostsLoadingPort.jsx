@@ -57,7 +57,7 @@ const CostsLoadingPort = (props) => {
       })
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ removeCostsLoadingPorts: 0 }))
+        dispatch(showLoder({ removeCostsLoadingPorts: 0, status: err.status }))
       })
   }
 
@@ -74,7 +74,7 @@ const CostsLoadingPort = (props) => {
       })
       .catch((err) => {
         setDataMaster([])
-        dispatch(showLoder({ getArray: 0 }))
+        dispatch(showLoder({ getArray: 0, status: err.status }))
       })
   }
   const getAllArray = () => {
@@ -88,7 +88,7 @@ const CostsLoadingPort = (props) => {
       })
       .catch((err) => {
         setCostsLoadingPortsArray([])
-        dispatch(showLoder({ getAllArray: 0 }))
+        dispatch(showLoder({ getAllArray: 0, status: err.status }))
         //state.createNotification('Успешно обновлено!', 'error')
       })
   }
@@ -133,7 +133,7 @@ const CostsLoadingPort = (props) => {
       })
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ createCostsLoadingPort: 0 }))
+        dispatch(showLoder({ createCostsLoadingPort: 0, status: err.status }))
       })
   }
   const editCostsLoadingPort = (e) => {
@@ -149,7 +149,7 @@ const CostsLoadingPort = (props) => {
       })
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ editCostsLoadingPort: 0 }))
+        dispatch(showLoder({ editCostsLoadingPort: 0, status: err.status }))
       })
   }
   const handleChangeLimit = (dataKey) => {
@@ -170,6 +170,13 @@ const CostsLoadingPort = (props) => {
     return JSON.parse(window.sessionStorage.getItem('role')).code === 'admin'
       ? true
       : bool
+  }
+
+  const styleTopItem = {
+    paddingLeft: state.width,
+    justifyContent: 'space-between',
+    alignItems: 'inherit',
+    display: 'block',
   }
 
   return (
@@ -300,14 +307,7 @@ const CostsLoadingPort = (props) => {
       </div>
 
       <div className="itemContainer-inner">
-        <div
-          className="top-item "
-          style={{
-            paddingLeft: state.width,
-            justifyContent: 'space-between',
-            alignItems: 'inherit',
-          }}
-        >
+        <div className="top-item " style={styleTopItem}>
           <div className="btnTransport" style={{ marginTop: '10px' }}>
             <button
               className="btnInfo"

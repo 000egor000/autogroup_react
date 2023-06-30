@@ -1,4 +1,11 @@
-import { SHOW, HIDE, WIDTHOPEN, WIDTHCLOSE, SHOWLOADER } from './boilerplate'
+import {
+  SHOW,
+  HIDE,
+  WIDTHOPEN,
+  WIDTHCLOSE,
+  SHOWLOADER,
+  // CONTROLTOKEN,
+} from './boilerplate'
 // ALLROLE, ACCESSRIGHTS
 
 export const show = () => {
@@ -31,11 +38,12 @@ export const widthClose = () => {
   }
 }
 
-// export const allRole = (newClick) => {
-// 	return {
-// 		type: ALLROLE,
-// 		payload: newClick,
-// 	}
+// dispatch(controlToken({ status: err.status }))
+
+// export const controlToken = (status) => {
+//   return {
+//     type: CONTROLTOKEN,
+//   }
 // }
 
 // export const accessRights = (newClick) => {

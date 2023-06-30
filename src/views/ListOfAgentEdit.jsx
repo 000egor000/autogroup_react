@@ -18,16 +18,16 @@ import {
   controlIdDestination,
 } from '../helper'
 
-const CarterProfile = (props) => {
+const ProfileOfAgents = (props) => {
   const [dataCarters, setDataCarters] = useState([])
-  const [dataMaster, setDataMaster] = useState([])
+  // const [dataMaster, setDataMaster] = useState([])
   const { id } = useParams()
   const navigate = useNavigate()
   const [nameCarters, setNameCarters] = useState('')
   const [pdp, setPdp] = useState([])
-  const [pdpSelect, setPdpSelect] = useState([])
+  // const [pdpSelect, setPdpSelect] = useState([])
 
-  const [pdpSelectDefault, setPdpSelectDefault] = useState([])
+  // const [pdpSelectDefault, setPdpSelectDefault] = useState([])
   const [addressCarters, setAddressCarters] = useState('')
   const [contactCarters, setContactCarters] = useState('')
   const [phoneCarters, setPhoneCarters] = useState('')
@@ -47,45 +47,45 @@ const CarterProfile = (props) => {
   }
 
   useEffect(() => {
-    getPdp()
-    getArray()
+    // getPdp()
+    // getArray()
   }, [])
 
   useEffect(() => {
-    dispatch(showLoder({ carters: 1 }))
-    getRequest(`/api/v1/carters`, {
+    dispatch(showLoder({ agents: 1 }))
+    getRequest(`/api/v1/agents`, {
       Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
     })
-      .then(({ carters }) => {
-        const findArray = carters.find((item) => item.id == id)
+      .then(({ agents }) => {
+        const findArray = agents.find((item) => item.id == id)
 
         if (findArray.id) {
           setDataCarters(findArray)
           fillData(findArray)
         }
-        dispatch(showLoder({ carters: 0 }))
+        dispatch(showLoder({ agents: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ carters: 0, status: err.status }))
+        dispatch(showLoder({ agents: 0, status: err.status }))
         setDataCarters([])
       })
   }, [])
-  useEffect(() => {
-    if (dataCarters.id && dataCarters.destinationPlaceDestinations.length > 0) {
-      const res = controlIdDestination(dataCarters)
-      if (res) {
-        setPdpSelect(res)
-        setPdpSelectDefault(res)
-      }
-    }
-  }, [dataCarters])
+  // useEffect(() => {
+  //   if (dataCarters.id && dataCarters.destinationPlaceDestinations.length > 0) {
+  //     const res = controlIdDestination(dataCarters)
+  //     if (res) {
+  //       setPdpSelect(res)
+  //       setPdpSelectDefault(res)
+  //     }
+  //   }
+  // }, [dataCarters])
 
-  useEffect(() => {
-    if (pdpSelectDefault.length !== pdpSelect.length) {
-      editCarters(controlCheck(pdpSelectDefault, pdpSelect))
-      setPdpSelectDefault(pdpSelect)
-    }
-  }, [pdpSelect])
+  // useEffect(() => {
+  //   if (pdpSelectDefault.length !== pdpSelect.length) {
+  //     editCarters(controlCheck(pdpSelectDefault, pdpSelect))
+  //     setPdpSelectDefault(pdpSelect)
+  //   }
+  // }, [pdpSelect])
 
   const fillData = (val) => {
     const { name, address, contact, phone, messenger, email } = val
@@ -101,9 +101,8 @@ const CarterProfile = (props) => {
   const editCarters = ({ status, value }) => {
     dispatch(showLoder({ editCarters: 1 }))
 
-    putRequest(`/api/v1/carters/${id}`, {
+    putRequest(`/api/v1/agents/${id}`, {
       ...params,
-      [status ? 'pd_id_add' : 'pd_id_delete']: value,
     })
       .then(() => {
         state.createNotification('Информация обновлена!', 'success')
@@ -116,42 +115,42 @@ const CarterProfile = (props) => {
       })
   }
 
-  const getArray = () => {
-    dispatch(showLoder({ getArray: 1 }))
-    getRequest(`/api/v1/destinations?page=1&limit=1000`, {
-      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
-    })
-      .then(({ destinations }) => {
-        const data = destinations.map(({ id, title }) => ({
-          label: title,
-          value: id,
-        }))
-        setDataMaster(data)
-        dispatch(showLoder({ getArray: 0 }))
-      })
-      .catch((err) => {
-        setDataMaster([])
-        dispatch(showLoder({ getArray: 0, status: err.status }))
-      })
-  }
-  const getPdp = () => {
-    dispatch(showLoder({ getPdp: 1 }))
-    getRequest(`/api/v1/pdp`, {
-      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
-    })
-      .then(({ pdp }) => {
-        const data = pdp.map(({ id, place_destination, destination }) => ({
-          label: dataView(place_destination, destination),
-          value: id,
-        }))
-        setPdp(data)
-        dispatch(showLoder({ getPdp: 0 }))
-      })
-      .catch((err) => {
-        dispatch(showLoder({ getPdp: 0, status: err.status }))
-        setPdp([])
-      })
-  }
+  // const getArray = () => {
+  //   dispatch(showLoder({ getArray: 1 }))
+  //   getRequest(`/api/v1/destinations?page=1&limit=1000`, {
+  //     Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+  //   })
+  //     .then(({ destinations }) => {
+  //       const data = destinations.map(({ id, title }) => ({
+  //         label: title,
+  //         value: id,
+  //       }))
+  //       setDataMaster(data)
+  //       dispatch(showLoder({ getArray: 0 }))
+  //     })
+  //     .catch((err) => {
+  //       setDataMaster([])
+  //       dispatch(showLoder({ getArray: 0 }))
+  //     })
+  // }
+  // const getPdp = () => {
+  //   dispatch(showLoder({ getPdp: 1 }))
+  //   getRequest(`/api/v1/pdp`, {
+  //     Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+  //   })
+  //     .then(({ pdp }) => {
+  //       const data = pdp.map(({ id, place_destination, destination }) => ({
+  //         label: dataView(place_destination, destination),
+  //         value: id,
+  //       }))
+  //       setPdp(data)
+  //       dispatch(showLoder({ getPdp: 0 }))
+  //     })
+  //     .catch((err) => {
+  //       dispatch(showLoder({ getPdp: 0 }))
+  //       setPdp([])
+  //     })
+  // }
 
   return (
     <div className="itemContainer">
@@ -178,7 +177,7 @@ const CarterProfile = (props) => {
 
                   {dataCarters.id ? (
                     <>
-                      {dataMaster.length > 0 && (
+                      {/* {dataMaster.length > 0 && (
                         <div className="selectCustom selectCustom--space">
                           <span className="titleCheckPicker">Порты</span>
 
@@ -189,7 +188,7 @@ const CarterProfile = (props) => {
                             required
                           />
                         </div>
-                      )}
+                      )} */}
                       <label>
                         <span>Наименование компании</span>
                         <input
@@ -296,4 +295,4 @@ const CarterProfile = (props) => {
     </div>
   )
 }
-export default CarterProfile
+export default ProfileOfAgents

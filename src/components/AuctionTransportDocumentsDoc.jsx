@@ -28,7 +28,7 @@ const AuctionTransportDocumentsDoc = ({
         dispatch(showLoder({ invoice: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ invoice: 0 }))
+        dispatch(showLoder({ invoice: 0, status: err.status }))
       })
   }, [invoiceInformationId])
 
@@ -48,7 +48,9 @@ const AuctionTransportDocumentsDoc = ({
         link.click()
         dispatch(showLoder({ getFileFunc: 0 }))
       })
-      .catch((err) => dispatch(showLoder({ getFileFunc: 0 })))
+      .catch((err) =>
+        dispatch(showLoder({ getFileFunc: 0, status: err.status }))
+      )
   }
 
   return (

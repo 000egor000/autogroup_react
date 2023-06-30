@@ -62,7 +62,9 @@ const CostsDestinationPort = (props) => {
       })
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ removeCostsDestinationPorts: 0 }))
+        dispatch(
+          showLoder({ removeCostsDestinationPorts: 0, status: err.status })
+        )
       })
   }
 
@@ -79,7 +81,7 @@ const CostsDestinationPort = (props) => {
       })
       .catch((err) => {
         setDataMaster([])
-        dispatch(showLoder({ getArray: 0 }))
+        dispatch(showLoder({ getArray: 0, status: err.status }))
       })
   }
   const getAllArray = () => {
@@ -93,7 +95,7 @@ const CostsDestinationPort = (props) => {
       })
       .catch((err) => {
         setCostsDestinationPortsArray([])
-        dispatch(showLoder({ getAllArray: 0 }))
+        dispatch(showLoder({ getAllArray: 0, status: err.status }))
         //state.createNotification('Успешно обновлено!', 'error')
       })
   }
@@ -137,7 +139,9 @@ const CostsDestinationPort = (props) => {
       })
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ createCostsDestinationPort: 0 }))
+        dispatch(
+          showLoder({ createCostsDestinationPort: 0, status: err.status })
+        )
       })
   }
   const editCostsDestinationPort = (e) => {
@@ -153,7 +157,7 @@ const CostsDestinationPort = (props) => {
       })
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ editCostsDestinationPort: 0 }))
+        dispatch(showLoder({ editCostsDestinationPort: 0, status: err.status }))
       })
   }
   const handleChangeLimit = (dataKey) => {
@@ -174,6 +178,12 @@ const CostsDestinationPort = (props) => {
     return JSON.parse(window.sessionStorage.getItem('role')).code === 'admin'
       ? true
       : bool
+  }
+  const styleTopItem = {
+    paddingLeft: state.width,
+    justifyContent: 'space-between',
+    alignItems: 'inherit',
+    display: 'block',
   }
 
   return (
@@ -306,14 +316,7 @@ const CostsDestinationPort = (props) => {
       </div>
 
       <div className="itemContainer-inner">
-        <div
-          className="top-item "
-          style={{
-            paddingLeft: state.width,
-            justifyContent: 'space-between',
-            alignItems: 'inherit',
-          }}
-        >
+        <div className="top-item " style={styleTopItem}>
           <div className="btnTransport" style={{ marginTop: '10px' }}>
             <button
               className="btnInfo"

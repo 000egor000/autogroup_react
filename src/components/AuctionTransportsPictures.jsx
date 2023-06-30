@@ -54,10 +54,10 @@ const AuctionPictures = () => {
         state.createNotification('Успешно найдено!', 'success')
         dispatch(showLoder({ getParsFunc: 0 }))
       })
-      .catch(() => {
+      .catch((err) => {
         state.createNotification(`Не найдено!`, 'error')
 
-        dispatch(showLoder({ getParsFunc: 0 }))
+        dispatch(showLoder({ getParsFunc: 0, status: err.status }))
       })
   }
 
@@ -74,14 +74,14 @@ const AuctionPictures = () => {
         // setPaginationValue(res.pagination)
         dispatch(showLoder({ getPicturesFunc: 0 }))
       })
-      .catch(() => {
+      .catch((err) => {
         setDataContainer([])
 
         setItemsPhotoClick('')
 
         // setPaginationValue([])
 
-        dispatch(showLoder({ getPicturesFunc: 0 }))
+        dispatch(showLoder({ getPicturesFunc: 0, status: err.status }))
       })
   }
   // useEffect(() => {
@@ -102,11 +102,11 @@ const AuctionPictures = () => {
 
         dispatch(showLoder({ removePicture: 0 }))
       })
-      .catch(() => {
+      .catch((err) => {
         close()
 
         state.createNotification(`Что-то пошло не так!`, 'error')
-        dispatch(showLoder({ removePicture: 0 }))
+        dispatch(showLoder({ removePicture: 0, status: err.status }))
       })
   }
 
@@ -143,9 +143,9 @@ const AuctionPictures = () => {
           getPicturesFunc()
           dispatch(showLoder({ addPicture: 0 }))
         })
-        .catch(() => {
+        .catch((err) => {
           state.createNotification('Что-то пошло не так!', 'error')
-          dispatch(showLoder({ addPicture: 0 }))
+          dispatch(showLoder({ addPicture: 0, status: err.status }))
         })
     } else {
       state.createNotification('Прикрепите файл!', 'error')

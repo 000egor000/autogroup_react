@@ -42,7 +42,7 @@ const AssignPermissionsToRoles = (props) => {
         setAllId(AllId)
         dispatch(showLoder({ access: 0 }))
       })
-      .catch(() => dispatch(showLoder({ access: 0 })))
+      .catch((err) => dispatch(showLoder({ access: 0, status: err.status })))
   }, [valueSelect])
 
   useEffect(() => {
@@ -79,7 +79,7 @@ const AssignPermissionsToRoles = (props) => {
         setDataSelect(res.userRole)
         dispatch(showLoder({ role: 0 }))
       })
-      .catch(() => dispatch(showLoder({ role: 0 })))
+      .catch((err) => dispatch(showLoder({ role: 0, status: err.status })))
   }, [])
 
   const handleAccessRights = (id) => {
@@ -126,7 +126,7 @@ const AssignPermissionsToRoles = (props) => {
         }
       })
       .catch((err) => {
-        dispatch(showLoder({ allCheckFinish: 0 }))
+        dispatch(showLoder({ allCheckFinish: 0, status: err.status }))
         state.createNotification('Проверьте веденные данные!', 'error')
       })
   }

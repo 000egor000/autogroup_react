@@ -66,7 +66,7 @@ const AuctionsTransportsControl = () => {
         dispatch(showLoder({ destinations: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ destinations: 0 }))
+        dispatch(showLoder({ destinations: 0, status: err.status }))
         //state.createNotification('Успешно обновлено!', 'error')
       })
   }, [])
@@ -81,7 +81,7 @@ const AuctionsTransportsControl = () => {
         dispatch(showLoder({ credentials: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ credentials: 0 }))
+        dispatch(showLoder({ credentials: 0, status: err.status }))
         //state.createNotification('Успешно обновлено!', 'error')
       })
   }, [])
@@ -97,7 +97,7 @@ const AuctionsTransportsControl = () => {
         dispatch(showLoder({ auctions: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ auctions: 0 }))
+        dispatch(showLoder({ auctions: 0, status: err.status }))
         //state.createNotification('Успешно обновлено!', 'error')
       })
   }, [])
@@ -218,7 +218,7 @@ const AuctionsTransportsControl = () => {
         dispatch(showLoder({ carriers: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ carriers: 0 }))
+        dispatch(showLoder({ carriers: 0, status: err.status }))
       })
   }, [])
 
@@ -273,7 +273,7 @@ const AuctionsTransportsControl = () => {
         dispatch(showLoder({ getShortInfo: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ getShortInfo: 0 }))
+        dispatch(showLoder({ getShortInfo: 0, status: err.status }))
       })
   }
   useEffect(() => {

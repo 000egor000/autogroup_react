@@ -41,7 +41,7 @@ const Agent = () => {
       })
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ remove: 0 }))
+        dispatch(showLoder({ remove: 0, status: err.status }))
       })
   }
 
@@ -56,7 +56,7 @@ const Agent = () => {
         dispatch(showLoder({ getArray: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ getArray: 0 }))
+        dispatch(showLoder({ getArray: 0, status: err.status }))
         setDataPartners([])
       })
   }

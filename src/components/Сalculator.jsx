@@ -4,10 +4,11 @@ import { SelectPicker } from 'rsuite'
 import { postRequest, getRequest } from '../base/api-request'
 
 import { showLoder } from '../reducers/actions.js'
-import ModalCustomsPayments from './ModalCustomsPayments'
-import ModalChoosePackage from './ModalChoosePackage'
-import Smile from '../assets/smile.png'
+// import ModalCustomsPayments from './ModalCustomsPayments'
+// import ModalChoosePackage from './ModalChoosePackage'
+// import Smile from '../assets/smile.png'
 import { useParams } from 'react-router-dom'
+import { getPrise } from '../helper'
 
 const Сalculator = () => {
   const { state, dispatch } = useContext(ContextApp)
@@ -16,8 +17,12 @@ const Сalculator = () => {
   const [locationsArray, setLocationsArray] = useState([])
   const [locationsSelect, setLocationsSelect] = useState(0)
 
-  const [finishArray, setFinishArray] = useState([])
-  const [finishSelect, setFinishSelect] = useState(0)
+  // const [finishArray, setFinishArray] = useState([])
+  // const [finishSelect, setFinishSelect] = useState(0)
+
+  const [placeDestinationsSelect, setPlaceDestinationsSelect] = useState('')
+  const [placeDestinationsArray, setPlaceDestinationsArray] = useState('')
+
   const [transportTypeArray, setTransportTypeArray] = useState([])
   const [transportTypeSelect, setTransportTypeSelect] = useState(0)
   const [auctionArray, setAuctionArray] = useState([])
@@ -28,38 +33,81 @@ const Сalculator = () => {
   const [evCheck, setEvCheck] = useState(false)
   const [threeAutoCheck, setThreeAutoCheck] = useState(false)
 
-  const [customsPay, setCustomsPay] = useState(false)
-  const [choosePackage, setChoosePackage] = useState(false)
+  // const [customsPay, setCustomsPay] = useState(false)
+  // const [choosePackage, setChoosePackage] = useState(false)
   const { forName } = useParams()
 
-  const [isModalCustomsPayments, setIsModalCustomsPayments] = useState(false)
-  const [isModalShowchoosePackage, setIsModalShowchoosePackage] =
-    useState(false)
+  // const [isModalCustomsPayments, setIsModalCustomsPayments] = useState(false)
+  // const [isModalShowchoosePackage, setIsModalShowchoosePackage] =
+  useState(false)
 
-  const [blockCurrentClick, setBlockCurrentClick] = useState('')
+  // const [blockCurrentClick, setBlockCurrentClick] = useState('')
   const [ObjectPay, setObjectPay] = useState({})
-  const [allPriseCustoms, setAllPriseCustoms] = useState('')
+  // const [allPriseCustoms, setAllPriseCustoms] = useState('')
 
-  const currentClickBlock = (val) => {
-    setBlockCurrentClick(val)
-  }
+  // const currentClickBlock = (val) => {
+  //   setBlockCurrentClick(val)
+  // }
 
   const [portNameArray, setPortNameArray] = useState([])
   const [portNameSelect, setPortNameSelect] = useState('')
+  const [dataCountries, setDataCountries] = useState([])
+  const [countriesSelect, setCountriesSelect] = useState(0)
+
+  const [destinationsArray, setDestinationsArray] = useState([])
+  const [destinationsSelect, setDestinationsSelect] = useState(0)
 
   useEffect(() => {
-    dispatch(showLoder({ auctions: 1 }))
-    getRequest('/api/v1/auctions', {
+    if (destinationsArray.length > 0) {
+      if (destinationsSelect !== null) {
+        destinationsArray.filter((elem) => {
+          if (Number(elem.id) === Number(destinationsSelect)) {
+            if (elem.place_destinations !== null) {
+              setPlaceDestinationsArray(elem.place_destinations)
+              setPlaceDestinationsSelect(elem.place_destinations[0].id)
+            } else {
+              setPlaceDestinationsArray([])
+              setPlaceDestinationsSelect('')
+            }
+          }
+        })
+      } else {
+        setPlaceDestinationsArray([])
+        setPlaceDestinationsSelect('')
+      }
+    }
+  }, [destinationsArray, destinationsSelect])
+
+  // useEffect(() => {
+  //   dispatch(showLoder({ auctions: 1 }))
+  //   getRequest('/api/v1/auctions', {
+  //     Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+  //   })
+  //     .then((res) => {
+  //       setAuctionArray(res.auction)
+  //       setAuctionSelect(JSON.stringify(res.auction[0]))
+
+  //       dispatch(showLoder({ auctions: 0 }))
+  //     })
+  //     .catch((err) => {
+  //       dispatch(showLoder({ auctions: 0 }))
+  //       //state.createNotification('Успешно обновлено!', 'error')
+  //     })
+  // }, [])
+
+  useEffect(() => {
+    dispatch(showLoder({ destinations: 1 }))
+    getRequest(`/api/v1/destinations?limit=1000`, {
       Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
     })
       .then((res) => {
-        setAuctionArray(res.auction)
-        setAuctionSelect(JSON.stringify(res.auction[0]))
-
-        dispatch(showLoder({ auctions: 0 }))
+        setDestinationsArray(res.destinations)
+        setDestinationsSelect(res.destinations[0]['id'])
+        dispatch(showLoder({ destinations: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ auctions: 0 }))
+        dispatch(showLoder({ destinations: 0, status: err.status }))
+
         //state.createNotification('Успешно обновлено!', 'error')
       })
   }, [])
@@ -80,7 +128,7 @@ const Сalculator = () => {
       .catch((err) => {
         setTransportTypeArray([])
         setTransportTypeSelect('')
-        dispatch(showLoder({ size: 0 }))
+        dispatch(showLoder({ size: 0, status: err.status }))
         //state.createNotification('Успешно обновлено!', 'error')
       })
   }, [])
@@ -105,7 +153,7 @@ const Сalculator = () => {
           dispatch(showLoder({ calculatorLocations: 0 }))
         })
         .catch((err) => {
-          dispatch(showLoder({ calculatorLocations: 0 }))
+          dispatch(showLoder({ calculatorLocations: 0, status: err.status }))
           //state.createNotification('Успешно обновлено!', 'error')
         })
     }
@@ -140,7 +188,7 @@ const Сalculator = () => {
       })
 
       .catch((err) => {
-        dispatch(showLoder({ carriers: 0 }))
+        dispatch(showLoder({ carriers: 0, status: err.status }))
         //state.createNotification('Успешно обновлено!', 'error')
       })
   }, [])
@@ -163,7 +211,7 @@ const Сalculator = () => {
         })
 
         .catch((err) => {
-          dispatch(showLoder({ carrierId: 0 }))
+          dispatch(showLoder({ carrierId: 0, status: err.status }))
           //state.createNotification('Успешно обновлено!', 'error')
         })
     }
@@ -173,28 +221,28 @@ const Сalculator = () => {
     }
   }, [currentUrlId])
 
-  useEffect(() => {
-    dispatch(showLoder({ destinations: 1 }))
-    getRequest('/api/v1/destinations', {
-      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
-    })
-      .then((res) => {
-        setFinishArray(res.destinations)
-        setFinishSelect(res.destinations[0].id)
-        dispatch(showLoder({ destinations: 0 }))
-      })
+  // useEffect(() => {
+  //   dispatch(showLoder({ destinations: 1 }))
+  //   getRequest('/api/v1/destinations', {
+  //     Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+  //   })
+  //     .then((res) => {
+  //       setFinishArray(res.destinations)
+  //       setFinishSelect(res.destinations[0].id)
+  //       dispatch(showLoder({ destinations: 0 }))
+  //     })
 
-      .catch((err) => {
-        //state.createNotification('Успешно обновлено!', 'error')
-        dispatch(showLoder({ destinations: 0 }))
-      })
-  }, [])
+  //     .catch((err) => {
+  //       //state.createNotification('Успешно обновлено!', 'error')
+  //       dispatch(showLoder({ destinations: 0 }))
+  //     })
+  // }, [])
 
   let params = {
     auction_id: auctionSelect && +JSON.parse(auctionSelect).id,
     transport_size_id: +transportTypeSelect,
     location_id: +locationsSelect,
-    destination_id: +finishSelect,
+    destination_id: +destinationsSelect,
     port_id: portNameSelect,
   }
 
@@ -203,7 +251,7 @@ const Сalculator = () => {
       auctionSelect &&
       transportTypeSelect &&
       locationsSelect &&
-      finishSelect &&
+      destinationsSelect &&
       portNameSelect
     ) {
       dispatch(showLoder({ calculatorClients: 1 }))
@@ -223,14 +271,14 @@ const Сalculator = () => {
         })
         .catch((err) => {
           setObjectPay({})
-          dispatch(showLoder({ calculatorClients: 0 }))
+          dispatch(showLoder({ calculatorClients: 0, status: err.status }))
         })
     }
   }, [
     auctionSelect,
     transportTypeSelect,
     locationsSelect,
-    finishSelect,
+    destinationsSelect,
     portNameSelect,
     forName,
   ])
@@ -238,7 +286,7 @@ const Сalculator = () => {
   const getAllPrise = () => {
     let prise = 100
     if (Object.keys(ObjectPay).length > 0) {
-      prise += ObjectPay.inlandRatesPrice + ObjectPay.seaRatesPrice
+      prise += +ObjectPay.inlandRatesPrice + ObjectPay.seaRatesPrice
     }
     if (evCheck) {
       prise += 175
@@ -249,43 +297,79 @@ const Сalculator = () => {
     if (docFeesValue && JSON.parse(docFeesValue).price != 0) {
       prise += +JSON.parse(docFeesValue).price
     }
-    return prise
+    return prise.toFixed(2)
   }
 
-  const customsPayProps = (val) => {
-    return setAllPriseCustoms(val)
-  }
+  // const customsPayProps = (val) => {
+  //   return setAllPriseCustoms(val)
+  // }
 
   useEffect(() => {
-    if (locationsArray.length > 0) {
-      if (locationsSelect !== null) {
-        locationsArray.filter((elem) => {
-          if (elem.id === locationsSelect) {
-            setPortNameArray(elem.ports)
-            setPortNameSelect(elem.ports[0].id)
-          }
-        })
-      } else {
-        setPortNameArray([])
-        setPortNameSelect('')
-      }
+    if (locationsArray.length > 0 && locationsSelect !== null) {
+      locationsArray.filter((elem) => {
+        if (elem.id === locationsSelect) {
+          setPortNameArray(elem.ports)
+          setPortNameSelect(elem.ports[0].id)
+        }
+      })
+    } else {
+      setPortNameArray([])
+      setPortNameSelect('')
     }
   }, [locationsArray, locationsSelect])
 
+  useEffect(() => {
+    dispatch(showLoder({ getСountries: 1 }))
+    getRequest(`/api/v1/countries?&limit=${1000}`, {
+      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+    })
+      .then(({ countries }) => {
+        let filterCountries = countries.filter(({ is_buyed }) => +is_buyed)
+
+        if (filterCountries.length > 0) {
+          setDataCountries(filterCountries)
+          setCountriesSelect(JSON.stringify(filterCountries[0]))
+        }
+
+        dispatch(showLoder({ getСountries: 0 }))
+      })
+      .catch((err) =>
+        dispatch(showLoder({ getСountries: 0, status: err.status }))
+      )
+  }, [])
+
+  useEffect(() => {
+    if (countriesSelect) {
+      getAuction()
+    }
+  }, [countriesSelect])
+  console.log(Boolean('0'))
+
+  const getAuction = () => {
+    const { auctions } = JSON.parse(countriesSelect)
+    if (auctions.length > 0) {
+      setAuctionArray(auctions)
+      setAuctionSelect(JSON.stringify(auctions[0]))
+    } else {
+      setAuctionArray([])
+      setAuctionSelect(0)
+    }
+  }
+
   return (
     <div className="itemContainer">
-      <ModalChoosePackage
+      {/* <ModalChoosePackage
         isVisible={isModalShowchoosePackage}
         onClose={() => setIsModalShowchoosePackage(false)}
         currentClickBlock={currentClickBlock}
         blockCurrentClick={blockCurrentClick}
-      />
+      /> */}
 
-      <ModalCustomsPayments
+      {/* <ModalCustomsPayments
         isVisible={isModalCustomsPayments}
         onClose={() => setIsModalCustomsPayments(false)}
         customsPayProps={customsPayProps}
-      />
+      /> */}
 
       <div className="itemContainer-inner">
         <div className="top-item" style={{ paddingLeft: state.width }}>
@@ -304,102 +388,222 @@ const Сalculator = () => {
             >
               <div className="dropBlockContent">
                 <h4 className="titleInfo">Введите данные</h4>
-                <label>
-                  <span className="classModal">Платформа</span>
-                  {auctionArray.length > 0 ? (
-                    <select
-                      value={auctionSelect}
-                      onChange={(event) => setAuctionSelect(event.target.value)}
-                    >
-                      {auctionArray.map((elem) => {
-                        return (
-                          <option
-                            key={elem.id + elem.name}
-                            value={JSON.stringify(elem)}
-                          >
-                            {elem.name}
-                          </option>
-                        )
-                      })}
-                    </select>
-                  ) : (
-                    'Нет данных!'
-                  )}
-                </label>
-                <div
-                  className="selectCustom selectCustom--space"
-                  style={{
-                    visibility: locationsArray.length > 0 ? 'visible' : 'none',
-                  }}
-                >
-                  <span className="classModal">Локация</span>
+                <div className="borderLine">
+                  <label>
+                    <span className="classModal">Тип ТС</span>
 
-                  <SelectPicker
-                    id="selectCustomId"
-                    data={locationsArray}
-                    valueKey="id"
-                    labelKey="name"
-                    value={locationsSelect}
-                    onChange={setLocationsSelect}
-                    placeholder="Выберите площадку"
-                    loading={!locationsArray.length}
-                  />
+                    {transportTypeArray.length > 0 ? (
+                      <select
+                        value={transportTypeSelect}
+                        onChange={(event) =>
+                          setTransportTypeSelect(event.target.value)
+                        }
+                      >
+                        {transportTypeArray.map((elem) => {
+                          return (
+                            <option key={elem.id} value={elem.id}>
+                              {elem.name}
+                            </option>
+                          )
+                        })}
+                      </select>
+                    ) : (
+                      'Нет данных!'
+                    )}
+                  </label>
                 </div>
 
-                <label>
-                  <span className="classModal">Порт погрузки:</span>
+                <div className="borderLine">
+                  <label>
+                    <span className="classModal">Страна</span>
+                    {dataCountries.length > 0 ? (
+                      <select
+                        value={countriesSelect}
+                        onChange={(event) =>
+                          setCountriesSelect(event.target.value)
+                        }
+                      >
+                        {dataCountries.map((elem) => {
+                          return (
+                            <option
+                              key={elem.id + elem.name_ru}
+                              value={JSON.stringify(elem)}
+                            >
+                              {elem.name_ru}
+                            </option>
+                          )
+                        })}
+                      </select>
+                    ) : (
+                      'Нет данных!'
+                    )}
+                  </label>
+                  <label>
+                    <span className="classModal">Аукцион</span>
+                    {auctionArray.length > 0 ? (
+                      <select
+                        value={auctionSelect}
+                        onChange={(event) =>
+                          setAuctionSelect(event.target.value)
+                        }
+                      >
+                        {auctionArray.map((elem) => {
+                          return (
+                            <option
+                              key={elem.id + elem.name}
+                              value={JSON.stringify(elem)}
+                            >
+                              {elem.name}
+                            </option>
+                          )
+                        })}
+                      </select>
+                    ) : (
+                      'Нет данных!'
+                    )}
+                  </label>
+                  <div
+                    className="selectCustom selectCustom--space"
+                    style={{
+                      visibility:
+                        locationsArray.length > 0 ? 'visible' : 'none',
+                    }}
+                  >
+                    <span className="classModal">Локация</span>
+                    {locationsArray.length > 0 ? (
+                      <SelectPicker
+                        id="selectCustomId"
+                        data={locationsArray}
+                        valueKey="id"
+                        labelKey="name"
+                        value={locationsSelect}
+                        onChange={setLocationsSelect}
+                        placeholder="Выберите площадку"
+                        cleanable={false}
+                        // loading={!locationsArray.length}
+                      />
+                    ) : (
+                      'Нет данных!'
+                    )}
+                  </div>
+                </div>
 
-                  {portNameArray.length > 0 ? (
-                    <select
-                      value={portNameSelect}
-                      onChange={(event) =>
-                        setPortNameSelect(event.target.value)
-                      }
-                    >
-                      {portNameArray.map((el) => {
-                        return (
-                          <option key={el.id} value={el.id}>
-                            {el.name}
-                          </option>
-                        )
-                      })}
-                    </select>
-                  ) : (
-                    'Нет данных!'
-                  )}
-                </label>
+                <div className="borderLine">
+                  <label>
+                    <span className="classModal">Порт погрузки:</span>
 
-                <label>
-                  <span className="classModal">Тип ТС</span>
+                    {portNameArray.length > 0 ? (
+                      <select
+                        value={portNameSelect}
+                        onChange={(event) =>
+                          setPortNameSelect(event.target.value)
+                        }
+                      >
+                        {portNameArray.map((el) => {
+                          return (
+                            <option key={el.id} value={el.id}>
+                              {el.name}
+                            </option>
+                          )
+                        })}
+                      </select>
+                    ) : (
+                      'Нет данных!'
+                    )}
+                  </label>
+                  <label>
+                    <span className="classModal">Порт назначения</span>
 
-                  {transportTypeArray.length > 0 ? (
-                    <select
-                      value={transportTypeSelect}
-                      onChange={(event) =>
-                        setTransportTypeSelect(event.target.value)
-                      }
-                    >
-                      {transportTypeArray.map((elem) => {
-                        return (
-                          <option key={elem.id} value={elem.id}>
-                            {elem.name}
-                          </option>
-                        )
-                      })}
-                    </select>
-                  ) : (
-                    'Нет данных!'
-                  )}
-                </label>
+                    {destinationsArray.length > 0 ? (
+                      <select
+                        value={destinationsSelect}
+                        onChange={(event) =>
+                          setDestinationsSelect(event.target.value)
+                        }
+                      >
+                        {destinationsArray.map((elem) => {
+                          return (
+                            <option key={elem.id} value={elem.id}>
+                              {elem.title}
+                            </option>
+                          )
+                        })}
+                      </select>
+                    ) : (
+                      'Нет данных!'
+                    )}
+                  </label>
+                  {/* <label>
+                    <span className="classModal">Место назначения:</span>
+                    {finishArray.length > 0 ? (
+                      <select
+                        value={finishSelect}
+                        onChange={(event) =>
+                          setFinishSelect(event.target.value)
+                        }
+                      >
+                        {finishArray.map((elem) => {
+                          return (
+                            <option key={elem.id} value={elem.id}>
+                              {elem.title}
+                            </option>
+                          )
+                        })}
+                      </select>
+                    ) : (
+                      'Нет данных!'
+                    )}
+                  </label> */}
+                  <label>
+                    <span className="classModal">Место назначения</span>
+                    {placeDestinationsArray.length > 0 ? (
+                      <select
+                        value={placeDestinationsSelect}
+                        onChange={(event) =>
+                          setPlaceDestinationsSelect(event.target.value)
+                        }
+                      >
+                        {placeDestinationsArray.map((elem) => {
+                          return (
+                            <option key={elem.id} value={elem.id}>
+                              {elem.title + ' , ' + elem.country.name_ru}
+                            </option>
+                          )
+                        })}
+                      </select>
+                    ) : (
+                      'Нет данных!'
+                    )}
+                  </label>
+                </div>
+                <div className="borderLine">
+                  <label>
+                    <span className="classModal">Тип документов</span>
 
-                <label>
-                  <span className="classModal">Куда везём</span>
-                  {finishArray.length > 0 ? (
-                    <select
-                      value={finishSelect}
-                      onChange={(event) => setFinishSelect(event.target.value)}
-                    >
-                      {finishArray.map((elem) => {
+                    {docFeesArray.length > 0 ? (
+                      <select
+                        value={docFeesValue}
+                        onChange={(event) =>
+                          setDocFeesValue(event.target.value)
+                        }
+                      >
+                        {docFeesArray.map((elem) => {
+                          return (
+                            <option key={elem.id} value={JSON.stringify(elem)}>
+                              {elem.title}
+                            </option>
+                          )
+                        })}
+                      </select>
+                    ) : (
+                      'Нет данных!'
+                    )}
+                  </label>
+                  {/* <label>
+                    <span className="classModal">Тип документов</span>
+
+                    <select disabled>
+                      {[{ id: 1, title: 'Salvage red' }].map((elem) => {
                         return (
                           <option key={elem.id} value={elem.id}>
                             {elem.title}
@@ -407,59 +611,38 @@ const Сalculator = () => {
                         )
                       })}
                     </select>
-                  ) : (
-                    'Нет данных!'
-                  )}
-                </label>
+                  </label> */}
+                  <div className="helpCheckbox">
+                    <span>EV/Hybrid</span>
+                    <input
+                      type="checkbox"
+                      value={evCheck}
+                      onChange={() => {
+                        setEvCheck(!evCheck)
+                      }}
+                    />
+                  </div>
+                  {/* <div className="helpCheckbox">
+                    <span>Три авто в контейнере</span>
+                    <input
+                      type="checkbox"
+                      value={threeAutoCheck}
+                      onChange={() => {
+                        setThreeAutoCheck(!threeAutoCheck)
+                      }}
+                    />
+                  </div> */}
 
-                <label>
-                  <span className="classModal">Документ</span>
-
-                  {docFeesArray.length > 0 ? (
-                    <select
-                      value={docFeesValue}
-                      onChange={(event) => setDocFeesValue(event.target.value)}
-                    >
-                      {docFeesArray.map((elem) => {
-                        return (
-                          <option key={elem.id} value={JSON.stringify(elem)}>
-                            {elem.title}
-                          </option>
-                        )
-                      })}
-                    </select>
-                  ) : (
-                    'Нет данных!'
-                  )}
-                </label>
-
-                <div className="helpCheckbox">
-                  <span>EV/Hybrid</span>
-                  <input
-                    type="checkbox"
-                    value={evCheck}
-                    onChange={() => {
-                      setEvCheck(!evCheck)
-                    }}
-                  />
-                </div>
-
-                <div className="helpCheckbox">
-                  <span>Три авто в контейнере</span>
-                  <input
-                    type="checkbox"
-                    value={threeAutoCheck}
-                    onChange={() => {
-                      setThreeAutoCheck(!threeAutoCheck)
-                    }}
-                  />
-                </div>
-
-                <div className="partInfo">
-                  <p>
-                    *величина является расчётной и может изменяться в
-                    зависимости от условий на рынке перевозки
-                  </p>
+                  <div className="partInfo">
+                    <p>
+                      *стоимость локальной перевозки до места назначения может
+                      уточняться на момент доставки груза в порт назначения
+                    </p>
+                    <p>
+                      **при оплате за перевозку через Агента, может взыматься
+                      комиссия (уточните у сотрудника)
+                    </p>
+                  </div>
                 </div>
               </div>
               <div className="dropBlockContent">
@@ -469,9 +652,7 @@ const Сalculator = () => {
                 >
                   <span className="classModal">Доставка по США</span>
                   <span className="resPrise">
-                    {ObjectPay && ObjectPay.inlandRatesPrice
-                      ? ObjectPay.inlandRatesPrice + '$'
-                      : 0 + '$'}
+                    {getPrise({ obj: ObjectPay, val: 'inlandRatesPrice' })}
                   </span>
                 </label>
 
@@ -480,9 +661,7 @@ const Сalculator = () => {
                 >
                   <span className="classModal">Доставка море</span>
                   <span className="resPrise">
-                    {ObjectPay && ObjectPay.seaRatesPrice
-                      ? ObjectPay.seaRatesPrice + '$'
-                      : 0 + '$'}
+                    {getPrise({ obj: ObjectPay, val: 'seaRatesPrice' })}
                   </span>
                 </label>
                 {evCheck && (
@@ -493,7 +672,7 @@ const Сalculator = () => {
                     }}
                   >
                     <span className="classModal">Доплата за EV/Hybrid</span>
-                    <span className="resPrise">175$</span>
+                    <span className="resPrise">175.00$</span>
                   </label>
                 )}
 
@@ -501,8 +680,18 @@ const Сalculator = () => {
                   style={{ justifyContent: 'space-between', margin: '10px 0' }}
                 >
                   <span className="classModal">Wire Fee</span>
-                  <span className="resPrise">100$</span>
+                  <span className="resPrise">100.00$</span>
                 </label>
+
+                <label
+                  style={{ justifyContent: 'space-between', margin: '10px 0' }}
+                >
+                  <span className="classModal">
+                    Доставка до место назначения
+                  </span>
+                  <span className="resPrise">10000.00$</span>
+                </label>
+
                 {threeAutoCheck && (
                   <label
                     style={{
@@ -538,17 +727,17 @@ const Сalculator = () => {
                   <span className="resPrise">{getAllPrise() + '$'}</span>
                 </label>
 
-                <label
+                {/* <label
                   style={{ justifyContent: 'space-between', margin: '10px 0' }}
                 >
                   <h4>Таможенные платежи</h4>
                   <span>
                     {allPriseCustoms && customsPay ? allPriseCustoms : '-'}
                   </span>
-                </label>
-                <div className="helpCheckbox">
-                  {/* <Checkbox /> */}
-                  <input
+                </label> */}
+                {/* <div className="helpCheckbox"> */}
+                {/* <Checkbox /> */}
+                {/* <input
                     type="checkbox"
                     value={customsPay}
                     onChange={(e) => {
@@ -558,9 +747,9 @@ const Сalculator = () => {
                     }}
                   />
                   <span>Таможенные платежи</span>
-                </div>
+                </div> */}
 
-                <div className="helpCheckbox">
+                {/* <div className="helpCheckbox">
                   <input
                     type="checkbox"
                     value={choosePackage}
@@ -570,7 +759,7 @@ const Сalculator = () => {
                     }}
                   />
                   <span>Выбрать пакет услуг</span>
-                </div>
+                </div> */}
 
                 {docFeesValue && JSON.parse(docFeesValue).additional && (
                   <div className="infoDocBlock">
@@ -578,7 +767,7 @@ const Сalculator = () => {
                   </div>
                 )}
 
-                <div className="blockInfo">
+                {/* <div className="blockInfo">
                   <p>
                     Транзитный порт <span>{portName}</span>
                   </p>
@@ -586,7 +775,7 @@ const Сalculator = () => {
                     <p>Удачи на торгах!</p>
                     <img src={Smile} width="40px" height="40px" alt="smile" />
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

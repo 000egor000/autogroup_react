@@ -1,8 +1,9 @@
-import React, { useState, useEffect, memo } from 'react'
+import React, { useState, useEffect, memo, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getRequest } from '../base/api-request'
 import NoData from './NoData'
-
+import { showLoder } from '../reducers/actions'
+import ContextApp from '../context/contextApp.js'
 import { Pagination } from 'rsuite'
 // import PropTypes from 'prop-types'
 
@@ -11,6 +12,7 @@ import { getDateFunc } from '../helper'
 const WalletsInner = ({ dataAray, nameAndSecondName, titleRates }) => {
   const [klaipedaArray, setKlaipedaArray] = useState([])
   const [mainArray, setMainArray] = useState([])
+  const { state, dispatch } = useContext(ContextApp)
 
   const [limit, setLimit] = useState(20)
   const [page, setPage] = useState(1)
@@ -26,6 +28,7 @@ const WalletsInner = ({ dataAray, nameAndSecondName, titleRates }) => {
   // 		.join('-')
 
   useEffect(() => {
+    dispatch(showLoder({ destinations: 1 }))
     getRequest('/api/v1/destinations', {
       Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
     })
@@ -33,8 +36,12 @@ const WalletsInner = ({ dataAray, nameAndSecondName, titleRates }) => {
         setKlaipedaArray(
           ...res.destinations.filter((elem) => elem.title === 'Клайпеда')
         )
+
+        dispatch(showLoder({ destinations: 0 }))
       })
-      .catch((err) => {})
+      .catch((err) => {
+        dispatch(showLoder({ destinations: 0, status: err.status }))
+      })
   }, [])
 
   const handleChangeLimit = (dataKey) => {

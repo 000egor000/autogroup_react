@@ -37,7 +37,7 @@ const AuctionTransportDropsAnotherDoc = ({
         dispatch(showLoder({ getInfoArrayFunc: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ getInfoArrayFunc: 0 }))
+        dispatch(showLoder({ getInfoArrayFunc: 0, status: err.status }))
       })
   }
   let controlFile = (e) => {
@@ -62,9 +62,9 @@ const AuctionTransportDropsAnotherDoc = ({
           getInfoArrayFunc()
           dispatch(showLoder({ createDropFunc: 0 }))
         })
-        .catch(() => {
+        .catch((err) => {
           state.createNotification('Что-то пошло не так!', 'error')
-          dispatch(showLoder({ createDropFunc: 0 }))
+          dispatch(showLoder({ createDropFunc: 0, status: err.status }))
         })
     } else {
       state.createNotification('Прикрепите файл!', 'error')

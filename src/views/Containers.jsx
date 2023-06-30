@@ -80,7 +80,7 @@ const Containers = () => {
         dispatch(showLoder({ lines: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ lines: 0 }))
+        dispatch(showLoder({ lines: 0, status: err.status }))
         //state.createNotification('Успешно обновлено!', 'error')
       })
   }, [])
@@ -123,7 +123,7 @@ const Containers = () => {
         setTotalUnConfirmCount(res.countContainers)
       })
       .catch((err) => {
-        dispatch(showLoder({ unconfirm: 0 }))
+        dispatch(showLoder({ unconfirm: 0, status: err.status }))
         //state.createNotification('Успешно обновлено!', 'error')
       })
   }, [])
@@ -142,7 +142,7 @@ const Containers = () => {
       })
       .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
-        dispatch(showLoder({ ports: 0 }))
+        dispatch(showLoder({ ports: 0, status: err.status }))
       })
   }, [])
 
@@ -241,7 +241,7 @@ const Containers = () => {
         })
         .catch((err) => {
           setContainerArray([])
-          dispatch(showLoder({ containers: 0 }))
+          dispatch(showLoder({ containers: 0, status: err.status }))
           setContainerArray([])
           //state.createNotification('Успешно обновлено!', 'error')
         })
@@ -321,7 +321,7 @@ const Containers = () => {
       })
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ createContainer: 0 }))
+        dispatch(showLoder({ createContainer: 0, status: err.status }))
       })
   }
 
@@ -345,7 +345,7 @@ const Containers = () => {
       .catch((err) => {
         setShowModalDisband(false)
         //state.createNotification('Успешно обновлено!', 'error')
-        dispatch(showLoder({ editContainer: 0 }))
+        dispatch(showLoder({ editContainer: 0, status: err.status }))
       })
   }
   const removeContainer = (e) => {
@@ -361,7 +361,7 @@ const Containers = () => {
       .catch((err) => {
         setShowModalRemove(false)
         //state.createNotification('Успешно обновлено!', 'error')
-        dispatch(showLoder({ removeContainer: 0 }))
+        dispatch(showLoder({ removeContainer: 0, status: err.status }))
       })
   }
 
@@ -387,8 +387,8 @@ const Containers = () => {
           setContainerArray(res.containers)
           dispatch(showLoder({ searchFunction: 0 }))
         })
-        .catch(() => {
-          dispatch(showLoder({ searchFunction: 0 }))
+        .catch((err) => {
+          dispatch(showLoder({ searchFunction: 0, status: err.status }))
           setContainerArray([])
           //state.createNotification('Успешно обновлено!', 'error')
         })
@@ -502,7 +502,7 @@ const Containers = () => {
       .catch((err) => {
         setShowModalDisband(false)
         //state.createNotification('Успешно обновлено!', 'error')
-        dispatch(showLoder({ containersConfirm: 0 }))
+        dispatch(showLoder({ containersConfirm: 0, status: err.status }))
       })
 
     close()

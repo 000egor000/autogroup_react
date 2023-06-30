@@ -43,7 +43,7 @@ const AuctionsTransportsTransort = ({
         dispatch(showLoder({ shippingInfo: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ shippingInfo: 0 }))
+        dispatch(showLoder({ shippingInfo: 0, status: err.status }))
         //state.createNotification('Успешно обновлено!', 'error')
       })
   }
@@ -59,7 +59,7 @@ const AuctionsTransportsTransort = ({
         dispatch(showLoder({ startInfo: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ startInfo: 0 }))
+        dispatch(showLoder({ startInfo: 0, status: err.status }))
       })
   }
 

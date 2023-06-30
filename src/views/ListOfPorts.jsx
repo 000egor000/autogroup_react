@@ -56,7 +56,7 @@ const ListOfPorts = (props) => {
         setCountrySelect(JSON.stringify(res.countries[0]))
         dispatch(showLoder({ offices: 0 }))
       })
-      .catch(() => dispatch(showLoder({ offices: 0 })))
+      .catch((err) => dispatch(showLoder({ offices: 0, status: err.status })))
   }
   const getPorts = () => {
     dispatch(showLoder({ getPorts: 1 }))
@@ -71,7 +71,7 @@ const ListOfPorts = (props) => {
       .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
 
-        dispatch(showLoder({ getPorts: 0 }))
+        dispatch(showLoder({ getPorts: 0, status: err.status }))
       })
   }
 
@@ -86,7 +86,7 @@ const ListOfPorts = (props) => {
       })
       .catch((err) => {
         setDataMaster([])
-        dispatch(showLoder({ getArray: 0 }))
+        dispatch(showLoder({ getArray: 0, status: err.status }))
       })
   }
   useEffect(() => {
@@ -144,7 +144,7 @@ const ListOfPorts = (props) => {
       })
       .catch((err) => {
         state.createNotification('Проверьте данные!', 'error')
-        dispatch(showLoder({ createLocation: 0 }))
+        dispatch(showLoder({ createLocation: 0, status: err.status }))
       })
   }
   const updatePorts = (e) => {
@@ -162,7 +162,7 @@ const ListOfPorts = (props) => {
       })
       .catch((err) => {
         state.createNotification('Проверьте данные!', 'error')
-        dispatch(showLoder({ updatePorts: 0 }))
+        dispatch(showLoder({ updatePorts: 0, status: err.status }))
       })
   }
 
@@ -228,8 +228,8 @@ const ListOfPorts = (props) => {
         state.createNotification('Успешно выполнено!', 'success')
         dispatch(showLoder({ activationOrUnactivation: 0 }))
       })
-      .catch(() => {
-        dispatch(showLoder({ activationOrUnactivation: 0 }))
+      .catch((err) => {
+        dispatch(showLoder({ activationOrUnactivation: 0, status: err.status }))
         state.createNotification('Что-то пошло не так!', 'error')
       })
   }
@@ -245,7 +245,7 @@ const ListOfPorts = (props) => {
       })
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ remove: 0 }))
+        dispatch(showLoder({ remove: 0, status: err.status }))
       })
   }
 

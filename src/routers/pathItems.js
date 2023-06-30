@@ -96,6 +96,9 @@ const LazyCredentials = React.lazy(() => import('../views/Credentials'))
 const LazyAgent = React.lazy(() => import('../views/Agent'))
 const LazyAgentProfile = React.lazy(() => import('../views/AgentProfile'))
 const LazyAgentAddProfile = React.lazy(() => import('../views/AgentAddProfile'))
+const LazyAgentCarrierAddProfile = React.lazy(() =>
+  import('../views/AgentCarrierAddProfile')
+)
 
 const LazyCarter = React.lazy(() => import('../views/Сarter'))
 const LazyСarterProfile = React.lazy(() => import('../views/CarterProfile'))
@@ -134,6 +137,12 @@ const LazyListOfPorts = React.lazy(() => import('../views/ListOfPorts'))
 const ListOfСounterparty = React.lazy(() =>
   import('../views/ListOfСounterparty')
 )
+const LazyCarrierOfWallets = React.lazy(() =>
+  import('../views/CarrierOfWallets')
+)
+const LazyListOfAgents = React.lazy(() => import('../views/ListOfAgents'))
+const LazyListOfAgentEdit = React.lazy(() => import('../views/ListOfAgentEdit'))
+const LazyListOfAgentAdd = React.lazy(() => import('../views/ListOfAgentsAdd'))
 
 const pathItems = [
   { path: namePath.DEFAULT, element: <LazyAuctionsTransports /> },
@@ -304,6 +313,10 @@ const pathItems = [
   { path: namePath.SUBUSERS_CREATE, element: <LazySubUsersCreate /> },
   { path: namePath.SUBUSERS_ID_EDIT, element: <LazySubUsersEdit /> },
   { path: namePath.ARCHIVE, element: <LazyArchive /> },
+  {
+    path: namePath.AGENTCARRIERADDPROFILE,
+    element: <LazyAgentCarrierAddProfile />,
+  },
 
   { path: namePath.AGENT, element: <LazyAgent /> },
   { path: namePath.AGENTPROFILE, element: <LazyAgentProfile /> },
@@ -330,5 +343,9 @@ const pathItems = [
   { path: namePath.LISTOFCOUNTRIES, element: <LazyListOfCountries /> },
   { path: namePath.LISTOFPORTS, element: <LazyListOfPorts /> },
   { path: namePath.COUNTERPARTY, element: <ListOfСounterparty /> },
+  { path: namePath.CARRIEROFWALLETS, element: <LazyCarrierOfWallets /> },
+  { path: namePath.LISTOFAGENTS, element: <LazyListOfAgents /> },
+  { path: namePath.LISTOFAGENTEDIT, element: <LazyListOfAgentEdit /> },
+  { path: namePath.LISTOFAGENTADD, element: <LazyListOfAgentAdd /> },
 ]
 export { pathItems }

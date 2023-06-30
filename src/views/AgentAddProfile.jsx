@@ -44,7 +44,7 @@ const AgentAddProfile = () => {
       })
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ createAgent: 0 }))
+        dispatch(showLoder({ createAgent: 0, status: err.status }))
       })
   }
 

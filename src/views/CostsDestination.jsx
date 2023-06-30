@@ -58,7 +58,7 @@ const CostsDestination = (props) => {
       })
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ removeCostsDestinations: 0 }))
+        dispatch(showLoder({ removeCostsDestinations: 0, status: err.status }))
       })
   }
 
@@ -75,7 +75,7 @@ const CostsDestination = (props) => {
       })
       .catch((err) => {
         setDataMaster([])
-        dispatch(showLoder({ getArray: 0 }))
+        dispatch(showLoder({ getArray: 0, status: err.status }))
       })
   }
   const getAllArray = () => {
@@ -89,7 +89,7 @@ const CostsDestination = (props) => {
       })
       .catch((err) => {
         setCostsDestinationsArray([])
-        dispatch(showLoder({ getAllArray: 0 }))
+        dispatch(showLoder({ getAllArray: 0, status: err.status }))
         //state.createNotification('Успешно обновлено!', 'error')
       })
   }
@@ -133,7 +133,7 @@ const CostsDestination = (props) => {
       })
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ createCostsDestination: 0 }))
+        dispatch(showLoder({ createCostsDestination: 0, status: err.status }))
       })
   }
   const editCostsDestination = (e) => {
@@ -149,7 +149,7 @@ const CostsDestination = (props) => {
       })
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ editCostsDestination: 0 }))
+        dispatch(showLoder({ editCostsDestination: 0, status: err.status }))
       })
   }
   const handleChangeLimit = (dataKey) => {
@@ -171,6 +171,13 @@ const CostsDestination = (props) => {
     return JSON.parse(window.sessionStorage.getItem('role')).code === 'admin'
       ? true
       : bool
+  }
+
+  const styleTopItem = {
+    paddingLeft: state.width,
+    justifyContent: 'space-between',
+    alignItems: 'inherit',
+    display: 'block',
   }
 
   return (
@@ -327,14 +334,7 @@ const CostsDestination = (props) => {
       </div>
 
       <div className="itemContainer-inner">
-        <div
-          className="top-item "
-          style={{
-            paddingLeft: state.width,
-            justifyContent: 'space-between',
-            alignItems: 'inherit',
-          }}
-        >
+        <div className="top-item " style={styleTopItem}>
           <div className="btnTransport" style={{ marginTop: '10px' }}>
             <button
               className="btnInfo"

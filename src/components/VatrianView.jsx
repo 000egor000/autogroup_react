@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import { getRequest } from '../base/api-request'
 import { Trend, Admin, AdvancedAnalytics } from '@rsuite/icons'
 import CarterProfile from '../views/Сarter'
+import ListOfAgents from '../views/ListOfAgents.jsx'
 
 import RatesControl from '../views/RatesControl'
 import Wallets from '../views/Wallets'
@@ -82,15 +83,36 @@ const VatrianView = ({}) => {
       .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
         setDataArray([])
-        dispatch(showLoder({ carriers: 0 }))
+        dispatch(showLoder({ carriers: 0, status: err.status }))
       })
   }
 
-  const getPorts = () => setDataArray(arrayPort.map(({ id, name }) => ({
+  /*const getPorts = () => setDataArray(arrayPort.map(({ id, name }) => ({
     label: name,
     value: id,
   }))
-  )
+  )*/
+  const getPorts = () => {
+    dispatch(showLoder({ agents: 1 }))
+    getRequest('/api/v1/agents', {
+      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+    })
+      .then((res) => {
+        setDataArray(
+          res.agents.map(({ id, name }) => ({
+            label: name,
+            value: id,
+            nameCash: 'agentPortOfDestination',
+          }))
+        )
+        dispatch(showLoder({ agents: 0 }))
+      })
+      .catch((err) => {
+        //state.createNotification('Успешно обновлено!', 'error')
+        setDataArray([])
+        dispatch(showLoder({ agents: 0, status: err.status }))
+      })
+  }
 
   const getCarter = () => {
     dispatch(showLoder({ getArray: 1 }))
@@ -111,7 +133,7 @@ const VatrianView = ({}) => {
         dispatch(showLoder({ getArray: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ getArray: 0 }))
+        dispatch(showLoder({ getArray: 0, status: err.status }))
         setDataArray([])
       })
   }
@@ -146,7 +168,7 @@ const VatrianView = ({}) => {
     setActiveIcons((previosState) =>
       previosState && previosState == val ? '' : val
     )
-
+  console.log(dataStaticIcon)
   const IconGropNav = ({ data }) => {
     return (
       <div className="iconGroup">
@@ -155,6 +177,10 @@ const VatrianView = ({}) => {
             className={
               activeIcons !== el.id ? 'iconSetting' : 'iconSetting--active'
             }
+            style={{
+              display:
+                el.id == 1 && name == 'portOfDestination' ? 'none' : 'bolock',
+            }}
             onClick={changeActive(el.id)}
             key={el.id}
           >
@@ -182,7 +208,20 @@ const VatrianView = ({}) => {
 
     return res ? res.label : ''
   }
-  console.log(conrolActiveRates)
+  // console.log(conrolActiveRates)
+
+  const controlProfileBlock = (name) => {
+    switch (name) {
+      case 'finalDestination':
+        return <CarterProfile currentRates={dataSelect} />
+
+      case 'portOfDestination':
+        return <ListOfAgents currentRates={dataSelect} />
+
+      default:
+        return <p style={{ textAlign: 'center' }}>Профиль {valueProfile()}</p>
+    }
+  }
 
   const blockView = (active) => {
     const findCurrent = dataArray.find((item) => item.value == dataSelect)
@@ -199,11 +238,7 @@ const VatrianView = ({}) => {
           )
         )
       case 2:
-        return dataSelect && name == 'finalDestination' ? (
-          <CarterProfile currentRates={dataSelect} />
-        ) : (
-          <p style={{ textAlign: 'center' }}>Профиль {valueProfile()}</p>
-        )
+        return dataSelect && controlProfileBlock(name)
 
       case 3:
         return (

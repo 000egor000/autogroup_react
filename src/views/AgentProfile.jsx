@@ -46,7 +46,7 @@ const AgentProfile = (props) => {
       })
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ editAgent: 0 }))
+        dispatch(showLoder({ editAgent: 0, status: err.status }))
       })
   }
 
@@ -64,7 +64,7 @@ const AgentProfile = (props) => {
         }
       })
       .catch((err) => {
-        dispatch(showLoder({ partners: 0 }))
+        dispatch(showLoder({ partners: 0, status: err.status }))
         setDataPartners([])
       })
   }, [])

@@ -115,7 +115,7 @@ const Docfess = ({ currentRates, viewBlock, dataArray }) => {
       })
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ remove: 0 }))
+        dispatch(showLoder({ remove: 0, status: err.status }))
       })
   }
 
@@ -138,7 +138,7 @@ const Docfess = ({ currentRates, viewBlock, dataArray }) => {
       })
       .catch((err) => {
         setDataArrayDoc([])
-        dispatch(showLoder({ getArray: 0 }))
+        dispatch(showLoder({ getArray: 0, status: err.status }))
       })
   }
 
@@ -154,7 +154,7 @@ const Docfess = ({ currentRates, viewBlock, dataArray }) => {
       })
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ editLocation: 0 }))
+        dispatch(showLoder({ editLocation: 0, status: err.status }))
       })
   }
 
@@ -202,7 +202,7 @@ const Docfess = ({ currentRates, viewBlock, dataArray }) => {
         state.createNotification('Успешно выполнено!', 'success')
       })
       .catch((err) => {
-        dispatch(showLoder({ createDoc: 0 }))
+        dispatch(showLoder({ createDoc: 0, status: err.status }))
         state.createNotification('Проверьте веденные данные!', 'error')
       })
   }

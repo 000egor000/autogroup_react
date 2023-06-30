@@ -1,53 +1,53 @@
 import React, { useState, useContext, useEffect } from 'react'
 
 import { Table, Column, HeaderCell, Cell } from 'rsuite-table'
-import { Edit, Trash } from '@rsuite/icons'
+// import { Edit, Trash } from '@rsuite/icons'
 
 import 'rsuite-table/dist/css/rsuite-table.css'
-import { Modal } from 'rsuite'
+// import { Modal } from 'rsuite'
 
 import 'react-toastify/dist/ReactToastify.css'
 
 import {
-  postRequest,
+  // postRequest,
   getRequest,
-  deleteRequest,
-  putRequest,
+  // deleteRequest,
+  // putRequest,
 } from '../base/api-request'
 
 import { showLoder } from '../reducers/actions'
 import ContextApp from '../context/contextApp.js'
 
-const Carriers = (props) => {
+const CarrierOfWallets = (props) => {
   const [dataPartners, setDataPartners] = useState([])
 
-  const [idEdit, setIdEdit] = useState('')
-  const [isModalShowAdd, setIsModalShowAdd] = useState(false)
-  const [isModalShowEdit, setIsModalShowEdit] = useState(false)
-  const [isModalRemove, setIsModalRemove] = useState(false)
+  // const [idEdit, setIdEdit] = useState('')
+  // const [isModalShowAdd, setIsModalShowAdd] = useState(false)
+  // const [isModalShowEdit, setIsModalShowEdit] = useState(false)
+  // const [isModalRemove, setIsModalRemove] = useState(false)
   const [nameAgent, setNameAgent] = useState('')
   const [viewControler, setViewControler] = useState([])
 
   const { state, dispatch } = useContext(ContextApp)
 
-  const remove = (id) => {
-    dispatch(showLoder({ remove: 1 }))
-    setIsModalRemove(false)
+  // const remove = (id) => {
+  //   dispatch(showLoder({ remove: 1 }))
+  //   setIsModalRemove(false)
 
-    deleteRequest(`/api/v1/carriers/${id}`)
-      .then((res) => {
-        if (res.status === 'success') {
-          state.createNotification('Успешно удален!', 'success')
-          getArray()
+  //   deleteRequest(`/api/v1/carriers/${id}`)
+  //     .then((res) => {
+  //       if (res.status === 'success') {
+  //         state.createNotification('Успешно удален!', 'success')
+  //         getArray()
 
-          dispatch(showLoder({ remove: 0 }))
-        }
-      })
-      .catch((err) => {
-        state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ remove: 0, status: err.status }))
-      })
-  }
+  //         dispatch(showLoder({ remove: 0 }))
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       state.createNotification('Что-то пошло не так!', 'error')
+  //       dispatch(showLoder({ remove: 0 }))
+  //     })
+  // }
 
   const getArray = () => {
     dispatch(showLoder({ getArray: 1 }))
@@ -69,67 +69,67 @@ const Carriers = (props) => {
     getArray()
   }, [])
 
-  const showIdLocation = (id, name, code) => {
-    setIdEdit(id)
-    setNameAgent(name)
+  // const showIdLocation = (id, name, code) => {
+  //   setIdEdit(id)
+  //   setNameAgent(name)
 
-    setIsModalShowEdit(!isModalShowEdit)
-  }
+  //   setIsModalShowEdit(!isModalShowEdit)
+  // }
 
   let params = {
     title: nameAgent,
     code: 'test',
   }
 
-  const createAgent = (e) => {
-    dispatch(showLoder({ createAgent: 1 }))
-    e.preventDefault()
-    setIsModalShowAdd(false)
-    postRequest('/api/v1/carriers', params)
-      .then(() => {
-        state.createNotification('Успешно выполнено!', 'success')
+  // const createAgent = (e) => {
+  //   dispatch(showLoder({ createAgent: 1 }))
+  //   e.preventDefault()
+  //   setIsModalShowAdd(false)
+  //   postRequest('/api/v1/carriers', params)
+  //     .then(() => {
+  //       state.createNotification('Успешно выполнено!', 'success')
 
-        getArray()
-        close()
+  //       getArray()
+  //       close()
 
-        // setLocationValue('')
-        dispatch(showLoder({ createAgent: 0 }))
-      })
-      .catch((err) => {
-        state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ createAgent: 0, status: err.status }))
-      })
-  }
-  const editAgent = (e) => {
-    dispatch(showLoder({ editAgent: 1 }))
-    e.preventDefault()
-    setIsModalShowEdit(false)
+  //       // setLocationValue('')
+  //       dispatch(showLoder({ createAgent: 0 }))
+  //     })
+  //     .catch((err) => {
+  //       state.createNotification('Проверьте веденные данные!', 'error')
+  //       dispatch(showLoder({ createAgent: 0 }))
+  //     })
+  // }
+  // const editAgent = (e) => {
+  //   dispatch(showLoder({ editAgent: 1 }))
+  //   e.preventDefault()
+  //   setIsModalShowEdit(false)
 
-    putRequest(`/api/v1/carriers/${idEdit}`, params)
-      .then(() => {
-        state.createNotification('Успешно изменено!', 'success')
-        getArray()
-        close()
+  //   putRequest(`/api/v1/carriers/${idEdit}`, params)
+  //     .then(() => {
+  //       state.createNotification('Успешно изменено!', 'success')
+  //       getArray()
+  //       close()
 
-        dispatch(showLoder({ editAgent: 0 }))
-      })
-      .catch((err) => {
-        state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ editAgent: 0, status: err.status }))
-      })
-  }
+  //       dispatch(showLoder({ editAgent: 0 }))
+  //     })
+  //     .catch((err) => {
+  //       state.createNotification('Проверьте веденные данные!', 'error')
+  //       dispatch(showLoder({ editAgent: 0 }))
+  //     })
+  // }
   // const handleChangeLimit = (dataKey) => {
   // 	setPage(1)
   // 	setLimit(dataKey)
   // }
-  const close = () => {
-    setNameAgent('')
-    setIdEdit('')
+  // const close = () => {
+  //   setNameAgent('')
+  //   setIdEdit('')
 
-    setIsModalShowAdd(false)
-    setIsModalShowEdit(false)
-    setIsModalRemove(false)
-  }
+  //   setIsModalShowAdd(false)
+  //   setIsModalShowEdit(false)
+  //   setIsModalRemove(false)
+  // }
 
   useEffect(
     () =>
@@ -162,7 +162,7 @@ const Carriers = (props) => {
 
   return (
     <div className="itemContainer">
-      <div className="modal-container">
+      {/* <div className="modal-container">
         <Modal
           backdrop={'static'}
           keyboard={false}
@@ -255,7 +255,7 @@ const Carriers = (props) => {
             </form>
           </Modal.Body>
         </Modal>
-      </div>
+      </div> */}
 
       <div className="itemContainer-inner">
         <div
@@ -264,14 +264,14 @@ const Carriers = (props) => {
         >
           <div className="btnTransport">
             {/* <h1 className='titleInfo'>Посредники</h1> */}
-            {viewBlock(111) && (
+            {/* {viewBlock(111) && (
               <button
                 className="btnInfo"
                 onClick={() => setIsModalShowAdd(!isModalShowAdd)}
               >
                 <span>Добавить</span>
               </button>
-            )}
+            )} */}
           </div>
         </div>
         <div
@@ -288,15 +288,15 @@ const Carriers = (props) => {
                 data={dataPartners}
               >
                 <Column align="center" fixed flexGrow={1}>
-                  <HeaderCell>Перевозчики</HeaderCell>
+                  <HeaderCell>Название </HeaderCell>
                   <Cell>
                     {(rowData, rowIndex) => {
                       return (
                         <span
-                          onClick={() =>
-                            viewBlock(112) &&
-                            showIdLocation(rowData.id, rowData.title)
-                          }
+                        // onClick={() =>
+                        //   viewBlock(112) &&
+                        //   showIdLocation(rowData.id, rowData.title)
+                        // }
                         >
                           {<span>{rowData.title}</span>}
                         </span>
@@ -307,37 +307,14 @@ const Carriers = (props) => {
 
                 {(viewBlock(112) || viewBlock(113)) && (
                   <Column align="center" flexGrow={1}>
-                    <HeaderCell>Действие</HeaderCell>
+                    <HeaderCell>Баланс</HeaderCell>
                     <Cell>
                       {(rowData, rowIndex) => {
                         return (
                           <div>
                             <div className="Dropdown">
                               <div className="DropdownShow">
-                                {viewBlock(112) && (
-                                  <button
-                                    onClick={() =>
-                                      showIdLocation(
-                                        rowData.id,
-                                        rowData.title,
-                                        rowData.code
-                                      )
-                                    }
-                                  >
-                                    <Edit />
-                                  </button>
-                                )}
-
-                                {viewBlock(113) && (
-                                  <button
-                                    onClick={() => {
-                                      setIdEdit(rowData.id)
-                                      setIsModalRemove(true)
-                                    }}
-                                  >
-                                    <Trash />
-                                  </button>
-                                )}
+                                <span>0 $</span>
                               </div>
                             </div>
                           </div>
@@ -375,4 +352,4 @@ const Carriers = (props) => {
     </div>
   )
 }
-export default Carriers
+export default CarrierOfWallets

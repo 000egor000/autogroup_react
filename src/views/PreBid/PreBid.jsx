@@ -117,8 +117,8 @@ const PreBid = () => {
         setDataFistSelect(res.auction)
         dispatch(showLoder({ auctions: 0 }))
       })
-      .catch(() => {
-        dispatch(showLoder({ auctions: 0 }))
+      .catch((err) => {
+        dispatch(showLoder({ auctions: 0, status: err.status }))
       })
   }, [])
 
@@ -135,9 +135,9 @@ const PreBid = () => {
         setDataTable(res.preBids)
         dispatch(showLoder({ getDataTable: 0 }))
       })
-      .catch(() => {
+      .catch((err) => {
         setDataTable([])
-        dispatch(showLoder({ getDataTable: 0 }))
+        dispatch(showLoder({ getDataTable: 0, status: err.status }))
       })
   }
 
@@ -151,10 +151,10 @@ const PreBid = () => {
         getDataTable()
         dispatch(showLoder({ createPreBid: 0 }))
       })
-      .catch(() => {
+      .catch((err) => {
         setIsModalShow(true)
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ createPreBid: 0 }))
+        dispatch(showLoder({ createPreBid: 0, status: err.status }))
       })
   }
 
@@ -185,8 +185,8 @@ const PreBid = () => {
         getDataTable()
         dispatch(showLoder({ ConfirmLot: 0 }))
       })
-      .catch(() => {
-        dispatch(showLoder({ ConfirmLot: 0 }))
+      .catch((err) => {
+        dispatch(showLoder({ ConfirmLot: 0, status: err.status }))
       })
   }
   const controlPrebid = ({
@@ -219,8 +219,8 @@ const PreBid = () => {
           closeReset()
           dispatch(showLoder({ confirm: 0 }))
         })
-        .catch(() => {
-          dispatch(showLoder({ confirm: 0 }))
+        .catch((err) => {
+          dispatch(showLoder({ confirm: 0, status: err.status }))
           state.createNotification('Что-то пошло не так!', 'error')
         })
     }
@@ -236,8 +236,8 @@ const PreBid = () => {
         getDataTable()
         dispatch(showLoder({ controlContrPrice: 0 }))
       })
-      .catch(() => {
-        dispatch(showLoder({ controlContrPrice: 0 }))
+      .catch((err) => {
+        dispatch(showLoder({ controlContrPrice: 0, status: err.status }))
         setIsModalContr(true)
         state.createNotification('Что-то пошло не так!', 'error')
       })
@@ -280,7 +280,7 @@ const PreBid = () => {
         getDataTable()
       })
       .catch((err) => {
-        dispatch(showLoder({ readPrebid: 0 }))
+        dispatch(showLoder({ readPrebid: 0, status: err.status }))
         state.createNotification('Что-то пошло не так!', 'error')
       })
   }
@@ -294,7 +294,7 @@ const PreBid = () => {
         getDataTable()
       })
       .catch((err) => {
-        dispatch(showLoder({ rejectPrebid: 0 }))
+        dispatch(showLoder({ rejectPrebid: 0, status: err.status }))
         setIsModalRemove(true)
         state.createNotification('Что-то пошло не так!', 'error')
       })
@@ -308,7 +308,7 @@ const PreBid = () => {
         getDataTable()
       })
       .catch((err) => {
-        dispatch(showLoder({ deletePrebid: 0 }))
+        dispatch(showLoder({ deletePrebid: 0, status: err.status }))
         setIsModalRemove(true)
         state.createNotification('Что-то пошло не так!', 'error')
       })
@@ -331,7 +331,7 @@ const PreBid = () => {
         })
         dispatch(showLoder({ detailUp: 0 }))
       })
-      .catch(() => dispatch(showLoder({ detailUp: 0 })))
+      .catch((err) => dispatch(showLoder({ detailUp: 0, status: err.status })))
   }
 
   const parseFunction = () => {
@@ -349,10 +349,10 @@ const PreBid = () => {
         setStatusLoader(false)
         dispatch(showLoder({ parseFunction: 0 }))
       })
-      .catch(() => {
+      .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
         setStatusLoader(false)
-        dispatch(showLoder({ parseFunction: 0 }))
+        dispatch(showLoder({ parseFunction: 0, status: err.status }))
       })
   }
 

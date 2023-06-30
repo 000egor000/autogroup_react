@@ -57,7 +57,7 @@ const AuctionTransportAutoCreate = () => {
         dispatch(showLoder({ getAuctionData: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ getAuctionData: 0 }))
+        dispatch(showLoder({ getAuctionData: 0, status: err.status }))
       })
   }
 
@@ -79,7 +79,7 @@ const AuctionTransportAutoCreate = () => {
         dispatch(showLoder({ fuel: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ fuel: 0 }))
+        dispatch(showLoder({ fuel: 0, status: err.status }))
       })
   }, [])
 
@@ -100,7 +100,7 @@ const AuctionTransportAutoCreate = () => {
         dispatch(showLoder({ systems: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ systems: 0 }))
+        dispatch(showLoder({ systems: 0, status: err.status }))
       })
   }, [])
 
@@ -119,7 +119,7 @@ const AuctionTransportAutoCreate = () => {
         dispatch(showLoder({ transmission: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ transmission: 0 }))
+        dispatch(showLoder({ transmission: 0, status: err.status }))
       })
   }, [])
 
@@ -138,7 +138,7 @@ const AuctionTransportAutoCreate = () => {
         dispatch(showLoder({ drive: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ drive: 0 }))
+        dispatch(showLoder({ drive: 0, status: err.status }))
       })
   }, [])
 
@@ -157,7 +157,7 @@ const AuctionTransportAutoCreate = () => {
         dispatch(showLoder({ highlight: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ highlight: 0 }))
+        dispatch(showLoder({ highlight: 0, status: err.status }))
       })
   }, [])
   const myRound10 = (val) => Math.ceil(val / 50) * 50
@@ -277,7 +277,7 @@ const AuctionTransportAutoCreate = () => {
           setIsModalClose(false)
           state.createNotification('Что-то пошло не так!', 'error')
 
-          dispatch(showLoder({ updateSale: 0 }))
+          dispatch(showLoder({ updateSale: 0, status: err.status }))
         })
     }
 
@@ -331,7 +331,7 @@ const AuctionTransportAutoCreate = () => {
         setIsModalClose(false)
         state.createNotification('Что-то пошло не так!', 'error')
 
-        dispatch(showLoder({ updatePredSale: 0 }))
+        dispatch(showLoder({ updatePredSale: 0, status: err.status }))
       })
   }
 

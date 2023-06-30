@@ -80,10 +80,10 @@ const AuctionTransportPayTable = ({
             clearFunc()
             dispatch(showLoder({ priceUpdate: 0 }))
           })
-          .catch(() => {
+          .catch((err) => {
             state.createNotification('Что-то пошло не так!', 'error')
             clearFunc()
-            dispatch(showLoder({ priceUpdate: 0 }))
+            dispatch(showLoder({ priceUpdate: 0, status: err.status }))
           })
       } else {
         state.createNotification(

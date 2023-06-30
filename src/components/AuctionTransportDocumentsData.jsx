@@ -81,8 +81,8 @@ const AuctionTransportDocumentsData = ({
         dispatch(showLoder({ createDocumentsData: 0 }))
       })
 
-      .catch(() => {
-        dispatch(showLoder({ createDocumentsData: 0 }))
+      .catch((err) => {
+        dispatch(showLoder({ createDocumentsData: 0, status: err.status }))
         state.createNotification('Что-то пошло не так!', 'error')
       })
   }
@@ -98,9 +98,9 @@ const AuctionTransportDocumentsData = ({
         dispatch(showLoder({ updateDocumentsData: 0 }))
       })
 
-      .catch(() => {
+      .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ updateDocumentsData: 0 }))
+        dispatch(showLoder({ updateDocumentsData: 0, status: err.status }))
       })
   }
 

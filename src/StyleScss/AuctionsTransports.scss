@@ -16,6 +16,7 @@
         display: flex;
         align-items: center;
         justify-content: right;
+        margin-right: 10px;
         margin-bottom: 15px;
         .btnTransportLeft {
           display: flex;
@@ -767,8 +768,9 @@
             //   font-size: 20px !important;
             // }
             .partInfo {
-              position: absolute;
-              bottom: 0;
+              // position: absolute;
+              // bottom: -30px;
+              margin-top: 40px;
               font-size: 12px;
             }
             .blockItem {
@@ -947,6 +949,9 @@
                 }
               }
             }
+            .borderLine {
+              margin-bottom: 10px;
+            }
           }
           .helpGroupInput {
             display: flex;
@@ -1110,7 +1115,8 @@
     .groupSearch {
       margin-bottom: 30px;
       display: flex;
-      align-items: baseline;
+      align-items: center;
+
       .customCheckPicker {
         .rs-picker {
           width: 150px !important;
@@ -1199,7 +1205,7 @@
   .itemContainer {
     .top-item {
       display: flex;
-      flex-direction: column;
+      // flex-direction: column;
       .itemSearch {
         display: flex;
         justify-content: space-between;
@@ -1225,6 +1231,11 @@
   justify-content: end;
   margin: 10px 0;
   align-items: center;
+  &--hid {
+    .rs-pagination-group-total {
+      display: none;
+    }
+  }
 }
 
 .customInputChange {
@@ -1233,7 +1244,9 @@
     0px 10px 10px rgba(243, 6, 18, 0.06);
   border-radius: 10px;
   text-align: center;
-  width: auto;
+  width: 50px;
+  height: auto;
+  max-width: 100%;
 
   &:focus {
     outline: none;

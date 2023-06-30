@@ -1,22 +1,30 @@
-import { SHOW, HIDE, WIDTHOPEN, WIDTHCLOSE, SHOWLOADER } from './boilerplate'
+import {
+  SHOW,
+  HIDE,
+  WIDTHOPEN,
+  WIDTHCLOSE,
+  SHOWLOADER,
+  // CONTROLTOKEN,
+} from './boilerplate'
 
 const SHOWLOADERFunc = (state, action) => {
   let res = []
+  const token = window.sessionStorage.getItem('access_token')
+  const { status, ...all } = action.payload
 
   if (state.loading.length > 0) {
     res = state.loading.map((el) =>
-      Object.entries(el)[0][0] === Object.entries(action.payload)[0][0]
-        ? action.payload
-        : el
+      Object.entries(el)[0][0] === Object.entries(all)[0][0] ? all : el
     )
-    if (!res.includes(action.payload)) res.push(action.payload)
+    if (!res.includes(all)) res.push(all)
   } else {
-    res.push(action.payload)
+    res.push(all)
   }
 
   return {
     ...state,
     loading: res,
+    status: +status === 401 && token ? +status : state.status,
   }
 }
 
@@ -35,10 +43,8 @@ export default function reducer(state, action) {
     case WIDTHCLOSE:
       return { ...state, width: '60px' }
 
-    // case ALLROLE:
-    // 	return { ...state, allRole: action.payload }
-    // case ACCESSRIGHTS:
-    // 	return { ...state, accesRights: action.payload }
+    // case CONTROLTOKEN:
+    //   return STATUSTOKENFunc(state)
 
     default:
       return { ...state }

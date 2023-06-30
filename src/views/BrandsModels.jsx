@@ -34,7 +34,7 @@ const BrandsModels = (props) => {
       })
       .catch((err) => {
         setDataTypes([])
-        dispatch(showLoder({ type: 0 }))
+        dispatch(showLoder({ type: 0, status: err.status }))
       })
   }, [])
 
@@ -59,7 +59,7 @@ const BrandsModels = (props) => {
       })
       .catch((err) => {
         setDataBrand([])
-        dispatch(showLoder({ getArray: 0 }))
+        dispatch(showLoder({ getArray: 0, status: err.status }))
       })
   }
 
@@ -90,7 +90,7 @@ const BrandsModels = (props) => {
         dispatch(showLoder({ createFormTransportBrand: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ createFormTransportBrand: 0 }))
+        dispatch(showLoder({ createFormTransportBrand: 0, status: err.status }))
         state.createNotification('Проверьте веденные данные!', 'error')
       })
   }
@@ -108,7 +108,7 @@ const BrandsModels = (props) => {
         }
       })
       .catch((err) => {
-        dispatch(showLoder({ createFormModel: 0 }))
+        dispatch(showLoder({ createFormModel: 0, status: err.status }))
         state.createNotification('Проверьте веденные данные!', 'error')
       })
   }

@@ -61,7 +61,9 @@ const Header = ({ showDrop, setShowDrop }) => {
         window.location.reload()
         dispatch(showLoder({ goToBackLink: 0 }))
       })
-      .catch((el) => dispatch(showLoder({ goToBackLink: 0 })))
+      .catch((err) =>
+        dispatch(showLoder({ goToBackLink: 0, status: err.status }))
+      )
   }
 
   const clickReset = () => {

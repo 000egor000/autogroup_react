@@ -81,7 +81,7 @@ const ArhivePreBid = () => {
         setPaginationValue(res.preBids.length)
         dispatch(showLoder({ archive: 0 }))
       })
-      .catch(() => dispatch(showLoder({ archive: 0 })))
+      .catch((err) => dispatch(showLoder({ archive: 0, status: err.status })))
   }
 
   const handleShow = (id) => {
@@ -121,7 +121,7 @@ const ArhivePreBid = () => {
         )
         dispatch(showLoder({ auctions: 0 }))
       })
-      .catch(() => dispatch(showLoder({ auctions: 0 })))
+      .catch((err) => dispatch(showLoder({ auctions: 0, status: err.status })))
   }, [])
 
   useEffect(() => {
@@ -141,7 +141,7 @@ const ArhivePreBid = () => {
         )
         dispatch(showLoder({ status: 0 }))
       })
-      .catch(() => dispatch(showLoder({ status: 0 })))
+      .catch((err) => dispatch(showLoder({ status: 0, status: err.status })))
   }, [])
 
   useEffect(() => {
@@ -167,8 +167,8 @@ const ArhivePreBid = () => {
           setDataTable(res.preBids)
           dispatch(showLoder({ searchFunction: 0 }))
         })
-        .catch(() => {
-          dispatch(showLoder({ searchFunction: 0 }))
+        .catch((err) => {
+          dispatch(showLoder({ searchFunction: 0, status: err.status }))
           state.createNotification('Что-то пошло не так!', 'error')
         })
     } else {
@@ -199,7 +199,7 @@ const ArhivePreBid = () => {
         })
         dispatch(showLoder({ role: 0 }))
       })
-      .catch(() => dispatch(showLoder({ role: 0 })))
+      .catch((err) => dispatch(showLoder({ role: 0, status: err.status })))
   }
 
   useEffect(() => {

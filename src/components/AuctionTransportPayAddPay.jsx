@@ -105,7 +105,7 @@ const AuctionTransportPayAddPay = ({
       .catch((err) => {
         setDataUserArray([{ id: null, name: 'Выбрать из списка' }])
         setDataUserSelect([{ id: null, name: 'Выбрать из списка' }][0]['id'])
-        dispatch(showLoder({ customer: 0 }))
+        dispatch(showLoder({ customer: 0, status: err.status }))
       })
   }, [])
   // useEffect(() => {
@@ -158,6 +158,7 @@ const AuctionTransportPayAddPay = ({
       )
     }
   }, [auctionArray, carrierArray])
+  console.log(partnersSelect)
 
   useEffect(() => {
     if (dataArrayProp && dataInfo) {
@@ -212,7 +213,7 @@ const AuctionTransportPayAddPay = ({
       .catch((err) => {
         setPartnersArray([{ id: 0, name: 'Выбрать из посредников' }])
         setPartnersSelect([{ id: 0, name: 'Выбрать из посредников' }][0]['id'])
-        dispatch(showLoder({ partners: 0 }))
+        dispatch(showLoder({ partners: 0, status: err.status }))
       })
   }, [])
 
@@ -343,10 +344,7 @@ const AuctionTransportPayAddPay = ({
   )
 
   //
-  formData.append(
-    'carrier_id',
-    viewBlock() ? null : JSON.parse(recipientPaySelect).id
-  )
+  formData.append('carrier_id', viewBlock() ? null : partnersSelect)
   formData.append('partner_id', partnersSelect ? partnersSelect : null)
   formData.append('comment', comment)
   formData.append('other_company_name', other_company_name)
@@ -355,6 +353,8 @@ const AuctionTransportPayAddPay = ({
     'customer_information_custom',
     flagChange ? dataUserPay : null
   )
+
+  console.log(payUsersSelect)
 
   // const paramsCreate = [
   //   { general_information_id: propsId },
@@ -409,6 +409,13 @@ const AuctionTransportPayAddPay = ({
 
     // if (fileGive) {
     // if (+dataUserSelect !== 0) {
+    console.log(payUsersSelect)
+    if (+partnersSelect === 0 && +payUsersSelect === 1) {
+      state.createNotification('Выберете посредника!', 'info')
+      dispatch(showLoder({ createPay: 0 }))
+      return
+    }
+
     postRequestFile('/api/v1/order/payment', formData)
       .then((res) => {
         state.createNotification('Успешно создано!', 'success')
@@ -416,9 +423,9 @@ const AuctionTransportPayAddPay = ({
         getPaymentArray()
         dispatch(showLoder({ createPay: 0 }))
       })
-      .catch(() => {
+      .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ createPay: 0 }))
+        dispatch(showLoder({ createPay: 0, status: err.status }))
       })
     // }
     //  else {

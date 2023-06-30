@@ -74,7 +74,7 @@ const NoticeTransport = (
       .catch((err) => {
         setNotificationsArray([])
         setPaginationValue(0)
-        dispatch(showLoder({ notifications: 0 }))
+        dispatch(showLoder({ notifications: 0, status: err.status }))
       })
   }, [])
 
@@ -134,25 +134,27 @@ const NoticeTransport = (
                     })}
                   </tbody>
                 </table>
-                <div className="paginationBlock">
-                  <Pagination
-                    prev
-                    next
-                    // first
-                    // last
-                    ellipsis
-                    // boundaryLinks
-                    maxButtons={5}
-                    size="xs"
-                    layout={['total', 'pager']}
-                    total={paginationValue.total_results}
-                    limitOptions={[5, 10]}
-                    limit={limit}
-                    activePage={page}
-                    onChangePage={setPage}
-                    onChangeLimit={handleChangeLimit}
-                  />
-                </div>
+                {paginationValue && (
+                  <div className="paginationBlock">
+                    <Pagination
+                      prev
+                      next
+                      // first
+                      // last
+                      ellipsis
+                      // boundaryLinks
+                      maxButtons={5}
+                      size="xs"
+                      layout={['total', 'pager']}
+                      total={paginationValue.total_results}
+                      limitOptions={[5, 10]}
+                      limit={limit}
+                      activePage={page}
+                      onChangePage={setPage}
+                      onChangeLimit={handleChangeLimit}
+                    />
+                  </div>
+                )}
               </div>
             ) : (
               <NoData />

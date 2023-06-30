@@ -102,8 +102,8 @@ const AuctionTransportPay = ({
 
         dispatch(showLoder({ transport: 0 }))
       })
-      .catch(() => {
-        dispatch(showLoder({ transport: 0 }))
+      .catch((err) => {
+        dispatch(showLoder({ transport: 0, status: err.status }))
       })
   }, [])
 
@@ -128,7 +128,7 @@ const AuctionTransportPay = ({
         dispatch(showLoder({ finance: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ finance: 0 }))
+        dispatch(showLoder({ finance: 0, status: err.status }))
       })
   }, [])
 
@@ -148,8 +148,8 @@ const AuctionTransportPay = ({
         setFullSumShipping(res.fullSumShipping)
         dispatch(showLoder({ getPaymentArray: 0 }))
       })
-      .catch(() => {
-        dispatch(showLoder({ getPaymentArray: 0 }))
+      .catch((err) => {
+        dispatch(showLoder({ getPaymentArray: 0, status: err.status }))
       })
   }
 

@@ -39,7 +39,7 @@ const AgCalculatorSetting = () => {
       })
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ remove: 0 }))
+        dispatch(showLoder({ remove: 0, status: err.status }))
       })
   }
   useEffect(() => {
@@ -59,7 +59,7 @@ const AgCalculatorSetting = () => {
       })
       .catch((err) => {
         setSettingArray([])
-        dispatch(showLoder({ getInfo: 0 }))
+        dispatch(showLoder({ getInfo: 0, status: err.status }))
       })
   }
 
@@ -81,7 +81,7 @@ const AgCalculatorSetting = () => {
       })
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ setSettingValue: 0 }))
+        dispatch(showLoder({ setSettingValue: 0, status: err.status }))
       })
   }
 
@@ -102,7 +102,7 @@ const AgCalculatorSetting = () => {
       })
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ createSettingValue: 0 }))
+        dispatch(showLoder({ createSettingValue: 0, status: err.status }))
       })
   }
 

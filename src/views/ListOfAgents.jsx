@@ -16,10 +16,10 @@ import NoData from '../components/NoData'
 import { useNavigate } from 'react-router-dom'
 import { connect, connectTitle } from '../helper'
 
-const Сarter = ({ currentRates }) => {
-  const [dataCarters, setDataCarters] = useState([])
+const ListOfAgents = ({ currentRates }) => {
+  const [dataAgents, setDataAgents] = useState([])
 
-  const [idEdit, setIdEdit] = useState('')
+  const [idEdit, setIdEdit] = useState({})
   const navigate = useNavigate()
 
   const [isModalRemove, setIsModalRemove] = useState(false)
@@ -30,13 +30,11 @@ const Сarter = ({ currentRates }) => {
     getArray()
   }, [currentRates])
 
-  const remove = ({ id, pdtArray }) => {
+  const remove = ({ id }) => {
     setIsModalRemove(false)
     dispatch(showLoder({ remove: 1 }))
 
-    deleteRequestData(`/api/v1/carters/${id}`, {
-      pd_id_add: pdtArray.split(','),
-    })
+    deleteRequestData(`/api/v1/agents/${id}`)
       .then((res) => {
         if (res.status === 'success') {
           state.createNotification('Успешно удалено!', 'success')
@@ -53,21 +51,19 @@ const Сarter = ({ currentRates }) => {
 
   const getArray = () => {
     dispatch(showLoder({ getArray: 1 }))
-    getRequest(`/api/v1/carters`, {
+    getRequest(`/api/v1/agents`, {
       Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
     })
-      .then(({ carters }) => {
-        setDataCarters(
-          currentRates
-            ? carters.filter(({ id }) => id == currentRates)
-            : carters
+      .then(({ agents }) => {
+        setDataAgents(
+          currentRates ? agents.filter(({ id }) => id == currentRates) : agents
         )
 
         dispatch(showLoder({ getArray: 0 }))
       })
       .catch((err) => {
         dispatch(showLoder({ getArray: 0, status: err.status }))
-        setDataCarters([])
+        setDataAgents([])
       })
   }
 
@@ -99,11 +95,8 @@ const Сarter = ({ currentRates }) => {
   //     ? true
   //     : bool
   // }
-  const styleTopItem = {
-    paddingLeft: state.width,
-    justifyContent: 'right',
-    paddingBottom: '15px',
-  }
+  console.log(dataAgents)
+
   return (
     <div className="itemContainer">
       <div className="modal-container">
@@ -138,32 +131,35 @@ const Сarter = ({ currentRates }) => {
       </div>
 
       <div className="itemContainer-inner">
-        <div className="top-item" style={styleTopItem}>
-          {/* {!currentRates && ( */}
-          <div className="btnTransport">
-            {/* {viewBlock(101) && ( */}
-            {/* <button
+        <div
+          className="top-item "
+          style={{ paddingLeft: state.width, justifyContent: 'right' }}
+        >
+          {!currentRates && (
+            <div className="btnTransport">
+              {/* {viewBlock(101) && ( */}
+              <button
                 className="btnInfo"
-                onClick={() => navigate('/carterAddProfile')}
+                onClick={() => navigate('/listOfAgentsAdd')}
               >
                 <span>Добавить</span>
-              </button> */}
-            {/* )} */}
-          </div>
-          {/* )} */}
+              </button>
+              {/* )} */}
+            </div>
+          )}
         </div>
         <div
           className="bottom-itemFooter"
           style={{ paddingLeft: state.width, color: 'black' }}
         >
-          {dataCarters.length > 0 ? (
+          {dataAgents.length > 0 ? (
             <div className="Table">
               <Table
                 autoHeight
                 cellBordered={true}
                 hover={true}
                 bordered={true}
-                data={dataCarters}
+                data={dataAgents}
               >
                 <Column align="center" fixed flexGrow={1}>
                   <HeaderCell>Наименование компании</HeaderCell>
@@ -173,10 +169,10 @@ const Сarter = ({ currentRates }) => {
                         <span
                           onClick={() =>
                             // viewBlock(102) &&
-                            navigate(`/carterProfile/${rowData.id}`)
+                            navigate(`/listOfAgentEdit/${rowData.id}`)
                           }
                         >
-                          {<span>{rowData.name}</span>}
+                          <span>{rowData.name ? rowData.name : '-'}</span>
                         </span>
                       )
                     }}
@@ -190,10 +186,10 @@ const Сarter = ({ currentRates }) => {
                         <span
                           onClick={() =>
                             // viewBlock(102) &&
-                            navigate(`/carterProfile/${rowData.id}`)
+                            navigate(`/listOfAgentEdit/${rowData.id}`)
                           }
                         >
-                          {<span>{rowData.address}</span>}
+                          <span>{rowData.address ? rowData.address : '-'}</span>
                         </span>
                       )
                     }}
@@ -207,10 +203,10 @@ const Сarter = ({ currentRates }) => {
                         <span
                           onClick={() =>
                             // viewBlock(102) &&
-                            navigate(`/carterProfile/${rowData.id}`)
+                            navigate(`/listOfAgentEdit/${rowData.id}`)
                           }
                         >
-                          {<span>{rowData.contact}</span>}
+                          <span>{rowData.contact ? rowData.contact : '-'}</span>
                         </span>
                       )
                     }}
@@ -224,10 +220,10 @@ const Сarter = ({ currentRates }) => {
                         <span
                           onClick={() =>
                             // viewBlock(102) &&
-                            navigate(`/carterProfile/${rowData.id}`)
+                            navigate(`/listOfAgentEdit/${rowData.id}`)
                           }
                         >
-                          {<span>{rowData.phone}</span>}
+                          <span>{rowData.phone ? rowData.phone : '-'}</span>
                         </span>
                       )
                     }}
@@ -241,10 +237,12 @@ const Сarter = ({ currentRates }) => {
                         <span
                           onClick={() =>
                             // viewBlock(102) &&
-                            navigate(`/carterProfile/${rowData.id}`)
+                            navigate(`/listOfAgentEdit/${rowData.id}`)
                           }
                         >
-                          {<span>{rowData.messenger}</span>}
+                          <span>
+                            {rowData.messenger ? rowData.messenger : '-'}
+                          </span>
                         </span>
                       )
                     }}
@@ -258,34 +256,10 @@ const Сarter = ({ currentRates }) => {
                         <span
                           onClick={() =>
                             // viewBlock(102) &&
-                            navigate(`/carterProfile/${rowData.id}`)
+                            navigate(`/listOfAgentEdit/${rowData.id}`)
                           }
                         >
-                          {<span>{rowData.email}</span>}
-                        </span>
-                      )
-                    }}
-                  </Cell>
-                </Column>
-
-                <Column align="center" fixed flexGrow={2}>
-                  <HeaderCell>Порты</HeaderCell>
-                  <Cell>
-                    {(rowData, rowIndex) => {
-                      return (
-                        <span
-                          onClick={() =>
-                            // viewBlock(102) &&
-                            navigate(`/carterProfile/${rowData.id}`)
-                          }
-                        >
-                          {
-                            <span>
-                              {connectTitle(
-                                rowData.destinationPlaceDestinations
-                              )}
-                            </span>
-                          }
+                          <span>{rowData.email ? rowData.email : '-'}</span>
                         </span>
                       )
                     }}
@@ -305,7 +279,7 @@ const Сarter = ({ currentRates }) => {
                               {/* {viewBlock(102) && ( */}
                               <button
                                 onClick={() =>
-                                  navigate(`/carterProfile/${rowData.id}`)
+                                  navigate(`/listOfAgentEdit/${rowData.id}`)
                                 }
                               >
                                 <Edit />
@@ -317,9 +291,9 @@ const Сarter = ({ currentRates }) => {
                                 onClick={() => {
                                   setIdEdit({
                                     id: rowData.id,
-                                    pdtArray: connect(
-                                      rowData.destinationPlaceDestinations
-                                    ),
+                                    // pdtArray: connect(
+                                    //   rowData.destinationPlaceDestinations
+                                    // ),
                                   })
                                   setIsModalRemove(true)
                                 }}
@@ -364,4 +338,4 @@ const Сarter = ({ currentRates }) => {
     </div>
   )
 }
-export default Сarter
+export default ListOfAgents

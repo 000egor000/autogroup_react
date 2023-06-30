@@ -34,7 +34,7 @@ const FreeRates = () => {
       })
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ editPrace: 0 }))
+        dispatch(showLoder({ editPrace: 0, status: err.status }))
       })
   }
 
@@ -51,7 +51,7 @@ const FreeRates = () => {
         dispatch(showLoder({ createRatesFree: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ createRatesFree: 0 }))
+        dispatch(showLoder({ createRatesFree: 0, status: err.status }))
         state.createNotification('Что-то пошло не так!', 'error')
       })
   }
@@ -66,8 +66,8 @@ const FreeRates = () => {
 
         dispatch(showLoder({ getPicturesFunc: 0 }))
       })
-      .catch(() => {
-        dispatch(showLoder({ getPicturesFunc: 0 }))
+      .catch((err) => {
+        dispatch(showLoder({ getPicturesFunc: 0, status: err.status }))
       })
   }
 

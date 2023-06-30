@@ -60,7 +60,9 @@ const CostsPurchasePoint = (props) => {
       })
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ removeCostsPurchasePoints: 0 }))
+        dispatch(
+          showLoder({ removeCostsPurchasePoints: 0, status: err.status })
+        )
       })
   }
 
@@ -77,7 +79,7 @@ const CostsPurchasePoint = (props) => {
       })
       .catch((err) => {
         setDataMaster([])
-        dispatch(showLoder({ getArray: 0 }))
+        dispatch(showLoder({ getArray: 0, status: err.status }))
       })
   }
   const getAllArray = () => {
@@ -91,7 +93,7 @@ const CostsPurchasePoint = (props) => {
       })
       .catch((err) => {
         setCostsPurchasePointsArray([])
-        dispatch(showLoder({ getAllArray: 0 }))
+        dispatch(showLoder({ getAllArray: 0, status: err.status }))
         //state.createNotification('Успешно обновлено!', 'error')
       })
   }
@@ -136,7 +138,7 @@ const CostsPurchasePoint = (props) => {
       })
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ createCostsPurchasePoint: 0 }))
+        dispatch(showLoder({ createCostsPurchasePoint: 0, status: err.status }))
       })
   }
   const editCostsPurchasePoint = (e) => {
@@ -152,7 +154,7 @@ const CostsPurchasePoint = (props) => {
       })
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ editCostsPurchasePoint: 0 }))
+        dispatch(showLoder({ editCostsPurchasePoint: 0, status: err.status }))
       })
   }
   const handleChangeLimit = (dataKey) => {
@@ -174,6 +176,13 @@ const CostsPurchasePoint = (props) => {
     return JSON.parse(window.sessionStorage.getItem('role')).code === 'admin'
       ? true
       : bool
+  }
+
+  const styleTopItem = {
+    paddingLeft: state.width,
+    justifyContent: 'space-between',
+    alignItems: 'inherit',
+    display: 'block',
   }
 
   return (
@@ -306,14 +315,7 @@ const CostsPurchasePoint = (props) => {
       </div>
 
       <div className="itemContainer-inner">
-        <div
-          className="top-item "
-          style={{
-            paddingLeft: state.width,
-            justifyContent: 'space-between',
-            alignItems: 'inherit',
-          }}
-        >
+        <div className="top-item " style={styleTopItem}>
           <div className="btnTransport" style={{ marginTop: '10px' }}>
             <button
               className="btnInfo"

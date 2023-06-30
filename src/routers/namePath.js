@@ -88,12 +88,14 @@ const namePath = {
   AGENT: '/agent',
   AGENTPROFILE: '/agentProfile/:id',
   AGENTADDPROFILE: '/agentAddProfile',
+  AGENTCARRIERADDPROFILE: '/agentCarrierAddProfile',
 
   CARTER: '/carter',
   CARTERPROFILE: '/carterProfile/:id',
   CARTERADDPROFILE: '/carterAddProfile',
 
   CARRIER: '/carrier',
+  CARRIEROFWALLETS: '/carrierOfWallets',
   ASSIGN_PERMISSIONS_TO_ROLES: '/assign-permissions-to-roles',
   LOCATION: '/location',
   DESTINATIONS: '/destinations',
@@ -105,6 +107,9 @@ const namePath = {
   LISTOFCOUNTRIES: '/listOfCountries',
   LISTOFPORTS: '/ports',
   COUNTERPARTY: '/counterparty',
+  LISTOFAGENTS: '/listOfAgents',
+  LISTOFAGENTEDIT: '/listOfAgentEdit/:id',
+  LISTOFAGENTADD: '/listOfAgentsAdd',
 }
 
 export default namePath

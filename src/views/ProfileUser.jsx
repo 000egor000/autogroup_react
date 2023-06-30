@@ -123,7 +123,7 @@ const ProfileUser = () => {
         dispatch(showLoder({ credentials: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ credentials: 0 }))
+        dispatch(showLoder({ credentials: 0 ,status: err.status}))
       })
   }
   const resetArray = () => {
@@ -167,7 +167,7 @@ const ProfileUser = () => {
         dispatch(showLoder({ arrayCashAuction: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ arrayCashAuction: 0 }))
+        dispatch(showLoder({ arrayCashAuction: 0,status: err.status }))
         setCashArray([])
       })
   }
@@ -195,7 +195,7 @@ const ProfileUser = () => {
       .catch((err) => {
         setCarrierArray([])
 
-        dispatch(showLoder({ carrier: 0 }))
+        dispatch(showLoder({ carrier: 0,status: err.status }))
       })
   }
 

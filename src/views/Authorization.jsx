@@ -73,7 +73,7 @@ const Authorization = (props) => {
           'Ошибка доступа, проверьте ввод данных!',
           'error'
         )
-        dispatch(showLoder({ authorizationForm: 0 }))
+        dispatch(showLoder({ authorizationForm: 0, status: err.status }))
       })
   }
 

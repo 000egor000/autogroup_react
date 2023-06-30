@@ -12,7 +12,7 @@ import AuctionTransportFinanceDrop from './AuctionTransportFinanceDrop'
 import AuctionTransportFinanceTop from './AuctionTransportFinanceTop'
 
 import PropTypes from 'prop-types'
-import { arrayPort } from '../const.js'
+// import { arrayPort } from '../const.js'
 
 const AuctionTransportFinanceCreate = ({
   viewBlock,
@@ -44,6 +44,7 @@ const AuctionTransportFinanceCreate = ({
   const [costsLoadingPortArray, setCostsLoadingPortArray] = useState([])
   const [dataCarters, setDataCarters] = useState([])
   const [dataPorts, setDataPorts] = useState([])
+  const [agentArray, setAgentArray] = useState([])
 
   const { dispatch } = useContext(ContextApp)
 
@@ -99,7 +100,21 @@ const AuctionTransportFinanceCreate = ({
       })
 
       .catch((err) => {
-        dispatch(showLoder({ auto: 0 }))
+        dispatch(showLoder({ auto: 0, status: err.status }))
+        //state.createNotification('Успешно обновлено!', 'error')
+      })
+  }, [])
+  useEffect(() => {
+    dispatch(showLoder({ destinations: 1 }))
+    getRequest(`/api/v1/agents?limit=1000`, {
+      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+    })
+      .then((res) => {
+        setAgentArray(res.agents)
+        dispatch(showLoder({ destinations: 0 }))
+      })
+      .catch((err) => {
+        dispatch(showLoder({ destinations: 0, status: err.status }))
         //state.createNotification('Успешно обновлено!', 'error')
       })
   }, [])
@@ -118,10 +133,10 @@ const AuctionTransportFinanceCreate = ({
         )
 
       case 3:
-        return arrayPort
+        return agentArray
 
       case 4:
-        return dataPorts
+        return carrierArray
 
       default:
         break
@@ -140,7 +155,7 @@ const AuctionTransportFinanceCreate = ({
         dispatch(showLoder({ info: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ info: 0 }))
+        dispatch(showLoder({ info: 0, status: err.status }))
       })
   }
 
@@ -182,7 +197,7 @@ const AuctionTransportFinanceCreate = ({
       })
       .catch((err) => {
         setFinanceDateArray([])
-        dispatch(showLoder({ infoId: 0 }))
+        dispatch(showLoder({ infoId: 0, status: err.status }))
       })
   }
 
@@ -298,7 +313,7 @@ const AuctionTransportFinanceCreate = ({
       })
       .catch((err) => {
         setCostsDestinationsArray([])
-        dispatch(showLoder({ getAllArray: 0 }))
+        dispatch(showLoder({ getAllArray: 0, status: err.status }))
         //state.createNotification('Успешно обновлено!', 'error')
       })
   }
@@ -319,7 +334,7 @@ const AuctionTransportFinanceCreate = ({
       })
       .catch((err) => {
         setCostsPurchasePointsArray([])
-        dispatch(showLoder({ getAllArray: 0 }))
+        dispatch(showLoder({ getAllArray: 0, status: err.status }))
         //state.createNotification('Успешно обновлено!', 'error')
       })
   }
@@ -335,7 +350,7 @@ const AuctionTransportFinanceCreate = ({
         dispatch(showLoder({ getAllCarters: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ getAllCarters: 0 }))
+        dispatch(showLoder({ getAllCarters: 0, status: err.status }))
         setDataCarters([])
       })
   }
@@ -353,7 +368,9 @@ const AuctionTransportFinanceCreate = ({
       })
       .catch((err) => {
         setCostsDestinationsPortsArray([])
-        dispatch(showLoder({ getAllArrayDestinationPorts: 0 }))
+        dispatch(
+          showLoder({ getAllArrayDestinationPorts: 0, status: err.status })
+        )
         //state.createNotification('Успешно обновлено!', 'error')
       })
   }
@@ -371,7 +388,7 @@ const AuctionTransportFinanceCreate = ({
       })
       .catch((err) => {
         setCostsLoadingPortArray([])
-        dispatch(showLoder({ getAllArray: 0 }))
+        dispatch(showLoder({ getAllArray: 0, status: err.status }))
         //state.createNotification('Успешно обновлено!', 'error')
       })
   }
@@ -389,7 +406,7 @@ const AuctionTransportFinanceCreate = ({
       .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
 
-        dispatch(showLoder({ getPorts: 0 }))
+        dispatch(showLoder({ getPorts: 0, status: err.status }))
       })
   }
 
@@ -453,8 +470,8 @@ const AuctionTransportFinanceCreate = ({
         getFinanceArray()
         dispatch(showLoder({ createDropInvoiceRequest: 0 }))
       })
-      .catch(() => {
-        dispatch(showLoder({ createDropInvoiceRequest: 0 }))
+      .catch((err) => {
+        dispatch(showLoder({ createDropInvoiceRequest: 0, status: err.status }))
       })
   }
   const controlRoleView = () => {
@@ -467,6 +484,7 @@ const AuctionTransportFinanceCreate = ({
 
     return bollean
   }
+  const [carrierSelectProp, setCarrierSelectProp] = useState('')
 
   return (
     <div className="innerFinance">
@@ -508,6 +526,8 @@ const AuctionTransportFinanceCreate = ({
           dataPorts={dataPorts}
           autoInfo={autoInfo}
           controlArray={controlArray}
+          carrierSelectProp={carrierSelectProp}
+          setCarrierSelectProp={setCarrierSelectProp}
         />
         <AuctionTransportFinance
           dataPriseObject={dataPriseObject}
@@ -528,6 +548,8 @@ const AuctionTransportFinanceCreate = ({
           dataPorts={dataPorts}
           autoInfo={autoInfo}
           controlArray={controlArray}
+          carrierSelectProp={carrierSelectProp}
+          setCarrierSelectProp={setCarrierSelectProp}
         />
       </div>
 

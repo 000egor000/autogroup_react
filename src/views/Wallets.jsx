@@ -21,9 +21,9 @@ const WalletsAuctions = ({ nameProps, carterId, dataAray }) => {
   const [titleRates, setTitleRates] = useState('')
 
   const [cashArray, setCashArray] = useState([])
-  // const [customCashArray, setCustomCashArray] = useState([])
 
   const [carterArray, setCarterArray] = useState([])
+  const [agentArray, setAgentArray] = useState([])
 
   const [dataCredential, setDataCredential] = useState([])
   const [dataCredentialFilter, setDataCredentialFilter] = useState([])
@@ -54,7 +54,6 @@ const WalletsAuctions = ({ nameProps, carterId, dataAray }) => {
   const [activeUsersSelect, setActiveUsersSelect] = useState(1)
 
   const [cryptoSearchSelect, setCryptoSearchSelect] = useState('')
-  // console.log(cryptoSearchSelect)
 
   const handleShow = ({ id, max_id, read }) => {
     let filtered = dropShow.filter((e) => id === e)
@@ -118,6 +117,11 @@ const WalletsAuctions = ({ nameProps, carterId, dataAray }) => {
         reset()
         arrayCashAgent()
         break
+      case 'agentPortOfDestination':
+        setTitleRates('Кошельки: Порта назначения')
+        reset()
+        arrayCashAgentPortOfDestination()
+        break
 
       case 'cashAll':
         setTitleRates('Кошельки: Наличные')
@@ -134,6 +138,11 @@ const WalletsAuctions = ({ nameProps, carterId, dataAray }) => {
         setTitleRates('Кошельки: Перевозчики')
         reset()
         arrayCashCarters()
+        break
+      case 'carriers':
+        setTitleRates('Кошельки: Перевозка')
+        reset()
+        arrayCashCarrier()
         break
 
       default:
@@ -189,17 +198,26 @@ const WalletsAuctions = ({ nameProps, carterId, dataAray }) => {
         dispatch(showLoder({ arrayCashAuction: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ arrayCashAuction: 0 }))
+        dispatch(showLoder({ arrayCashAuction: 0, status: err.status }))
         setCashArray([])
         setPaginationValue(0)
       })
   }
   const arrayCashCarrier = () => {
     dispatch(showLoder({ carrier: 1 }))
-    getRequest('/api/v1/cash-account/carrier', {
-      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
-    })
+    getRequest(
+      `/api/v1/cash-account/carrier${
+        carterId ? '?carrier_id=' + carterId : ''
+      }`,
+
+      {
+        Authorization: `Bearer ${window.sessionStorage.getItem(
+          'access_token'
+        )}`,
+      }
+    )
       .then((res) => {
+        // if(carterId){}
         setCashArray(res.cash_account_carrier)
         setPaginationValue(res.cash_account_carrier.length)
         setGetPriseAll(res.full_sum)
@@ -209,7 +227,7 @@ const WalletsAuctions = ({ nameProps, carterId, dataAray }) => {
       .catch((err) => {
         setCashArray([])
         setPaginationValue(0)
-        dispatch(showLoder({ carrier: 0 }))
+        dispatch(showLoder({ carrier: 0, status: err.status }))
       })
   }
 
@@ -234,7 +252,29 @@ const WalletsAuctions = ({ nameProps, carterId, dataAray }) => {
       .catch((err) => {
         setCarterArray([])
         setPaginationValue(0)
-        dispatch(showLoder({ carters: 0 }))
+        dispatch(showLoder({ carters: 0, status: err.status }))
+      })
+  }
+  const arrayCashAgentPortOfDestination = () => {
+    dispatch(showLoder({ agents: 1 }))
+    getRequest(
+      `/api/v1/cash-account/agent${carterId ? '?agent_id=' + carterId : ''}`,
+      {
+        Authorization: `Bearer ${window.sessionStorage.getItem(
+          'access_token'
+        )}`,
+      }
+    )
+      .then((res) => {
+        setAgentArray(res.cashAccountAgent)
+        setPaginationValue(res.cashAccountAgent.length)
+        setGetPriseAll(res.full_sum ? res.full_sum : '')
+        dispatch(showLoder({ agents: 0 }))
+      })
+      .catch((err) => {
+        setAgentArray([])
+        setPaginationValue(0)
+        dispatch(showLoder({ agents: 0, status: err.status }))
       })
   }
 
@@ -253,7 +293,7 @@ const WalletsAuctions = ({ nameProps, carterId, dataAray }) => {
       .catch((err) => {
         setPartnerArray([])
         setPaginationValuePar(0)
-        dispatch(showLoder({ partner: 0 }))
+        dispatch(showLoder({ partner: 0, status: err.status }))
       })
   }
 
@@ -292,7 +332,7 @@ const WalletsAuctions = ({ nameProps, carterId, dataAray }) => {
       .catch((err) => {
         setPartnerArray([])
         setPaginationValuePar(0)
-        dispatch(showLoder({ money: 0 }))
+        dispatch(showLoder({ money: 0, status: err.status }))
       })
   }
 
@@ -326,7 +366,7 @@ const WalletsAuctions = ({ nameProps, carterId, dataAray }) => {
       .catch((err) => {
         setPartnerArray([])
         setPaginationValuePar(0)
-        dispatch(showLoder({ money: 0 }))
+        dispatch(showLoder({ money: 0, status: err.status }))
       })
   }
 
@@ -388,7 +428,7 @@ const WalletsAuctions = ({ nameProps, carterId, dataAray }) => {
           setPaginationValue(0)
           setCashArray([])
 
-          dispatch(showLoder({ searchRequest: 0 }))
+          dispatch(showLoder({ searchRequest: 0, status: err.status }))
         })
     }
 
@@ -439,7 +479,7 @@ const WalletsAuctions = ({ nameProps, carterId, dataAray }) => {
         dispatch(showLoder({ auctions: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ auctions: 0 }))
+        dispatch(showLoder({ auctions: 0, status: err.status }))
       })
   }
 
@@ -473,7 +513,7 @@ const WalletsAuctions = ({ nameProps, carterId, dataAray }) => {
       })
       .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
-        dispatch(showLoder({ credentials: 0 }))
+        dispatch(showLoder({ credentials: 0, status: err.status }))
       })
   }
 
@@ -928,10 +968,73 @@ const WalletsAuctions = ({ nameProps, carterId, dataAray }) => {
           <NoData />
         )
 
+      case 'Кошельки: Порта назначения':
+        return agentArray && agentArray.length > 0 ? (
+          <div className="overFlowBlock">
+            <table>
+              <thead>
+                <tr>
+                  <th>Название</th>
+                  <th>сумма</th>
+                </tr>
+              </thead>
+
+              {agentArray.map((e, i) => {
+                return (
+                  <tbody key={e + i}>
+                    <tr>
+                      <td onClick={() => handleShow(e)}>
+                        {isChecked(e.id) ? (
+                          <ArrowRightLine />
+                        ) : (
+                          <ArrowDownLine />
+                        )}
+                        <span>{e.name}</span>
+                      </td>
+
+                      <td onClick={() => handleShow(e)}>{e.cash}</td>
+                    </tr>
+                    {isChecked(e.id) && (
+                      <WalletsInner
+                        dataAray={e.trasport_auto_information}
+                        resView={isChecked(e.id)}
+                        idItem={e.id}
+                        //   nameAndSecondName={
+                        //   e.role.second_name_ru + ' ' + e.role.name_ru
+                        // }
+                        titleRates={title}
+                      />
+                    )}
+                  </tbody>
+                )
+              })}
+            </table>
+            {/* <div className="paginationBlock">
+              <Pagination
+                prev
+                next
+                ellipsis
+                maxButtons={5}
+                size="xs"
+                layout={['total', 'pager']}
+                total={paginationValue}
+                limitOptions={[20]}
+                limit={limit}
+                activePage={page}
+                onChangePage={setPage}
+                onChangeLimit={handleChangeLimit}
+              />
+            </div> */}
+          </div>
+        ) : (
+          <NoData />
+        )
+
       default:
         return <NoData />
     }
   }
+
   useEffect(() => controlBlock(), [cashArray, partnerArray])
 
   useEffect(() => {
@@ -962,17 +1065,17 @@ const WalletsAuctions = ({ nameProps, carterId, dataAray }) => {
   }, [auction, dataCredential])
 
   const styleTopitem = {
-    alignItems: 'baseline',
-    justifyContent: 'space-between',
     display:
       // titleRates === 'Кошельки: Наличные' ||
       titleRates === 'Кошельки: Посредники' ||
       titleRates === 'Кошельки: Перевозчики' ||
+      !!carterId ||
       titleRates === ''
         ? 'none'
         : 'flex',
+    //
   }
-
+  console.log(name)
   return (
     <div className="itemContainer">
       <div className="itemContainer-inner">
@@ -980,33 +1083,43 @@ const WalletsAuctions = ({ nameProps, carterId, dataAray }) => {
           className="top-item"
           style={{
             paddingLeft: state.width,
-            ...styleTopitem,
+            alignItems: 'baseline',
+            justifyContent: 'space-between',
           }}
         >
-          <div className="searchGroup groupInput groupInput-auto">
+          <div
+            className="searchGroup groupInput groupInput-auto"
+            style={styleTopitem}
+          >
             <form onSubmit={searchFunc} className="formCus">
-              {title !== 'Дилер' && name !== 'crypto' && (
-                <label>
-                  <input
-                    className=""
-                    type="text"
-                    value={fio}
-                    onChange={(e) => setFio(e.target.value)}
-                    placeholder="Имя Фамилия"
-                  />
-                </label>
-              )}
-              {title !== 'Дилер' && name !== 'crypto' && (
-                <label>
-                  <input
-                    className=""
-                    type="text"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="E-mail"
-                  />
-                </label>
-              )}
+              {title !== 'Дилер' &&
+                name !== 'crypto' &&
+                name !== 'agentPortOfDestination' &&
+                name !== 'portOfDestination' && (
+                  <label>
+                    <input
+                      className=""
+                      type="text"
+                      value={fio}
+                      onChange={(e) => setFio(e.target.value)}
+                      placeholder="Имя Фамилия"
+                    />
+                  </label>
+                )}
+              {title !== 'Дилер' &&
+                name !== 'crypto' &&
+                name !== 'agentPortOfDestination' &&
+                name !== 'portOfDestination' && (
+                  <label>
+                    <input
+                      className=""
+                      type="text"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="E-mail"
+                    />
+                  </label>
+                )}
 
               {name === 'shipping' && (
                 <label>
@@ -1085,15 +1198,18 @@ const WalletsAuctions = ({ nameProps, carterId, dataAray }) => {
               )}
             </form>
           </div>
-          <div className="btnTransport">
-            <input
-              className="positiveSum"
-              type="button"
-              disabled
-              value={getPriseAllPlus + ' $'}
-            />
-            <input type="button" disabled value={getPriseAll + ' $'} />
-          </div>
+
+          {name !== 'portOfDestination' && (
+            <div className="btnTransport" style={styleTopitem}>
+              <input
+                className="positiveSum"
+                type="button"
+                disabled
+                value={getPriseAllPlus + ' $'}
+              />
+              <input type="button" disabled value={getPriseAll + ' $'} />
+            </div>
+          )}
         </div>
 
         <div

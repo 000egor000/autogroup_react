@@ -22,8 +22,9 @@ import { showLoder } from '../reducers/actions'
 import {
   addSelectArray,
   //  btnShow,
-  arrayPort,
+  // arrayPort,
   dataAdd,
+  role,
 } from '../const.js'
 import { controlNumber, controlTitle } from '../helper.js'
 
@@ -43,10 +44,12 @@ const AuctionTransportFinance = ({
   carrierArray,
   pay_info,
   controlDataSelect,
-  dataCarters,
-  dataPorts,
-  autoInfo,
+  // dataCarters,
+  // dataPorts,
+  // autoInfo,
   controlArray,
+  carrierSelectProp,
+  setCarrierSelectProp,
 }) => {
   const [statusFinance, setStatusFinance] = useState(false)
 
@@ -90,7 +93,7 @@ const AuctionTransportFinance = ({
 
   // const statusRole = viewBlock(49) && !viewBlock(50)
   const { state, dispatch } = useContext(ContextApp)
-  const role = ['office', 'dealer', 'logist']
+
   const roleParams = JSON.parse(window.sessionStorage.getItem('role')).code
 
   const pathCurrent = window.location.pathname
@@ -228,81 +231,95 @@ const AuctionTransportFinance = ({
   }, [carrierSelect])
 
   useEffect(() => {
-    if (carrierArray.length > 0) controlPrise()
-    return () => {
-      setByLand(0)
-      setBySea(0)
-      setDocFee(0)
-      setAgFee(0)
-    }
-  }, [carrierSelect, dataPriseObject, carrierArray, titleBlock])
+    if (carrierArray.length > 0 && (carrierSelect || carrierSelectProp))
+      controlPrise()
+  }, [
+    carrierSelect,
+    carrierSelectProp,
+    carrierArray,
+    financeDateArray,
+    dataPriseObject,
+  ])
+  // useEffect(() => {
+  //   if (
+  //     (financeDateArray.length > 0 &&
+  //       financeDateArray.at(-1).usa_finance &&
+  //       financeDateArray.at(-1).carrier_id == carrierSelect) ||
+  //     (financeDateArray.length > 0 &&
+  //       financeDateArray.at(-1).ag_finance &&
+  //       financeDateArray.at(-1).carrier_id == carrierSelectProp)
+  //   ) {
+  //     return controlData({
+  //       statusView: false,
+  //     })
+  //   }
+  // }, [carrierSelect])
 
   const controlPrise = () => {
     if (titleBlock !== 'AG Logist') {
       if (
-        (bySea || byLand || DocFee) &&
         financeDateArray.length > 0 &&
-        +financeDateArray.at(-1).carrier_id === +carrierSelect
+        financeDateArray.at(-1).usa_finance &&
+        financeDateArray.at(-1).carrier_id == carrierSelect
       ) {
-        if (financeDateArray.at(-1).usa_finance) {
-          const {
-            byLand,
-            bySea,
-            DocFee,
-            byLandCarrier,
-            bySeaCarrier,
-            docFeeCarrier,
-          } = JSON.parse(financeDateArray.at(-1).usa_finance)
+        const {
+          byLand,
+          bySea,
+          DocFee,
+          byLandCarrier,
+          bySeaCarrier,
+          docFeeCarrier,
+        } = JSON.parse(financeDateArray.at(-1).usa_finance)
 
-          setByLand(byLand ? byLand : 0)
-          setBySea(bySea ? bySea : 0)
-          setDocFee(DocFee ? DocFee : 0)
+        setByLand(byLand ? byLand : 0)
+        setBySea(bySea ? bySea : 0)
+        setDocFee(DocFee ? DocFee : 0)
 
-          setByLandCarrier(byLandCarrier ? byLandCarrier : carrierArray[0].id)
-          setBySeaCarrier(bySeaCarrier ? bySeaCarrier : carrierArray[0].id)
-          setDocFeeCarrier(docFeeCarrier ? docFeeCarrier : carrierArray[0].id)
-        }
+        setByLandCarrier(byLandCarrier ? byLandCarrier : carrierArray[0].id)
+        setBySeaCarrier(bySeaCarrier ? bySeaCarrier : carrierArray[0].id)
+        setDocFeeCarrier(docFeeCarrier ? docFeeCarrier : carrierArray[0].id)
       } else {
-        setByLand(
-          dataPriseObject.inlandPriceAec ? dataPriseObject.inlandPriceAec : 0
-        )
-        setBySea(dataPriseObject.seaPriceAec ? dataPriseObject.seaPriceAec : 0)
-        setDocFee(dataPriseObject.docPriceAec ? dataPriseObject.docPriceAec : 0)
+        const { inlandPriceAec, seaPriceAec, docPriceAec } = dataPriseObject
+
+        setByLand(inlandPriceAec ? inlandPriceAec : 0)
+        setBySea(seaPriceAec ? seaPriceAec : 0)
+        setDocFee(docPriceAec ? docPriceAec : 0)
 
         setByLandCarrier(carrierArray[0].id)
         setBySeaCarrier(carrierArray[0].id)
         setDocFeeCarrier(carrierArray[0].id)
       }
     } else {
-      if ((bySea || byLand || DocFee || agFee) && financeDateArray.length > 0) {
-        if (financeDateArray.at(-1).ag_finance) {
-          const {
-            byLand,
-            bySea,
-            DocFee,
-            agFee,
-            byLandCarrier,
-            bySeaCarrier,
-            docFeeCarrier,
-            agFeeCarrier,
-          } = JSON.parse(financeDateArray.at(-1).ag_finance)
+      if (
+        financeDateArray.length > 0 &&
+        financeDateArray.at(-1).ag_finance &&
+        financeDateArray.at(-1).carrier_id == carrierSelectProp
+      ) {
+        const {
+          byLand,
+          bySea,
+          DocFee,
+          agFee,
+          byLandCarrier,
+          bySeaCarrier,
+          docFeeCarrier,
+          agFeeCarrier,
+        } = JSON.parse(financeDateArray.at(-1).ag_finance)
 
-          setByLand(byLand ? byLand : 0)
-          setBySea(bySea ? bySea : 0)
-          setDocFee(DocFee ? DocFee : 0)
-          setAgFee(agFee ? agFee : 0)
+        setByLand(byLand ? byLand : 0)
+        setBySea(bySea ? bySea : 0)
+        setDocFee(DocFee ? DocFee : 0)
+        setAgFee(agFee ? agFee : 0)
 
-          setByLandCarrier(byLandCarrier ? byLandCarrier : carrierArray[0].id)
-          setBySeaCarrier(bySeaCarrier ? bySeaCarrier : carrierArray[0].id)
-          setDocFeeCarrier(docFeeCarrier ? docFeeCarrier : carrierArray[0].id)
-          setAgFeeCarrier(agFeeCarrier ? agFeeCarrier : carrierArray[0].id)
-        }
+        setByLandCarrier(byLandCarrier ? byLandCarrier : carrierArray[0].id)
+        setBySeaCarrier(bySeaCarrier ? bySeaCarrier : carrierArray[0].id)
+        setDocFeeCarrier(docFeeCarrier ? docFeeCarrier : carrierArray[0].id)
+        setAgFeeCarrier(agFeeCarrier ? agFeeCarrier : carrierArray[0].id)
       } else {
-        setByLand(
-          dataPriseObject.inlandPriceAg ? dataPriseObject.inlandPriceAg : 0
-        )
-        setBySea(dataPriseObject.seaPriceAg ? dataPriseObject.seaPriceAg : 0)
-        setDocFee(dataPriseObject.docPriceAg ? dataPriseObject.docPriceAg : 0)
+        const { inlandPriceAg, seaPriceAg, docPriceAg } = dataPriseObject
+        setByLand(inlandPriceAg ? inlandPriceAg : 0)
+        setBySea(seaPriceAg ? seaPriceAg : 0)
+        setDocFee(docPriceAg ? docPriceAg : 0)
 
         setByLandCarrier(carrierArray[0].id)
         setBySeaCarrier(carrierArray[0].id)
@@ -324,6 +341,7 @@ const AuctionTransportFinance = ({
           res = dataPriseObject.carrier.id
         }
       }
+      setCarrierSelectProp(res)
     }
 
     setCarrierSelect(res)
@@ -337,6 +355,7 @@ const AuctionTransportFinance = ({
       } else if (carrierArray.length > 0) {
         res = carrierArray[0].id
       }
+      setCarrierSelectProp(res)
     }
 
     setCarrierSelect(res)
@@ -856,9 +875,9 @@ const AuctionTransportFinance = ({
         if (dateValueGenerationTop.length > 0) {
           dateValueGenerationTop.map((elem) => {
             if (elem.pay == 2) {
-              view.push(`<div className="generationBlock">
-          <div className="blockPay">
-            <label key='${elem.id}'>
+              view.push(`<div className="generationBlock" key='${elem.id}'>
+          <div className="blockPay" >
+            <label >
               <span>
                 <input
                   type="text"
@@ -878,13 +897,15 @@ const AuctionTransportFinance = ({
         }
       }
 
-      return view.map((el) => <div dangerouslySetInnerHTML={{ __html: el }} />)
+      return view.map((el) => (
+        <div dangerouslySetInnerHTML={{ __html: el }} key={el} />
+      ))
     }
   }
 
-  useEffect(() => {
-    if (flagSendReq) controlData(flagSendReq)
-  }, [flagSendReq])
+  // useEffect(() => {
+  //   if (flagSendReq) controlData(flagSendReq)
+  // }, [flagSendReq])
 
   //статус клика по кнопке сохранить
   const controlPayClickSave = ({
@@ -917,6 +938,8 @@ const AuctionTransportFinance = ({
     let res
     if (carrierSelect) {
       res = +carrierSelect
+    } else if (carrierSelectProp) {
+      res = +carrierSelectProp
     } else if (
       financeDateArray.length > 0 &&
       financeDateArray.at(-1).carrier_id
@@ -1137,17 +1160,53 @@ const AuctionTransportFinance = ({
       }
     }
 
+    let middlewareData // в момент смены carrier, чтобы были взяты знач с start-info
+    if (
+      financeDateArray.length > 0 &&
+      financeDateArray.at(-1).carrier_id != carrierSelectProp &&
+      resultParams.hasOwnProperty('ag_finance')
+    ) {
+      middlewareData = {
+        ...financeDateArray.at(-1),
+        usa_finance: JSON.stringify({
+          ...JSON.parse(financeDateArray.at(-1).usa_finance),
+          ...{
+            bySea: dataPriseObject.seaPriceAec,
+            byLand: dataPriseObject.inlandPriceAec,
+            DocFee: dataPriseObject.docPriceAec,
+          },
+        }),
+      }
+    } else if (
+      financeDateArray.length > 0 &&
+      financeDateArray.at(-1).carrier_id != carrierSelectProp &&
+      resultParams.hasOwnProperty('usa_finance')
+    ) {
+      middlewareData = {
+        ...financeDateArray.at(-1),
+        ag_finance: JSON.stringify({
+          ...JSON.parse(financeDateArray.at(-1).ag_finance),
+          ...{
+            bySea: dataPriseObject.seaPriceAg,
+            byLand: dataPriseObject.inlandPriceAg,
+            DocFee: dataPriseObject.docPriceAg,
+          },
+        }),
+      }
+    }
+    //
+
     putRequest(`/api/v1/order/finance/${financeDateArray.at(-1).id}`, {
-      ...financeDateArray.at(-1),
+      ...(middlewareData ? middlewareData : financeDateArray.at(-1)),
       ...resultParams,
     })
       .then((res) => {
         getFinanceArray()
         dispatch(showLoder({ updateAuctionAuto: 0 }))
       })
-      .catch((e) => {
+      .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ updateAuctionAuto: 0 }))
+        dispatch(showLoder({ updateAuctionAuto: 0, status: err.status }))
       })
   }
 
@@ -1164,8 +1223,8 @@ const AuctionTransportFinance = ({
 
         dispatch(showLoder({ createAuctionAuto: 0 }))
       })
-      .catch((e) => {
-        dispatch(showLoder({ createAuctionAuto: 0 }))
+      .catch((err) => {
+        dispatch(showLoder({ createAuctionAuto: 0, status: err.status }))
 
         state.createNotification('Что-то пошло не так!', 'error')
       })
@@ -1414,7 +1473,10 @@ const AuctionTransportFinance = ({
               {carrierArray.map((elem) => (
                 <Dropdown.Item
                   key={elem.id}
-                  onClick={() => setCarrierSelect(elem.id)}
+                  onClick={async () => {
+                    setCarrierSelectProp(elem.id)
+                    setCarrierSelect(elem.id)
+                  }}
                 >
                   {elem.title}
                 </Dropdown.Item>
@@ -1563,9 +1625,9 @@ const AuctionTransportFinance = ({
             />
 
             <select
-              value={bySeaCarrier}
+              value={byLandCarrier}
               onChange={(event) => {
-                setBySeaCarrier(event.target.value)
+                setByLandCarrier(event.target.value)
               }}
               style={{
                 visibility: titleBlock !== 'AG Logist' ? 'visable' : 'hidden',

@@ -106,17 +106,21 @@ const titleCurrentLink = (val) => {
       return 'Ag Logistic: Fee Rates'
 
     case '/wallets/auctions':
-      return 'Кошельки: Аукцион'
+      return 'Площадка (Аукцион)'
 
     case '/wallets/shipping':
-      return 'Кошельки: Перевозка'
+      return 'Перевозчик (место покупки)'
+    case '/wallets/carter':
+      return 'Локальные перевозчики'
+    case '/wallets/agentPortOfDestination':
+      return 'Агент в порту'
 
-    case '/wallets/agent':
-      return 'Кошельки: Посредники'
+    // case '/wallets/agent':
+    //   return 'Кошельки: Посредники'
     case '/wallets/crypto':
       return 'Кошельки: Крипта'
     case '/wallets/cashAll':
-      return 'Кошельки: Наличные'
+      return 'Иная форма'
 
     case '/masters':
       return 'Пользователи: мастер'
@@ -213,6 +217,11 @@ const titleCurrentLink = (val) => {
       return 'Список портов'
     case '/counterparty':
       return 'Список контрагентов'
+
+    case '/agentCarrierAddProfile':
+      return 'Добавить посредника/перевозчика'
+    case '/listOfAgents':
+      return 'Компании-агенты'
 
     default:
       switch (val.split('/')[1]) {
@@ -520,12 +529,48 @@ const controlTitle = (id, item) => {
       case 3:
         return item.name
       case 4:
-        return item.name
+        return item.title
 
       default:
         break
     }
   }
+}
+
+const getPrise = ({ obj, val }) =>
+  (obj && obj[val] ? Number(obj[val]).toFixed(2) : '0.00') + '$'
+
+const clickToLink = (val) => {
+  if (val.hasOwnProperty('CashAccountAgent')) {
+    return `/listOfAgentEdit/${val.id}`
+  } else if (val.hasOwnProperty('CashAccountCarter')) {
+    return `/carterProfile/${val.id}`
+  } else if (val.hasOwnProperty('cashAccountPartner')) {
+    return `/agentProfile/${val.id}`
+  } else {
+    return null
+  }
+  // switch (val) {
+  //   case val.hasOwnProperty('CashAccountAgent'):
+  //     return `listOfAgentEdit'/${val.id}`
+  //   case val.hasOwnProperty('CashAccountCarter'):
+  //     return `carterProfile'/${val.id}`
+  //   case val.hasOwnProperty('cashAccountPartner'):
+  //     return `agentProfile'/${val.id}`
+
+  //   default:
+  //     return null
+  // }
+}
+
+const getAllData = (dataAgents, dataCarters, dataPartners, dataCarriers) => {
+  let res = []
+  if (dataAgents.length > 0) res.push(...dataAgents)
+  if (dataCarters.length > 0) res.push(...dataCarters)
+  if (dataPartners.length > 0) res.push(...dataPartners)
+  if (dataCarriers.length > 0) res.push(...dataCarriers)
+
+  return res
 }
 
 export {
@@ -551,4 +596,7 @@ export {
   connectTitle,
   controlTitle,
   controlIdDestination,
+  getPrise,
+  clickToLink,
+  getAllData,
 }

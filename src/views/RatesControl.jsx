@@ -7,7 +7,6 @@ import FreeRates from '../components/FreeRates'
 import { useParams } from 'react-router-dom'
 
 const RatesControl = ({ nameRates, currentRates, dataArray }) => {
-  // console.log(nameRates, currentRates)
   const pathUrl = document.location.pathname.split('/')
   const [viewControler, setViewControler] = useState([])
   const { nameRatesLink } = useParams()
@@ -76,6 +75,8 @@ const RatesControl = ({ nameRates, currentRates, dataArray }) => {
             return (
               <FreeRates currentRates={nameRatesLink} viewBlock={viewBlock} />
             )
+          case 'searatesconsolidation':
+            return <Searates viewBlock={viewBlock} dataArray={dataArray} />
 
           default:
             return console.log('incorrect value')

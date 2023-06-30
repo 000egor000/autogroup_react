@@ -42,7 +42,7 @@ const ListOfAuctions = () => {
         setDataCountries(filterAray)
         dispatch(showLoder({ countries: 0 }))
       })
-      .catch(() => dispatch(showLoder({ countries: 0 })))
+      .catch((err) => dispatch(showLoder({ countries: 0, status: err.status })))
   }, [])
 
   const remove = (id) => {
@@ -59,7 +59,7 @@ const ListOfAuctions = () => {
       })
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ removaAuction: 0 }))
+        dispatch(showLoder({ removaAuction: 0, status: err.status }))
       })
   }
   const getArray = () => {
@@ -73,7 +73,7 @@ const ListOfAuctions = () => {
         dispatch(showLoder({ auctions: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ auctions: 0 }))
+        dispatch(showLoder({ auctions: 0, status: err.status }))
       })
   }
   useEffect(() => {
@@ -87,7 +87,7 @@ const ListOfAuctions = () => {
         dispatch(showLoder({ auctions: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ auctions: 0 }))
+        dispatch(showLoder({ auctions: 0, status: err.status }))
       })
   }, [])
 
@@ -112,7 +112,7 @@ const ListOfAuctions = () => {
       })
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ createAuction: 0 }))
+        dispatch(showLoder({ createAuction: 0, status: err.status }))
       })
   }
   const editAuction = (e) => {
@@ -128,7 +128,7 @@ const ListOfAuctions = () => {
       })
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ editAuction: 0 }))
+        dispatch(showLoder({ editAuction: 0, status: err.status }))
       })
   }
   const close = () => {

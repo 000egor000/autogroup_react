@@ -59,7 +59,10 @@ const AuctionTransportCreate = ({
 
   useEffect(() => {
     if (financeDateArray.length > 0) {
-      if (JSON.parse(financeDateArray.at(-1).usa_finance).statusFinance) {
+      if (
+        financeDateArray.at(-1).usa_finance &&
+        JSON.parse(financeDateArray.at(-1).usa_finance).statusFinance
+      ) {
         setCarrierSelect(financeDateArray.at(-1).carrier_id)
         setStatusCarrier(true)
       }
@@ -79,7 +82,7 @@ const AuctionTransportCreate = ({
       })
       .catch((err) => {
         setFinanceDateArray([])
-        dispatch(showLoder({ financeId: 0 }))
+        dispatch(showLoder({ financeId: 0, status: err.status }))
       })
   }, [])
 
@@ -100,7 +103,7 @@ const AuctionTransportCreate = ({
       })
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ seaLines: 0 }))
+        dispatch(showLoder({ seaLines: 0, status: err.status }))
       })
   }, [])
 
@@ -315,7 +318,7 @@ const AuctionTransportCreate = ({
         })
         .catch((err) => {
           state.createNotification('Что-то пошло не так!', 'error')
-          dispatch(showLoder({ shippingCreate: 0 }))
+          dispatch(showLoder({ shippingCreate: 0, status: err.status }))
         })
     } else {
       state.createNotification('Выберете морскую линию!', 'info')
@@ -344,11 +347,13 @@ const AuctionTransportCreate = ({
               onChange={(event) => setCarrierSelect(event.target.value)}
               disabled={controlDisabled() || statusCarrier}
             >
-              {carrierArray.map((elem, i) => (
-                <option key={elem.id} value={elem.id}>
-                  {elem.title}
-                </option>
-              ))}
+              {carrierArray
+                .filter((el) => el.code !== 'aglogistic')
+                .map((elem, i) => (
+                  <option key={elem.id} value={elem.id}>
+                    {elem.title}
+                  </option>
+                ))}
             </select>
           )}
         </label>

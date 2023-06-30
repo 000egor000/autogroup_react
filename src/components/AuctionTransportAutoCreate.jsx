@@ -35,7 +35,7 @@ const AuctionTransportAutoCreate = ({
   // const [destinationsArray, setDestinationsArray] = useState([])
   const [destinationsSelect, setDestinationsSelect] = useState('')
   const [placeDestinationsSelect, setPlaceDestinationsSelect] = useState('')
-  const [placeDestinationsArray, setPlaceDestinationsArray] = useState('')
+  const [placeDestinationsArray, setPlaceDestinationsArray] = useState([])
   //paramsToSave2
   const [transportTypeArray, setTransportTypeArray] = useState([])
   const [transportTypeSelect, setTransportTypeSelect] = useState('')
@@ -99,7 +99,7 @@ const AuctionTransportAutoCreate = ({
 
         .catch((err) => {
           //state.createNotification('Успешно обновлено!', 'error')
-          dispatch(showLoder({ docfees: 0 }))
+          dispatch(showLoder({ docfees: 0, status: err.status }))
         })
     }
     return () => {
@@ -209,7 +209,7 @@ const AuctionTransportAutoCreate = ({
           setPortNameArray([])
           // setPortName([])
           //state.createNotification('Успешно обновлено!', 'error')
-          dispatch(showLoder({ locations: 0 }))
+          dispatch(showLoder({ locations: 0, status: err.status }))
         })
     } else {
       setLocationsArray([])
@@ -230,7 +230,7 @@ const AuctionTransportAutoCreate = ({
         setDataOffice(res.offices)
         dispatch(showLoder({ offices: 0 }))
       })
-      .catch(() => dispatch(showLoder({ offices: 0 })))
+      .catch((err) => dispatch(showLoder({ offices: 0, status: err.status })))
   }, [])
 
   useEffect(() => {
@@ -239,7 +239,7 @@ const AuctionTransportAutoCreate = ({
       Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
     })
       .then((res) => {
-        const filterAray = res.countries.filter((item) => item.is_buyed)
+        const filterAray = res.countries.filter((item) => +item.is_buyed)
         const filterArayDefault = filterAray.find((item) =>
           item.auctions.find((el) => el.is_default)
         )
@@ -251,7 +251,7 @@ const AuctionTransportAutoCreate = ({
         )
         dispatch(showLoder({ offices: 0 }))
       })
-      .catch(() => dispatch(showLoder({ offices: 0 })))
+      .catch((err) => dispatch(showLoder({ offices: 0, status: err.status })))
   }, [])
 
   useEffect(() => {
@@ -263,8 +263,9 @@ const AuctionTransportAutoCreate = ({
 
     if (auctions && auctions.length > 0) {
       const is_default = auctions.find(({ is_default }) => !!is_default)
+      const is_notValueDefault = auctions.filter((el) => el.code !== 'Default')
 
-      setAuctionArray(auctions)
+      setAuctionArray(is_notValueDefault)
       setAuctionSelect(
         is_default ? JSON.stringify(is_default) : JSON.stringify(auctions[0])
       )
@@ -288,7 +289,7 @@ const AuctionTransportAutoCreate = ({
         setTransportTypeArray([])
 
         //state.createNotification('Успешно обновлено!', 'error')
-        dispatch(showLoder({ autotype: 0 }))
+        dispatch(showLoder({ autotype: 0, status: err.status }))
       })
   }, [])
 
@@ -543,9 +544,9 @@ const AuctionTransportAutoCreate = ({
           dispatch(showLoder({ parseFunction: 0 }))
         }
       )
-      .catch(() => {
+      .catch((err) => {
         state.createNotification('Не найдено!', 'error')
-        dispatch(showLoder({ parseFunction: 0 }))
+        dispatch(showLoder({ parseFunction: 0, status: err.status }))
       })
   }
 
@@ -601,9 +602,11 @@ const AuctionTransportAutoCreate = ({
                 )
                 dispatch(showLoder({ createAuctionTransport: 0 }))
               })
-              .catch((res) => {
+              .catch((err) => {
                 state.createNotification('Что-то пошло не так!', 'error')
-                dispatch(showLoder({ createAuctionTransport: 0 }))
+                dispatch(
+                  showLoder({ createAuctionTransport: 0, status: err.status })
+                )
               })
           } else {
             state.createNotification(
@@ -672,7 +675,7 @@ const AuctionTransportAutoCreate = ({
         }
 
         setStatusSearchLot(false)
-        dispatch(showLoder({ verification: 0 }))
+        dispatch(showLoder({ verification: 0, status: err.status }))
       })
   }
   const setGetInfoId = ({ transport_name }) =>
@@ -690,7 +693,7 @@ const AuctionTransportAutoCreate = ({
       })
       .catch((err) => {
         state.createNotification('Не найдено!', 'error')
-        dispatch(showLoder({ getInfoByVin: 0 }))
+        dispatch(showLoder({ getInfoByVin: 0, status: err.status }))
       })
   }
 

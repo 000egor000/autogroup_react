@@ -12,6 +12,10 @@ import { showLoder } from '../reducers/actions'
 import ContextApp from '../context/contextApp.js'
 import { useNavigate } from 'react-router-dom'
 import NoData from '../components/NoData'
+import { typeList } from '../const'
+import { clickToLink, getAllData } from '../helper'
+
+import { SelectPicker } from 'rsuite'
 
 const ListOfСounterparty = (props) => {
   const [dataPartners, setDataPartners] = useState([])
@@ -21,6 +25,14 @@ const ListOfСounterparty = (props) => {
   const [isModalRemove, setIsModalRemove] = useState(false)
   // const [viewControler, setViewControler] = useState([])
   const { state, dispatch } = useContext(ContextApp)
+  const [dataCountries, setDataCountries] = useState([])
+  const [selectCountries, setSelectCountries] = useState('')
+
+  const [dataAgents, setDataAgents] = useState([])
+  const [dataCarriers, setDataCarriers] = useState([])
+
+  const [dataAll, setDataAll] = useState([])
+  const [dataType, setDataType] = useState(0)
   const navigate = useNavigate()
 
   const remove = (id) => {
@@ -39,7 +51,7 @@ const ListOfСounterparty = (props) => {
       })
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ remove: 0 }))
+        dispatch(showLoder({ remove: 0, status: err.status }))
       })
   }
 
@@ -54,7 +66,7 @@ const ListOfСounterparty = (props) => {
         dispatch(showLoder({ getArray: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ getArray: 0 }))
+        dispatch(showLoder({ getArray: 0, status: err.status }))
         setDataPartners([])
       })
   }
@@ -70,15 +82,57 @@ const ListOfСounterparty = (props) => {
         dispatch(showLoder({ getCarters: 0 }))
       })
       .catch((err) => {
-        dispatch(showLoder({ getCarters: 0 }))
+        dispatch(showLoder({ getCarters: 0, status: err.status }))
         setDataCarters([])
+      })
+  }
+
+  const getAgents = () => {
+    dispatch(showLoder({ getCarters: 1 }))
+    getRequest(`/api/v1/agents`, {
+      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+    })
+      .then((res) => {
+        setDataAgents(res.agents)
+
+        dispatch(showLoder({ getCarters: 0 }))
+      })
+      .catch((err) => {
+        dispatch(showLoder({ getCarters: 0, status: err.status }))
+        setDataAgents([])
+      })
+  }
+  const getCarriers = () => {
+    dispatch(showLoder({ getCarters: 1 }))
+    getRequest(`/api/v1/carriers`, {
+      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+    })
+      .then((res) => {
+        const replaceArray = JSON.parse(
+          JSON.stringify(res.carriers).replaceAll('title', 'name')
+        ).filter(({ code }) => code !== 'aglogistic')
+
+        replaceArray.length > 0 && setDataCarriers(replaceArray)
+
+        dispatch(showLoder({ getCarters: 0 }))
+      })
+      .catch((err) => {
+        dispatch(showLoder({ getCarters: 0, status: err.status }))
+        setDataCarriers([])
       })
   }
 
   useEffect(() => {
     getArray()
     getCarters()
+    getAgents()
+    getCarriers()
   }, [])
+
+  useEffect(() => {
+    const data = getAllData(dataAgents, dataCarters, dataPartners, dataCarriers)
+    if (data && data.length > 0) setDataAll(data)
+  }, [dataAgents, dataCarters, dataPartners, dataCarriers])
 
   // useEffect(
   //   () =>
@@ -108,6 +162,43 @@ const ListOfСounterparty = (props) => {
   //     ? true
   //     : bool
   // }
+
+  useEffect(() => {
+    if (selectCountries || dataType) {
+      getSearchСountries()
+    } else {
+      getСountries()
+    }
+  }, [selectCountries, dataType])
+
+  const getSearchСountries = () => {
+    dispatch(showLoder({ getSearchСountries: 1 }))
+    getRequest(`/api/v1/countries/search?limit=${1000}`, {
+      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+    })
+      .then((res) => {
+        setDataCountries(res.countries)
+        dispatch(showLoder({ getSearchСountries: 0 }))
+      })
+      .catch((err) =>
+        dispatch(showLoder({ getSearchСountries: 0, status: err.status }))
+      )
+  }
+
+  const getСountries = () => {
+    dispatch(showLoder({ getСountries: 1 }))
+    getRequest(`/api/v1/countries?limit=${1000}`, {
+      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+    })
+      .then((res) => {
+        setDataCountries(res.countries)
+
+        dispatch(showLoder({ getСountries: 0 }))
+      })
+      .catch((err) =>
+        dispatch(showLoder({ getСountries: 0, status: err.status }))
+      )
+  }
 
   return (
     <div className="itemContainer">
@@ -145,13 +236,40 @@ const ListOfСounterparty = (props) => {
       <div className="itemContainer-inner">
         <div
           className="top-item "
-          style={{ paddingLeft: state.width, justifyContent: 'right' }}
+          style={{ paddingLeft: state.width, justifyContent: 'space-between' }}
         >
+          <div className="groupSearch">
+            {/* <div className="customCheckPicker"> */}
+            {/* <label htmlFor="selectCustomId">Название площадки</label> */}
+            {/* <SelectPicker
+                id="selectCustomId"
+                data={dataCountries}
+                valueKey="id"
+                labelKey="name_ru"
+                value={selectCountries}
+                onChange={setSelectCountries}
+                placeholder="Выберите страну"
+              />
+            </div> */}
+            <div className="customCheckPicker">
+              {/* <label htmlFor="selectCustomId">Название площадки</label> */}
+              <SelectPicker
+                id="selectCustomId"
+                data={typeList}
+                valueKey="id"
+                labelKey="name"
+                value={dataType}
+                onChange={setDataType}
+                placeholder="Выберите тип"
+              />
+            </div>
+          </div>
+
           <div className="btnTransport">
             {/* {viewBlock(101) && ( */}
             <button
               className="btnInfo"
-              onClick={() => navigate('/agentAddProfile')}
+              onClick={() => navigate('/agentCarrierAddProfile')}
             >
               <span>Добавить</span>
             </button>
@@ -169,38 +287,18 @@ const ListOfСounterparty = (props) => {
                 cellBordered={true}
                 hover={true}
                 bordered={true}
-                data={
-                  dataCarters.length > 0
-                    ? dataPartners.concat(dataCarters)
-                    : dataPartners
-                }
+                data={dataAll}
               >
                 <Column align="center" fixed flexGrow={1}>
-                  <HeaderCell>Тип</HeaderCell>
+                  <HeaderCell>Наименование</HeaderCell>
                   <Cell>
                     {(rowData, rowIndex) => {
                       return (
                         <span
                           onClick={() =>
                             // viewBlock(102) &&
-                            navigate(`/agentProfile/${rowData.id}`)
-                          }
-                        >
-                          {<span>-</span>}
-                        </span>
-                      )
-                    }}
-                  </Cell>
-                </Column>
-                <Column align="center" fixed flexGrow={1}>
-                  <HeaderCell>Наименование компании</HeaderCell>
-                  <Cell>
-                    {(rowData, rowIndex) => {
-                      return (
-                        <span
-                          onClick={() =>
-                            // viewBlock(102) &&
-                            navigate(`/agentProfile/${rowData.id}`)
+                            clickToLink(rowData) &&
+                            navigate(clickToLink(rowData))
                           }
                         >
                           {<span>{rowData.name}</span>}
@@ -210,90 +308,45 @@ const ListOfСounterparty = (props) => {
                   </Cell>
                 </Column>
                 <Column align="center" fixed flexGrow={1}>
-                  <HeaderCell>Адрес регистрации</HeaderCell>
+                  <HeaderCell>Тип</HeaderCell>
                   <Cell>
                     {(rowData, rowIndex) => {
                       return (
                         <span
                           onClick={() =>
                             // viewBlock(102) &&
-                            navigate(`/agentProfile/${rowData.id}`)
+                            clickToLink(rowData) &&
+                            navigate(clickToLink(rowData))
                           }
                         >
-                          {<span>{rowData.address}</span>}
+                          {<span>{rowData.type ? rowData.type : '-'}</span>}
                         </span>
                       )
                     }}
                   </Cell>
                 </Column>
-                <Column align="center" fixed flexGrow={1}>
-                  <HeaderCell>Контактное лицо</HeaderCell>
+                {/* <Column align="center" fixed flexGrow={1}>
+                  <HeaderCell>Страна</HeaderCell>
                   <Cell>
                     {(rowData, rowIndex) => {
                       return (
                         <span
                           onClick={() =>
                             // viewBlock(102) &&
-                            navigate(`/agentProfile/${rowData.id}`)
+                            clickToLink(rowData) &&
+                            navigate(clickToLink(rowData))
                           }
                         >
-                          {<span>{rowData.contact}</span>}
+                          {
+                            <span>
+                              {rowData.country ? rowData.country : '-'}
+                            </span>
+                          }
                         </span>
                       )
                     }}
                   </Cell>
-                </Column>
-                <Column align="center" fixed flexGrow={1}>
-                  <HeaderCell>Номер телефона</HeaderCell>
-                  <Cell>
-                    {(rowData, rowIndex) => {
-                      return (
-                        <span
-                          onClick={() =>
-                            // viewBlock(102) &&
-                            navigate(`/agentProfile/${rowData.id}`)
-                          }
-                        >
-                          {<span>{rowData.phone}</span>}
-                        </span>
-                      )
-                    }}
-                  </Cell>
-                </Column>
-                <Column align="center" fixed flexGrow={1}>
-                  <HeaderCell>Мессенджер</HeaderCell>
-                  <Cell>
-                    {(rowData, rowIndex) => {
-                      return (
-                        <span
-                          onClick={() =>
-                            // viewBlock(102) &&
-                            navigate(`/agentProfile/${rowData.id}`)
-                          }
-                        >
-                          {<span>{rowData.messenger}</span>}
-                        </span>
-                      )
-                    }}
-                  </Cell>
-                </Column>
-                <Column align="center" fixed flexGrow={1}>
-                  <HeaderCell>E-mail</HeaderCell>
-                  <Cell>
-                    {(rowData, rowIndex) => {
-                      return (
-                        <span
-                          onClick={() =>
-                            // viewBlock(102) &&
-                            navigate(`/agentProfile/${rowData.id}`)
-                          }
-                        >
-                          {<span>{rowData.email}</span>}
-                        </span>
-                      )
-                    }}
-                  </Cell>
-                </Column>
+                </Column> */}
 
                 {/* {(viewBlock(102) || viewBlock(103)) && (
                   <Column align="center" flexGrow={1}>

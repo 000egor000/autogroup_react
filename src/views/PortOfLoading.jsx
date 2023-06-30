@@ -58,7 +58,7 @@ const PortOfLoading = (props) => {
       })
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ remove: 0 }))
+        dispatch(showLoder({ remove: 0, status: err.status }))
       })
   }
   const getCountries = () => {
@@ -66,15 +66,15 @@ const PortOfLoading = (props) => {
     getRequest('/api/v1/countries', {
       Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
     })
-        .then((res) => {
-          const filterAray = res.countries.filter((item) => item.is_buyed)
+      .then((res) => {
+        const filterAray = res.countries.filter((item) => item.is_buyed)
 
-          setDataCountries(res.countries)
+        setDataCountries(res.countries)
 
-          setCountrySelect(JSON.stringify(res.countries[0]))
-          dispatch(showLoder({ offices: 0 }))
-        })
-        .catch(() => dispatch(showLoder({ offices: 0 })))
+        setCountrySelect(JSON.stringify(res.countries[0]))
+        dispatch(showLoder({ offices: 0 }))
+      })
+      .catch((err) => dispatch(showLoder({ offices: 0, status: err.status })))
   }
   const getPorts = () => {
     dispatch(showLoder({ getPorts: 1 }))
@@ -90,7 +90,7 @@ const PortOfLoading = (props) => {
       .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
 
-        dispatch(showLoder({ getPorts: 0 }))
+        dispatch(showLoder({ getPorts: 0, status: err.status }))
       })
   }
 
@@ -109,7 +109,7 @@ const PortOfLoading = (props) => {
     console.log(countrySelect)
     console.log(countrySelect)
   }
-console.log(countrySelect)
+  console.log(countrySelect)
   const params = {
     name,
     code,
@@ -130,7 +130,7 @@ console.log(countrySelect)
       })
       .catch((err) => {
         state.createNotification('Проверьте данные!', 'error')
-        dispatch(showLoder({ createLocation: 0 }))
+        dispatch(showLoder({ createLocation: 0, status: err.status }))
       })
   }
   const editPorts = (e) => {
@@ -147,7 +147,7 @@ console.log(countrySelect)
       })
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ editPorts: 0 }))
+        dispatch(showLoder({ editPorts: 0, status: err.status }))
       })
   }
   const handleChangeLimit = (dataKey) => {
@@ -274,23 +274,23 @@ console.log(countrySelect)
               <label>
                 <span>Страна</span>
                 {dataCountries.length > 0 ? (
-                    <select
-                        value={countrySelect}
-                        onChange={(event) => setCountrySelect(event.target.value)}
-                    >
-                      {dataCountries.map((elem) => {
-                        return (
-                            <option
-                                key={elem.id + elem.name_ru}
-                                value={JSON.stringify(elem)}
-                            >
-                              {elem.name_ru}
-                            </option>
-                        )
-                      })}
-                    </select>
+                  <select
+                    value={countrySelect}
+                    onChange={(event) => setCountrySelect(event.target.value)}
+                  >
+                    {dataCountries.map((elem) => {
+                      return (
+                        <option
+                          key={elem.id + elem.name_ru}
+                          value={JSON.stringify(elem)}
+                        >
+                          {elem.name_ru}
+                        </option>
+                      )
+                    })}
+                  </select>
                 ) : (
-                    <span>Нет данных!</span>
+                  <span>Нет данных!</span>
                 )}
               </label>
 
@@ -341,23 +341,23 @@ console.log(countrySelect)
               <label>
                 <span>Страна</span>
                 {dataCountries.length > 0 ? (
-                    <select
-                        value={countrySelect}
-                        onChange={(event) => setCountrySelect(event.target.value)}
-                    >
-                      {dataCountries.map((elem) => {
-                        return (
-                            <option
-                                key={elem.id + elem.name_ru}
-                                value={JSON.stringify(elem)}
-                            >
-                              {elem.name_ru}
-                            </option>
-                        )
-                      })}
-                    </select>
+                  <select
+                    value={countrySelect}
+                    onChange={(event) => setCountrySelect(event.target.value)}
+                  >
+                    {dataCountries.map((elem) => {
+                      return (
+                        <option
+                          key={elem.id + elem.name_ru}
+                          value={JSON.stringify(elem)}
+                        >
+                          {elem.name_ru}
+                        </option>
+                      )
+                    })}
+                  </select>
                 ) : (
-                    <span>Нет данных!</span>
+                  <span>Нет данных!</span>
                 )}
               </label>
 
@@ -429,8 +429,7 @@ console.log(countrySelect)
                   <HeaderCell>Страна</HeaderCell>
                   <Cell>
                     {(rowData, rowIndex) => {
-                      return (<span>{rowData.country.name_ru}</span>
-                      )
+                      return <span>{rowData.country.name_ru}</span>
                     }}
                   </Cell>
                 </Column>

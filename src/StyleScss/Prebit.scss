@@ -317,6 +317,12 @@ paper-toast {
   table th,
   td {
     min-width: 45px !important;
+    button {
+      background: none;
+      &:hover {
+        transform: scale(1.5);
+      }
+    }
   }
 
   &::-webkit-scrollbar {

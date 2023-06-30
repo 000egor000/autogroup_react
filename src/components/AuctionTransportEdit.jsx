@@ -90,7 +90,7 @@ const AuctionTransportEdit = ({
       })
       .catch((err) => {
         setFinanceDateArray([])
-        dispatch(showLoder({ financeInfo: 0 }))
+        dispatch(showLoder({ financeInfo: 0, status: err.status }))
       })
   }, [])
 
@@ -112,7 +112,7 @@ const AuctionTransportEdit = ({
       })
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ sealines: 0 }))
+        dispatch(showLoder({ sealines: 0, status: err.status }))
       })
   }, [])
 
@@ -308,7 +308,7 @@ const AuctionTransportEdit = ({
       })
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ editAuctionAuto: 0 }))
+        dispatch(showLoder({ editAuctionAuto: 0, status: err.status }))
       })
   }
 
@@ -376,11 +376,13 @@ const AuctionTransportEdit = ({
               statusCarrier
             }
           >
-            {carrierArray.map((elem, i) => (
-              <option key={elem.id} value={elem.id}>
-                {elem.title}
-              </option>
-            ))}
+            {carrierArray
+              .filter((el) => el.code !== 'aglogistic')
+              .map((elem, i) => (
+                <option key={elem.id} value={elem.id}>
+                  {elem.title}
+                </option>
+              ))}
           </select>
         </label>
 

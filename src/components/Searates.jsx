@@ -8,7 +8,7 @@ import { getRequest, putRequest } from '../base/api-request'
 import { showLoder } from '../reducers/actions'
 import ContextApp from '../context/contextApp.js'
 import NoData from './NoData'
-
+import { SelectPicker } from 'rsuite'
 import PropTypes from 'prop-types'
 
 const Searates = ({ currentRates, viewBlock, dataArray }) => {
@@ -22,9 +22,46 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
   const [stateCellValue, setStateCellValue] = useState('')
   const [titleRates, setTitleRates] = useState('')
 
+  const [dataArrayInit, setDataArrayInit] = useState([])
+  const [dataSelectInit, setDataSelectInit] = useState('')
+  console.log(currentRates)
+
   useEffect(() => {
     currentRates && getTitle(currentRates)
   }, [currentRates])
+
+  useEffect(() => {
+    !currentRates && getCarriers()
+  }, [currentRates])
+
+  const getCarriers = () => {
+    dispatch(showLoder({ carriers: 1 }))
+    getRequest('/api/v1/carriers', {
+      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+    })
+      .then((res) => {
+        setDataArrayInit(
+          res.carriers.map(({ id, title }) => ({
+            label: title,
+            value: id,
+            linkName: 'rates-fees/inland-rates?carrier_id',
+            dataResName: 'inlandRates',
+            nameCash: 'carriers',
+          }))
+        )
+        const aglogisticId = res.carriers.find(
+          (res) => res.code === 'aglogistic'
+        )
+
+        setDataSelectInit(aglogisticId['id'])
+        dispatch(showLoder({ carriers: 0 }))
+      })
+      .catch((err) => {
+        //state.createNotification('Успешно обновлено!', 'error')
+        setDataArrayInit([])
+        dispatch(showLoder({ carriers: 0, status: err.status }))
+      })
+  }
 
   const getTitle = (val) => {
     switch (val) {
@@ -73,29 +110,25 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
   // }, [currentRates, dataArray])
 
   useEffect(() => {
-    if (currentRates) {
-      dispatch(showLoder({ destinations: 1 }))
-      getRequest('/api/v1/destinations', {
-        Authorization: `Bearer ${window.sessionStorage.getItem(
-          'access_token'
-        )}`,
+    dispatch(showLoder({ destinations: 1 }))
+    getRequest('/api/v1/destinations', {
+      Authorization: `Bearer ${window.sessionStorage.getItem('access_token')}`,
+    })
+      .then((res) => {
+        let result = res.destinations.map((elem) => {
+          return res.destinations[0].id === elem.id
+            ? { ...elem, status: true }
+            : { ...elem, status: false }
+        })
+        setBtnShow(result)
+        dispatch(showLoder({ destinations: 0 }))
       })
-        .then((res) => {
-          let result = res.destinations.map((elem) => {
-            return res.destinations[0].id === elem.id
-              ? { ...elem, status: true }
-              : { ...elem, status: false }
-          })
-          setBtnShow(result)
-          dispatch(showLoder({ destinations: 0 }))
-        })
 
-        .catch((err) => {
-          state.createNotification('Что-то пошло не так!', 'error')
-          dispatch(showLoder({ destinations: 0 }))
-        })
-    }
-  }, [currentRates])
+      .catch((err) => {
+        state.createNotification('Что-то пошло не так!', 'error')
+        dispatch(showLoder({ destinations: 0, status: err.status }))
+      })
+  }, [])
 
   const chooseItem = (id) => {
     const newArr = btnShow.map((item) => {
@@ -106,7 +139,7 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
 
     setBtnShow(newArr)
   }
-  console.log(btnShow)
+
   useEffect(() => {
     if (btnShow.length > 0) {
       let result = btnShow.filter((elem) => elem.status === true)
@@ -117,9 +150,11 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
   const getSeaRatesArray = () => {
     dispatch(showLoder({ getSeaRatesArray: 1 }))
     let container = []
-    if (currentValue && currentRates) {
+    if ((currentValue && currentRates) || (currentValue && dataSelectInit)) {
       getRequest(
-        `/api/v1/rates-fees/sea-rates?carrier_id=${currentRates}&destination_id=${currentValue}`,
+        `/api/v1/rates-fees/sea-rates?carrier_id=${
+          currentRates ? currentRates : dataSelectInit
+        }&destination_id=${currentValue}`,
         {
           Authorization: `Bearer ${window.sessionStorage.getItem(
             'access_token'
@@ -127,7 +162,11 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
         }
       )
         .then((res) => {
-          res.seaRates.map((elem) => container.push(Object.entries(elem)))
+          res.seaRates.map((elem) => {
+            const { 'jet_ski_w/trailer': trailer, ...res } = elem
+
+            container.push(Object.entries(res))
+          })
 
           showSeaRatesArray(container)
           dispatch(showLoder({ getSeaRatesArray: 0 }))
@@ -136,15 +175,16 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
         .catch((err) => {
           //state.createNotification('Успешно обновлено!', 'error')
           showSeaRatesArray([])
-          dispatch(showLoder({ getSeaRatesArray: 0 }))
+          dispatch(showLoder({ getSeaRatesArray: 0, status: err.status }))
         })
     }
   }
+
   useEffect(() => {
-    if (currentRates) {
+    if (currentRates || dataSelectInit) {
       getSeaRatesArray()
     }
-  }, [currentValue, currentRates])
+  }, [currentValue, currentRates, dataSelectInit])
 
   // const showIdLocation = (c) => {
 
@@ -186,7 +226,9 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
         getSeaRatesArray()
         dispatch(showLoder({ changeTableOrEdit: 0 }))
       })
-      .catch(() => dispatch(showLoder({ changeTableOrEdit: 0 })))
+      .catch((err) =>
+        dispatch(showLoder({ changeTableOrEdit: 0, status: err.status }))
+      )
   }
   // useEffect(() => {
   // 	if (stateCellValue !== stateCellValueFist) {
@@ -214,6 +256,7 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
   }
 
   const isChecked = (id) => {
+    console.log(id)
     let filtered = stateCell.filter((e) => e === id)
 
     let bool = filtered.length > 0 ? true : false
@@ -221,30 +264,46 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
   }
 
   const controlBlock = () => {
-    let bool = false
+    let bool = true
 
-    if (viewBlock(81) && titleRates === 'Aec: Sea Rates') {
-      return (bool = true)
-    }
+    // if (viewBlock(81) && titleRates === 'Aec: Sea Rates') {
+    //   return (bool = true)
+    // }
 
-    if (viewBlock(83) && titleRates === 'Auto Universe: Sea Rates Own') {
-      return (bool = true)
-    }
-    if (viewBlock(85) && titleRates === 'Ag Logistic: Sea Rates') {
-      return (bool = true)
-    }
+    // if (viewBlock(83) && titleRates === 'Auto Universe: Sea Rates Own') {
+    //   return (bool = true)
+    // }
+    // if (viewBlock(85) && titleRates === 'Ag Logistic: Sea Rates') {
+    //   return (bool = true)
+    // }
 
     return bool
   }
 
+  const styleTopItem = {
+    justifyContent: dataSelectInit ? 'space-between' : 'right',
+    paddingLeft: state.width,
+    paddingRight: '30px',
+  }
+
   return (
     <div className="itemContainer">
-      {currentRates && seaRatesArray.length > 0 ? (
+      {currentRates || dataSelectInit ? (
         <div className="itemContainer-inner">
-          <div className="top-item " style={{ paddingLeft: state.width }}>
-            <div className="btnTransport">
-              {/* <h1 className='titleInfo'>{titleRates}</h1> */}
-            </div>
+          <div className="top-item " style={styleTopItem}>
+            {/* {!currentRates && (
+              <div className="btnTransport">
+                <div className="customGroupSelect">
+                  <SelectPicker
+                    data={dataArrayInit}
+                    value={dataSelectInit}
+                    onChange={setDataSelectInit}
+                    cleanable={false}
+                  />
+                </div>
+              </div>
+            )} */}
+
             <div className="groupInput">
               <div className="switcher-btn">
                 {btnShow.length > 0 &&
@@ -267,7 +326,7 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
             className="bottom-itemFooter"
             style={{ paddingLeft: state.width, color: 'black' }}
           >
-            {seaRatesArray.length > 0 && (
+            {seaRatesArray.length > 0 ? (
               <div className="overFlowBlock">
                 <table>
                   <thead>
@@ -402,6 +461,8 @@ const Searates = ({ currentRates, viewBlock, dataArray }) => {
 								/>
 							</div> */}
               </div>
+            ) : (
+              <NoData />
             )}
           </div>
         </div>

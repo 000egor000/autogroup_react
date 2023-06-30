@@ -69,7 +69,7 @@ const PlaceDestinations = (props) => {
       })
       .catch((err) => {
         state.createNotification('Что-то пошло не так!', 'error')
-        dispatch(showLoder({ removeDestinations: 0 }))
+        dispatch(showLoder({ removeDestinations: 0, status: err.status }))
       })
   }
 
@@ -86,7 +86,7 @@ const PlaceDestinations = (props) => {
       .catch((err) => {
         //state.createNotification('Успешно обновлено!', 'error')
 
-        dispatch(showLoder({ getPlaceDestinations: 0 }))
+        dispatch(showLoder({ getPlaceDestinations: 0, status: err.status }))
       })
   }
 
@@ -103,7 +103,7 @@ const PlaceDestinations = (props) => {
       })
       .catch((err) => {
         setDataMaster([])
-        dispatch(showLoder({ getArray: 0 }))
+        dispatch(showLoder({ getArray: 0, status: err.status }))
       })
   }
   const getAllArray = () => {
@@ -117,7 +117,7 @@ const PlaceDestinations = (props) => {
       })
       .catch((err) => {
         setDestinationsArray([])
-        dispatch(showLoder({ getAllArray: 0 }))
+        dispatch(showLoder({ getAllArray: 0, status: err.status }))
         //state.createNotification('Успешно обновлено!', 'error')
       })
   }
@@ -138,7 +138,7 @@ const PlaceDestinations = (props) => {
         })
         .catch((err) => {
           setDataMaster([])
-          dispatch(showLoder({ destinationsSearch: 0 }))
+          dispatch(showLoder({ destinationsSearch: 0, status: err.status }))
           //state.createNotification('Успешно обновлено!', 'error')
         })
     } else {
@@ -156,7 +156,9 @@ const PlaceDestinations = (props) => {
 
         dispatch(showLoder({ getСountries: 0 }))
       })
-      .catch(() => dispatch(showLoder({ getСountries: 0 })))
+      .catch((err) =>
+        dispatch(showLoder({ getСountries: 0, status: err.status }))
+      )
   }, [])
 
   useEffect(() => {
@@ -208,7 +210,7 @@ const PlaceDestinations = (props) => {
       })
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ createLocation: 0 }))
+        dispatch(showLoder({ createLocation: 0, status: err.status }))
       })
   }
   const editLocation = (e) => {
@@ -225,7 +227,7 @@ const PlaceDestinations = (props) => {
       })
       .catch((err) => {
         state.createNotification('Проверьте веденные данные!', 'error')
-        dispatch(showLoder({ editLocation: 0 }))
+        dispatch(showLoder({ editLocation: 0, status: err.status }))
       })
   }
   const handleChangeLimit = (dataKey) => {

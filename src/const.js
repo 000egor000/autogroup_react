@@ -411,7 +411,7 @@ const documentsArray = [
 ]
 
 const variantPayFinance = [
-  { id: 0, title: 'Способ оплаты', status: false },
+  { id: 0, title: 'Выберите способ оплаты', status: false },
   { id: 1, title: 'Компании', status: false },
   { id: 2, title: 'Перевозчика', status: false },
   { id: 3, title: 'Кошелек', status: false },
@@ -567,6 +567,12 @@ const staticData = [
             role: true,
           },
           {
+            id: '5-2-3',
+            title: 'Компании-агенты',
+            link: '/listOfAgents',
+            role: true,
+          },
+          {
             id: '5-3',
             title: 'Иные инструменты',
             role: [],
@@ -642,27 +648,43 @@ const staticData = [
         children: [
           {
             id: '7-1-1',
-            title: 'Площадка(auction)',
+            title: 'Площадка (Аукцион)',
             link: '/wallets/auctions',
             role: { keyTitle: 'cash_account', id: 93 },
           },
+
           {
             id: '7-1-2',
-            title: 'Контрагент',
+            title: 'Перевозчик (место покупки)',
             link: '/wallets/shipping',
             role: { keyTitle: 'cash_account', id: 94 },
           },
           {
             id: '7-1-3',
+            title: 'Локальные перевозчики',
+            link: '/wallets/carter',
+            role: true,
+          },
+
+          {
+            id: '7-1-4',
+            title: ' Агент в порту',
+            link: '/wallets/agentPortOfDestination',
+            role: true,
+          },
+
+          {
+            id: '7-1-6',
             title: 'Крипта',
-            link: null,
+
+            link: '/wallets/crypto',
             role: { keyTitle: 'cash_account', id: 94 },
           },
           {
-            id: '7-1-4',
+            id: '7-1-7',
             title: 'Иная форма',
-            link: null,
-            role: { keyTitle: 'cash_account', id: 94 },
+            link: '/wallets/cashAll',
+            role: true,
           },
         ],
       },
@@ -822,6 +844,12 @@ const staticData = [
             link: '/counterparty',
             role: true,
           },
+          /*{
+            id: '8-2-5',
+            title: 'Контрагенты',
+            link: '/counterparty',
+            role: true,
+          },*/
         ],
       },
       {
@@ -910,6 +938,22 @@ const dataAdd = [
   { id: 4, title: 'порт погрузки (port of loading)  (POL)' },
 ]
 
+const typeList = [
+  { id: 2, name: 'Транспорт' },
+  { id: 3, name: 'Платежные инструменты' },
+  { id: 4, name: 'Агент в порту назначения' },
+]
+
+const typeTransportation = [
+  { id: 1, name: 'По суши до порта прибытия', type: 'buyed' },
+  { id: 2, name: 'Локальная перевозка', type: 'destination' },
+  { id: 3, name: 'По морю', type: 'buyed' },
+  { id: 4, name: 'Агент в порту назначения', type: 'destination' },
+  { id: 5, name: 'Агент по порт прибытия' },
+]
+
+const role = ['office', 'dealer', 'logist', 'finance', 'admin']
+
 export {
   btnInfo,
   formInvoiceArray,
@@ -950,4 +994,7 @@ export {
   ratesData,
   arrayPort,
   dataAdd,
+  typeList,
+  typeTransportation,
+  role,
 }
